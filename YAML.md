@@ -4,9 +4,11 @@ This is document shows the options avaliable in the YAML Config File.
 
 The full file should be as follows:
 
+### Sample File
+
 ```yaml
 files:
-  - source: index.html
+  - source: /
     destination: /var/www/autodeploy/
   - source: test.err
     destination: /tmp
@@ -33,4 +35,19 @@ events:
 
 the file has three main levels:
     ## files
-        these are the 
+        these are the files that will be copied to the deployment directory. 
+It should be in the format
+```yaml
+  - source: /
+    destination: /var/www/autodeploy/
+  - source: test.err
+    destination: /tmp
+```
+ The souce can be 
+        * **File**: This is file will be copied to the destination
+        * **Directory**: All the directory content will be copied to the destination
+        
+
+
+        
+        
