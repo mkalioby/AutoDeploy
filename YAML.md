@@ -44,16 +44,18 @@ It should be in the format
   - source: test.err
     destination: /tmp
 ``` 
+***The format can be repeated as many as needed.***
+
  The souce can be 
         
   + **File** : This is file will be copied to the destination
   + **Directory**: All the directory content will be copied to the destination. 
   
   ***Notes*** 
-    + It should end '/' to be detected as a directory in the system.
-    + Path should be relative to the workig directory.
+  + It should end '/' to be detected as a directory in the system.
+  + Path should be relative to the working directory.
   
-  
+The destination is the folder where the file should be copied to, the system will always create the directory if it doesn't exist.
         
 
 
