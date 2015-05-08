@@ -1,0 +1,13 @@
+files:
+  source: /
+  destination: /var/www/autodeploy/
+permissions:
+  object: /var/www/autodeploy/
+  pattern: *
+  owner: www-data
+  group: www-data
+  mode: 744
+  type: directory
+events:
+  beforeInstall: stop-apache.sh
+  afterInstall: start-apache.sh
