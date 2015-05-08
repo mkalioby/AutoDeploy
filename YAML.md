@@ -82,12 +82,13 @@ events are an optional part where you can tell the deployer to run special scrip
 
 Currently, there are 2 events to handle.
 
-+ **BeforeInstall**: Which be called before anything is done, usually this is used to stop any working servers
-+ **AfterInstall**: which is called after the everything is done, usually this is used to start the server back.
++ **beforeInstall**: Which be called before anything is done, usually this is used to stop any working servers
++ **afterInstall**: which is called after the everything is done, usually this is used to start the server back.
 
 It should be in the following format:
+
 ```yaml
-BeforeInstall:
+beforeInstall:
   - location: /home/mohamed/autoDeploy/autoDeploy/exampleConfig/EventsHandler/delDir.sh
     run-as: www-data
     interpreter: bash
@@ -96,8 +97,4 @@ BeforeInstall:
 + **location**: the full path of the script to run.
 +  **run-as**: the username of the user who will run this command (optional).
 +  **interpreter**: the name of the interpreter that should be used to run the script (optional but highly recommended)
-    
-
-
-        
-        
+  
