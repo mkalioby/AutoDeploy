@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+
+    <meta charset="UTF-8">
+    <title>autoDeploy</title>
+    <script type="text/javascript" src="{{STATIC_URL}}js/jquery.min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/bootstrap.js"></script>
+    <link href="{{STATIC_URL}}css/bootstrap.css" rel="stylesheet" type="text/css"/>
+    {% block head %}
+    {% endblock %}
+</head>
+<body>
+
+<nav class="navbar navbar-default">
+    <div class="navbar-header">
+        <a href="" class="navbar-brand">autoDeploy</a>
+</div>
+<button class="btn btn-primary" style="float:right;top: 5px;padding-right: 10px;position: relative;margin-right: 10px"><span class="glyphicon glyphicon-plus"></span> Add Project</button>
+</nav>
+{% block content %}
+{% endblock %}
+</body>
+</html>
