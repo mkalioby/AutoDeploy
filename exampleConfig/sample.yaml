@@ -1,17 +1,22 @@
 files:
-  source: /
-  destination: /var/www/autodeploy/
+  - source: index.html
+    destination: /var/www/autodeploy/
+  - source: test.err
+    destination: /tmp
 permissions:
-  object: /var/www/autodeploy/
-  pattern: *
-  owner: www-data
-  group: www-data
-  mode: 744
-  type: directory
+  - object: /var/www/autodeploy/
+    owner: www-data
+    group: www-data
+    mode: 755
+    type: directory
 events:
   beforeInstall:
-    location: stop-apache.sh
-    run-as: root
+    - location: /home/mohamed/autoDeploy/autoDeploy/exampleConfig/EventsHandler/delDir.sh
+      run-as: www-data
+      interpreter: bash
+    - location: /home/mohamed/autoDeploy/autoDeploy/exampleConfig/EventsHandler/stopApache.sh
+      run-as: root
+      interpreter: bash
   afterInstall:
-    location: start-apache.sh
-
+    - location: /home/mohamed/autoDeploy/autoDeploy/exampleConfig/EventsHandler/startApache.sh
+      interpreter: bash
