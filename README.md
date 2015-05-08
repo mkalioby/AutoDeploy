@@ -16,10 +16,10 @@ The client should be callable from CI systems (like Jenkins) to deploy the code 
 
 The following events will be handled by the system:
 
-1. Before Install: This event will run after the code is downloaded, normal will be used to stop servers/decrypt files
-2. Install: doing the deployment operation itself
-3. After Install: Actions required after Installing like reloading a server.
-4. Validation: An optiomal step to make sure that everything is OK.
+1. **Before Install**: This event will run after the code is downloaded, normal will be used to stop servers/decrypt files
+2. **Install**: doing the deployment operation itself
+3. **After Install**: Actions required after Installing like reloading a server.
+4. **Validation**: An optiomal step to make sure that everything is OK.
 
 Every event should have the following format:
 
@@ -29,3 +29,5 @@ events:
        location: script-location (can be seprated by ',')
        runas: user-name
   ```
+## Requiremnts ##
+* pyyaml (>3.0)
