@@ -42,9 +42,10 @@ It should be in the format
     destination: /var/www/autodeploy/
   - source: test.err
     destination: /tmp
-```
+``` 
  The souce can be 
-        * **File**: This is file will be copied to the destination
+        
+        * **File** : This is file will be copied to the destination
         * **Directory**: All the directory content will be copied to the destination
         
 
