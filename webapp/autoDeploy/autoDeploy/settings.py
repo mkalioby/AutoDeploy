@@ -107,5 +107,4 @@ BASE_URL="/"
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = BASE_URL+ 'static/'
-print STATIC_URL
-
+PROJECTS_DIR='/opt/autodeploy/projects/'
