@@ -9,5 +9,9 @@ permissions:
   mode: 744
   type: directory
 events:
-  beforeInstall: stop-apache.sh
-  afterInstall: start-apache.sh
+  beforeInstall:
+    location: stop-apache.sh
+    run-as: root
+  afterInstall:
+    location: start-apache.sh
+
