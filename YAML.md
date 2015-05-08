@@ -34,7 +34,8 @@ events:
 # Format
 
 the file has three main levels:
-    ## files
+  
+## files
         these are the files that will be copied to the deployment directory. 
 It should be in the format
 ```yaml
@@ -45,8 +46,14 @@ It should be in the format
 ``` 
  The souce can be 
         
-        * **File** : This is file will be copied to the destination
-        * **Directory**: All the directory content will be copied to the destination
+  + **File** : This is file will be copied to the destination
+  + **Directory**: All the directory content will be copied to the destination. 
+  
+  ***Notes*** 
+    + It should end '/' to be detected as a directory in the system.
+    + Path should be relative to the workig directory.
+  
+  
         
 
 
