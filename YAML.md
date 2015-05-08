@@ -51,7 +51,7 @@ It should be in the format
   + **File** : This is file will be copied to the destination
   + **Directory**: All the directory content will be copied to the destination. 
   
-  ***Notes*** 
+***Notes*** 
   + It should end '/' to be detected as a directory in the system.
   + Path should be relative to the working directory.
   
@@ -85,6 +85,18 @@ Currently, there are 2 events to handle.
 + **BeforeInstall**: Which be called before anything is done, usually this is used to stop any working servers
 + **AfterInstall**: which is called after the everything is done, usually this is used to start the server back.
 
+It should be in the following format:
+```yaml
+BeforeInstall:
+  - location: /home/mohamed/autoDeploy/autoDeploy/exampleConfig/EventsHandler/delDir.sh
+    run-as: www-data
+    interpreter: bash
+```
+
++ **location**: the full path of the script to run.
++  **run-as**: the username of the user who will run this command (optional).
++  **interpreter**: the name of the interpreter that should be used to run the script (optional but highly recommended)
+    
 
 
         
