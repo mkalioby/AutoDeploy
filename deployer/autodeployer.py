@@ -37,14 +37,15 @@ def handleFiles(files):
             copyMethod=shutil.copy
         copyMethod(workdir+file["source"],file["destination"])
 
-def hanlePermissions(permissions,raiseErrorOnStdErr):
+def handlePermissions(permissions,raiseErrorOnStdErr):
     for permission in permissions:
-        cmd="chown %s:%s %s"%(permission["owner"],permission["group"],permission["object"])
-        if "dir" in permission["type"].lower():
-            cmd += " -R"
-            if debug:
-                print "         ", cmd
-        Common.run(cmd,raiseErrorOnStdErr)
+        if "owner" in permission.keys():
+            cmd="chown %s:%s %s"%(permission["owner"],permission["group"],permission["object"])
+            if "dir" in permission["type"].lower():
+                cmd += " -R"
+                if debug:
+                    print "         ", cmd
+            Common.run(cmd,raiseErrorOnStdErr)
         if "mode" in permission.keys():
             cmd="chmod %s %s"%(permission["mode"],permission["object"])
             if "dir" in permission["type"].lower():
@@ -53,7 +54,6 @@ def hanlePermissions(permissions,raiseErrorOnStdErr):
             Common.run(cmd,raiseErrorOnStdErr)
 
 def deploy(config,workdir=".",raiseErrorOnStdErr=True):
-
     printNotication("Running Before Install scripts:")
     runEvents(config,"beforeInstall")
 
@@ -63,15 +63,13 @@ def deploy(config,workdir=".",raiseErrorOnStdErr=True):
     if not slient: print "     Copying done"
 
     if not slient: print "     Setting Permissions"
-    hanlePermissions(config["permissions"],raiseErrorOnStdErr)
+    handlePermissions(config["permissions"],raiseErrorOnStdErr)
     if not slient: print "     Permissions Done"
 
     printNotication("Deployment Done.......")
 
     printNotication("Starting After Install Scripts")
     runEvents(config,"afterInstall",raiseErrorOnStdErr)
-
-
 
 if __name__=="__main__":
     config=None
@@ -81,7 +79,6 @@ if __name__=="__main__":
         if "--config" in arg:
             yamlFile=arg.split("=")[1]
             config=yaml.safe_load(open(yamlFile))
-
         elif "--workdir" in arg:
             workdir=arg.split("=")[1]
         elif "--no-stderr" in arg:
