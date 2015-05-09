@@ -20,4 +20,5 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$','autodeploy.views.projects'),
     url(r'add_project','autodeploy.views.add_project'),
+    url(r'add_server','autodeploy.views.add_server'),
 ]

@@ -2,8 +2,7 @@ from django.db import models
 
 
 class Project(models.Model):
-    id = models.IntegerField(primary_key=True, auto_created=True)
-    name = models.CharField(max_length=50, blank=False)
+    name = models.CharField(max_length=50, blank=False,primary_key=True)
     repo_type=models.CharField(max_length=10,blank=True)
     repo = models.CharField(max_length=255, blank=True)
     lastCommit = models.CharField(max_length=32,blank=True)
@@ -12,3 +11,9 @@ class Project(models.Model):
     working_dir=models.FileField(blank=True)
     configFile=models.FileField(blank=True)
     lastUpdate=models.DateTimeField(blank=True)
+
+class Server(models.Model):
+    name=models.CharField(max_length=50,primary_key=True)
+    dns=models.CharField(max_length=50)
+    port=models.IntegerField(default=4567)
+

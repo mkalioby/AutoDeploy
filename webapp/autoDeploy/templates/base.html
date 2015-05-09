@@ -4,21 +4,103 @@
 
     <meta charset="UTF-8">
     <title>autoDeploy</title>
-    <script type="text/javascript" src="{{STATIC_URL}}js/jquery.min.js"></script>
-    <script type="text/javascript" src="{{STATIC_URL}}js/bootstrap.js"></script>
     <link href="{{STATIC_URL}}css/bootstrap.css" rel="stylesheet" type="text/css"/>
+    <link href="{{STATIC_URL}}css/sb-admin-2.css" rel="stylesheet" type="text/css"/>
+    <link href="{{STATIC_URL}}css/font-awesome.css" rel="stylesheet" type="text/css"/>
+    <link href="{{STATIC_URL}}css/metisMenu.css" rel="stylesheet" type="text/css"/>
+    <link href="{{STATIC_URL}}css/morris.css" rel="stylesheet" type="text/css"/>
     {% block head %}
     {% endblock %}
 </head>
 <body>
 
-<nav class="navbar navbar-default">
-    <div class="navbar-header">
-        <a href="" class="navbar-brand">autoDeploy</a>
-</div>
-<a href="./add_project"><button class="btn btn-primary" style="float:right;top: 5px;padding-right: 10px;position: relative;margin-right: 10px"><span class="glyphicon glyphicon-plus"></span> Add Project</button></a>
-</nav>
-{% block content %}
+
+
+<div id="wrapper">
+
+        <!-- Navigation -->
+        <nav style="margin-bottom: 0" role="navigation" class="navbar navbar-default navbar-static-top">
+            <div class="navbar-header">
+                <button data-target=".navbar-collapse" data-toggle="collapse" class="navbar-toggle" type="button">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a href="index.html" class="navbar-brand">autoDeploy</a>
+            </div>
+            <!-- /.navbar-header -->
+
+            <ul class="nav navbar-top-links navbar-right">
+
+            </ul>
+            <!-- /.navbar-top-links -->
+
+            <div role="navigation" class="navbar-default sidebar">
+                <div class="sidebar-nav navbar-collapse">
+                    <ul id="side-menu" class="nav in">
+                        <li>
+                            <a href="index.html" class="active"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Projects<span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level collapse">
+                                <li>
+                                    <a href="./add_project">Add Project</a>
+                                </li>
+                                <li>
+                                    <a href="./modify_project">Modify Projects</a>
+                                </li>
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>
+                        <li>
+                            <a href="#"> <i class="fa fa-linux fa-fw"></i> Servers <span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level collapse">
+                                <li><a href="./add_server">Add Server</a> </li>
+                                <li><a href="./modify_servers">Modify Servers</a> </li>
+                            </ul>
+
+                        </li>
+                   </ul>
+                </div>
+                <!-- /.sidebar-collapse -->
+            </div>
+            <!-- /.navbar-static-side -->
+        </nav>
+
+        <div id="page-wrapper" style="min-height: 342px;">
+            {% block content %}
 {% endblock %}
+
+                        </div>
+                        <!-- /.panel-body -->
+                        <div class="panel-footer">
+                            <div class="input-group">
+                                <input type="text" placeholder="Type your message here..." class="form-control input-sm" id="btn-input">
+                                <span class="input-group-btn">
+                                    <button id="btn-chat" class="btn btn-warning btn-sm">
+                                        Send
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                        <!-- /.panel-footer -->
+                    </div>
+                    <!-- /.panel .chat-panel -->
+                </div>
+                <!-- /.col-lg-4 -->
+            </div>
+            <!-- /.row -->
+        </div>
+        <!-- /#page-wrapper -->
+
+    </div>
+<script type="text/javascript" src="{{STATIC_URL}}js/jquery.min.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/bootstrap.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/sb-admin-2.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/metisMenu.js"></script>
+    <script type="text/javascript" src="{{STATIC_URL}}js/morris.js"></script>
+
 </body>
 </html>
