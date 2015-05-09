@@ -6,8 +6,9 @@ This document shows how to install autoDeploy on Ubuntu System
 ```sh
 # adduser --system --home /opt/autodeploy/home --shell /bin/bash autodeploy
 ```
-2. Add autodeploy to admins.
+2. Add autodeploy to sudoers.
 ```sh
-# adduser autodeploy adm
+# adduser autodeploy sudo
 ```
-3. 
+3. Copy the file in UnixConfig to /etc/sudoers.d/
+
