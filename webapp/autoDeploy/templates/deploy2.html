@@ -1,0 +1,27 @@
+{% extends "base.html"%}
+{% block content %}
+ <div align="left">
+    <h1>Deploy Project</h1>
+
+         {% if result %}
+            {% if "ERR:" in result %}
+        <div class="alert alert-danger">
+        {% else %}
+            <div class="alert alert-success">
+            {% endif %}
+            {{ result }}</div>
+
+ {% else %}
+        Select Tag:
+        <br/>
+        <ul>
+            {% for tag in tags %}
+                {% if tag != "" %}
+                <li><a href='../deploy3/?tag={{ tag }}'>{{ tag }}</a></li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+
+
+    {% endif %}
+{% endblock %}

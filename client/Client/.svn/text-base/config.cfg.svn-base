@@ -1,0 +1,6 @@
+[Server]
+ServerHost: cloud.trendak.com
+ServerPort: 5555
+
+[Client]
+Owner: user1

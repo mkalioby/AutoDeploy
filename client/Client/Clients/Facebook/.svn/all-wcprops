@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 56
+/!svn/ver/433/crawl/client/trunk/Client/Clients/Facebook
+END
+Facebook_User.py
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/!svn/ver/433/crawl/client/trunk/Client/Clients/Facebook/Facebook_User.py
+END
+Facebook_Comment.py
+K 25
+svn:wc:ra_dav:version-url
+V 76
+/!svn/ver/433/crawl/client/trunk/Client/Clients/Facebook/Facebook_Comment.py
+END
+Facebook_Post.py
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/!svn/ver/433/crawl/client/trunk/Client/Clients/Facebook/Facebook_Post.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/!svn/ver/433/crawl/client/trunk/Client/Clients/Facebook/__init__.py
+END

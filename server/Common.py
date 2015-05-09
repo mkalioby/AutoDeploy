@@ -18,6 +18,7 @@ def run(executer, id=None):
         f.flush()
         f.close()
 
-    if len(stderr) > 0:
+    if len(stderr) > 0 and "fatal" in stderr:
         return "ERR:"+stderr
+    if stdout=="": return "Done"
     return stdout

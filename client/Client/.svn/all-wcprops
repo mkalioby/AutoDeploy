@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 39
+/!svn/ver/433/crawl/client/trunk/Client
+END
+Client.py
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/!svn/ver/433/crawl/client/trunk/Client/Client.py
+END
+__init__.py
+K 25
+svn:wc:ra_dav:version-url
+V 51
+/!svn/ver/433/crawl/client/trunk/Client/__init__.py
+END
+Config.py
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/!svn/ver/433/crawl/client/trunk/Client/Config.py
+END
+README
+K 25
+svn:wc:ra_dav:version-url
+V 46
+/!svn/ver/433/crawl/client/trunk/Client/README
+END
+Common.py
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/!svn/ver/433/crawl/client/trunk/Client/Common.py
+END
+ClientJob.py
+K 25
+svn:wc:ra_dav:version-url
+V 52
+/!svn/ver/433/crawl/client/trunk/Client/ClientJob.py
+END
+Connect.py
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/!svn/ver/433/crawl/client/trunk/Client/Connect.py
+END
+config.cfg
+K 25
+svn:wc:ra_dav:version-url
+V 50
+/!svn/ver/433/crawl/client/trunk/Client/config.cfg
+END

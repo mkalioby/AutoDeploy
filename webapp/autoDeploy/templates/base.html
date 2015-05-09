@@ -9,6 +9,7 @@
     <link href="{{STATIC_URL}}css/font-awesome.css" rel="stylesheet" type="text/css"/>
     <link href="{{STATIC_URL}}css/metisMenu.css" rel="stylesheet" type="text/css"/>
     <link href="{{STATIC_URL}}css/morris.css" rel="stylesheet" type="text/css"/>
+    <link href="{{STATIC_URL}}css/screen.css" rel="stylesheet" type="text/css"/>
     {% block head %}
     {% endblock %}
 </head>
@@ -40,10 +41,10 @@
                 <div class="sidebar-nav navbar-collapse">
                     <ul id="side-menu" class="nav in">
                         <li>
-                            <a href="index.html" class="active"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                            <a href="./" class="active"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>
                         <li>
-                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i> Projects<span class="fa arrow"></span></a>
+                            <a href="#"><i class="fa fa-book fa-fw"></i> Projects<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level collapse">
                                 <li>
                                     <a href="./add_project">Add Project</a>
@@ -60,7 +61,12 @@
                                 <li><a href="./add_server">Add Server</a> </li>
                                 <li><a href="./modify_servers">Modify Servers</a> </li>
                             </ul>
-
+                        <li>
+                            <a href="#"> <i class="fa fa-key fa-fw"></i> SSH Keys <span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level collapse">
+                                <li><a href="./add_sshkey">Add SSH Key</a> </li>
+                                <li><a href="./modify_sshkey">Modify SSH Keys</a> </li>
+                            </ul>
                         </li>
                    </ul>
                 </div>
@@ -75,23 +81,7 @@
 
                         </div>
                         <!-- /.panel-body -->
-                        <div class="panel-footer">
-                            <div class="input-group">
-                                <input type="text" placeholder="Type your message here..." class="form-control input-sm" id="btn-input">
-                                <span class="input-group-btn">
-                                    <button id="btn-chat" class="btn btn-warning btn-sm">
-                                        Send
-                                    </button>
-                                </span>
-                            </div>
-                        </div>
-                        <!-- /.panel-footer -->
-                    </div>
-                    <!-- /.panel .chat-panel -->
-                </div>
-                <!-- /.col-lg-4 -->
-            </div>
-            <!-- /.row -->
+
         </div>
         <!-- /#page-wrapper -->
 

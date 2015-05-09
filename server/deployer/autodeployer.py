@@ -1,10 +1,11 @@
 __author__ = 'mohamed'
 
 import sys
-import yaml
-import shutil
 import os
+
+import yaml
 import Common
+
 
 debug=False
 slient=False
@@ -17,6 +18,7 @@ def printNotication(message):
 def runEvents(config,event,raiseErrorOnStdErr=True):
     if event in config["events"].keys():
         for script in config["events"][event]:
+            wait=True
             cmd=script["location"]
             if "interpreter" in script.keys():
                 cmd="%s %s"%(script["interpreter"],cmd)
@@ -24,30 +26,29 @@ def runEvents(config,event,raiseErrorOnStdErr=True):
                 if not script["run-as"]=="root":
                     cmd="su %s -c %s"%(script["run-as"],cmd)
             if not slient: print "Running:", cmd
-            Common.run(cmd,raiseErrorOnStdErr)
+            if "wait" in script.keys():
+                wait=script["wait"]
+            Common.run(cmd,raiseErrorOnStdErr,wait=wait)
 
-def handleFiles(files):
+def handleFiles(files,workdir):
     for file in files:
-        if file["destination"].endswith("/"):
+        if file["destination"].endswith("/") and not file["source"].endswith("/"):
             if not os.path.exists(file["destination"]):
                 os.makedirs(file["destination"])
         if file["source"].endswith("/"):
-            copyMethod=shutil.copytree
-        else:
-            copyMethod=shutil.copy
-        copyMethod(workdir+file["source"],file["destination"])
+            Common.run("sudo rsync -rz --delete --exclude='.git' %s %s"%(workdir+file["source"],file["destination"]))
 
 def handlePermissions(permissions,raiseErrorOnStdErr):
     for permission in permissions:
         if "owner" in permission.keys():
-            cmd="chown %s:%s %s"%(permission["owner"],permission["group"],permission["object"])
+            cmd="sudo chown %s:%s %s"%(permission["owner"],permission["group"],permission["object"])
             if "dir" in permission["type"].lower():
                 cmd += " -R"
                 if debug:
                     print "         ", cmd
             Common.run(cmd,raiseErrorOnStdErr)
         if "mode" in permission.keys():
-            cmd="chmod %s %s"%(permission["mode"],permission["object"])
+            cmd="sudo chmod %s %s"%(permission["mode"],permission["object"])
             if "dir" in permission["type"].lower():
                 cmd += " -R"
                 if debug:  print "         ",cmd
@@ -59,7 +60,7 @@ def deploy(config,workdir=".",raiseErrorOnStdErr=True):
 
     printNotication("Starting Deployment")
     if not slient: print "     Copying Files"
-    handleFiles(config["files"])
+    handleFiles(config["files"],workdir)
     if not slient: print "     Copying done"
 
     if not slient: print "     Setting Permissions"
@@ -70,7 +71,7 @@ def deploy(config,workdir=".",raiseErrorOnStdErr=True):
 
     printNotication("Starting After Install Scripts")
     runEvents(config,"afterInstall",raiseErrorOnStdErr)
-
+    return "Done"
 if __name__=="__main__":
     config=None
     workdir=None
@@ -79,6 +80,7 @@ if __name__=="__main__":
         if "--config" in arg:
             yamlFile=arg.split("=")[1]
             config=yaml.safe_load(open(yamlFile))
+            print  config
         elif "--workdir" in arg:
             workdir=arg.split("=")[1]
         elif "--no-stderr" in arg:
@@ -87,6 +89,8 @@ if __name__=="__main__":
             slient=True
         elif "--debug" in arg:
             debug=True
-
+    if not config or not workdir:
+        print "--config and --workdir should be set"
+        exit()
     deploy(config,workdir,stdErr)
 
