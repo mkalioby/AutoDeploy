@@ -1,0 +1,137 @@
+import socket,base64,time,sys,subprocess
+import os
+import hashlib
+
+def signMessage(owner):
+	m = hashlib.md5()
+	m.update("tre"+owner+"ndak")
+	return m.hexdigest()
+
+#Provide id, owner and command as string 
+# inputsFiles as List of file path
+def createSearchMessage(owner,query,sinceId=0,maxId=0,count=None,startDateTime=None,endDateTime=None,save="Y",network='',options=None):
+	sec=signMessage(owner)
+	f='<job  owner="' + owner + '" type="SEARCH" token="'+sec+'" network="' + network +'">\n'
+	f+= '<query>%s</query>'%query
+	f+= '<sinceId>%s</sinceId>'%sinceId
+	f+= '<maxId>%s</maxId>'%maxId
+	f+= '<startDateTime>%s</startDateTime>'%startDateTime
+	f+= '<endDateTime>%s</endDateTime>'%endDateTime
+	#f+= '<format>%s</format>'%format
+	f+= '<count>%s</count>'%count
+	f+= '<save>%s</save>'%save
+	if options!=None:
+		f+= '<options>'
+		for option in options.keys():
+			f+="<option name='%s'>%s</option>"%(option,options[option])
+			
+		f+="</options>"
+	f+= '</job>'
+	
+	#print f
+	#exit()
+		
+	return f
+	
+def createTrackMessage(owner,name,searchWord,fetchAll,network=''):
+	try:
+		searchWord = searchWord.encode("utf-8")
+	except:
+		searchWord=searchWord.decode('utf-8')	
+	sec=signMessage(owner)
+	f='<job  owner="' + owner + '" type="TRACK" token="'+sec+'" network="' + network +'">\n'
+	f+="<searchWord>%s</searchWord>"%searchWord
+	f+="<name>%s</name>"%name
+	f+="<fetchAll>%s</fetchAll>"%fetchAll
+	f+="</job>"
+	return f
+
+
+def createReteriveMessage(owner,query,sinceId=0,maxId=0,count=None,startDateTime=None,endDateTime=None,oldTweets="N",network="",options=None,page=-1,rpp=100,table="recent"):
+	sec=signMessage(owner)
+	f='<job  owner="' + owner + '" type="RETRIVE" token="'+sec+'" network="' + network +'">\n'
+	f+= '<query>%s</query>'%query
+	f+= '<sinceId>%s</sinceId>'%sinceId
+	f+= '<maxId>%s</maxId>'%maxId
+	f+= '<startDateTime>%s</startDateTime>'%startDateTime
+	f+= '<endDateTime>%s</endDateTime>'%endDateTime
+	#f+= '<format>%s</format>'%format
+	f+= '<count>%s</count>'%count
+	f+= '<oldTweets>%s</oldTweets>'%oldTweets
+	f+='<table>%s</table>'%table
+	if page!=-1:
+		f+="<page>%s</page>"%page
+		f+="<rpp>%s</rpp>"%rpp
+	if options!=None:
+		f+= '<options>'
+		for option in options.keys():
+			f+="<option name='%s'>%s</option>"%(option,options[option])
+			
+		f+="</options>"
+	f+= '</job>'
+	return f
+def createCountMessage(owner,query,sinceId=0,maxId=0,count=None,startDateTime=None,endDateTime=None,oldTweets="N",network="",options=None):
+	sec=signMessage(owner)
+	f='<job  owner="' + owner + '" type="COUNT" token="'+sec+'" network="' + network +'">\n'
+	f+= '<query>%s</query>'%query
+	f+= '<sinceId>%s</sinceId>'%sinceId
+	f+= '<maxId>%s</maxId>'%maxId
+	f+= '<startDateTime>%s</startDateTime>'%startDateTime
+	f+= '<endDateTime>%s</endDateTime>'%endDateTime
+	#f+= '<format>%s</format>'%format
+	f+= '<count>%s</count>'%count
+	f+= '<oldTweets>%s</oldTweets>'%oldTweets
+	if options!=None:
+		f+= '<options>'
+		for option in options.keys():
+			f+="<option name='%s'>%s</option>"%(option,options[option])	
+		f+="</options>"
+	f+= '</job>'
+	return f
+def createGetbyId(owner,id,idType,network="",options=None):
+	sec=signMessage(owner)
+	f='<job  owner="' + owner + '" type="GETBYID" token="'+sec+'" network="' + network +'">\n'
+	f+="<id>%s</id>"%id
+	f+="<idType>%s</idType>"%idType
+	if options!=None:
+		f+= '<options>'
+		for option in options.keys():
+			f+="<option name='%s'>%s</option>"%(option,options[option])	
+		f+="</options>"
+	f+= '</job>'
+	return f
+def createGetbyName(owner,name,nameType,network="",options=None):
+	sec=signMessage(owner)
+	f='<job  owner="' + owner + '" type="GETBYNAME" token="'+sec+'" network="' + network +'">\n'
+	f+="<name>%s</name>"%name
+	f+="<nameType>%s</nameType>"%nameType
+	if options!=None:
+		f+= '<options>'
+		for option in options.keys():
+			f+="<option name='%s'>%s</option>"%(option,options[option])	
+		f+="</options>"
+	f+= '</job>'
+	return f
+
+def checkJobStatus(Connect,id,owner,waitTillCompleted=True):
+	sec=base64.encodestring(importKey().encrypt(id+owner,"")[0])
+	st =  '<job id="'+id+'" owner="'+owner+'" type="STATUS" sec="' + sec +'"/>'
+	while 1:
+		res = Connect.Send(st)
+		#print res
+		status=res[res.find('status="')+8:][0]
+		if waitTillCompleted:
+			print 'status of ' + id  + ' = ' + status
+		else:
+			return status
+		if (status!='R' and status!='Q'): break
+		time.sleep(15)
+	return status
+
+def run(excuter):
+	
+	PIPE=subprocess.PIPE
+	p=subprocess.Popen(excuter,stdout=PIPE,stderr=PIPE,shell=True)
+	p.wait()
+	st=p.stderr.read()
+	return p.stdout.read()

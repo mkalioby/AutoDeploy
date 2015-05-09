@@ -1,0 +1,74 @@
+import Config,ClientJob as Job,Connect
+import simplejson,xml.dom.minidom
+class Client:
+	network=""
+	options={}
+	msg=""
+	def __init__(self,network):
+		self.network=network
+	def Search(self,query,sinceId=None,maxId=None,count=None,startDateTime=None,endDateTime=None,format="json",save="Y",owner=''):
+		global msg
+		if owner=='':
+			owner=Config.Owner
+		msg=Job.createSearchMessage(owner,query,sinceId,maxId,count,startDateTime,endDateTime,save,network=self.network,options=self.options)
+		result= Connect.Send(msg)
+		res=self.parseResult(result)
+		if format=="object":
+			return self.jsonToObjects(res)
+		return res
+	def Track(self,name,searchWord,fetchAll,owner=''):
+		if owner=='':
+			owner=Config.Owner
+		global msg
+		msg=Job.createTrackMessage(owner,name,searchWord,fetchAll,network=self.network)
+		return self.parseResult(Connect.Send(msg))
+	def Reterive(self,query,sinceId=None,maxId=None,count=None,startDateTime=None,endDateTime=None,format="json",oldTweets="N",owner='',page=-1,rpp=100,table='recent'):
+		global msg
+		if owner=='':
+			owner=Config.Owner
+		msg=Job.createReteriveMessage(owner,query,sinceId,maxId,count,startDateTime,endDateTime,oldTweets,network=self.network,options=self.options,page=page,rpp=rpp,table=table)	
+		result= Connect.Send(msg)
+		res=self.parseResult(result)
+		if format=="object":
+			return self.jsonToObjects(res)
+		return res
+	def GetById(self,id,idType,owner='',format="json"):
+		global msg
+		if owner=='':
+			owner=Config.Owner
+		msg=Job.createGetbyId(owner,id,idType,network=self.network,options=self.options)	
+		result= Connect.Send(msg)
+		res=self.parseResult(result)
+		if format=="object":
+			return self.jsonToObjects(res)
+		return res
+	def GetByName(self,name,nameType,owner='',format="json"):
+		global msg
+		if owner=='':
+			owner=Config.Owner
+		msg=Job.createGetbyName(owner,name,nameType,network=self.network,options=self.options)	
+		result= Connect.Send(msg)
+		res=self.parseResult(result)
+		if format=="object":
+			return self.jsonToObjects(res)
+		return res
+	def parseResult(self,res):
+		global msg
+		doc = xml.dom.minidom.parseString(res)
+		res=doc.getElementsByTagName('result')[0]
+		resType=res.getAttribute('type')
+		result=res.firstChild.nodeValue
+		if not result:
+			return result
+		if resType=="ERROR":
+			if result == "Connection Closed by Server":
+				import time
+				print "Server closed Connection, trying again in 15 seconds."
+				time.sleep(15)
+				result= Connect.Send(msg)
+				res=self.parseResult(result)
+			else:
+				raise Exception(result)
+		elif resType=="JSON":
+			return simplejson.loads(result)
+	

@@ -21,4 +21,9 @@ urlpatterns = [
     url(r'^$','autodeploy.views.projects'),
     url(r'add_project','autodeploy.views.add_project'),
     url(r'add_server','autodeploy.views.add_server'),
+    url(r'add_sshkey','autodeploy.views.add_ssh_key'),
+    url(r'clone/','autodeploy.views.clone'),
+    url(r'deploy/','autodeploy.views.deploy'),
+    url(r'deploy2/','autodeploy.views.deploy2'),
+    url(r'deploy3/','autodeploy.views.deploy3'),
 ]

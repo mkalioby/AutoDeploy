@@ -1,6 +1,15 @@
 {% extends "base.html" %}
 {% block content %}
-    <form action="." method="post">
+    {% if done %}
+        <div align="center">
+            <div class="alert alert-success" style="width: 250px">Project Saved</div>
+        </div>
+    {% endif %}
+    {%  if error %}
+    <div class="alert alert-danger">{{ form.errors }}</div>
+    {% endif %}
+    <form action="./add_project" method="post">
+    {% csrf_token %}
     <div align="center">
     <table>
         {{  form.as_table }}

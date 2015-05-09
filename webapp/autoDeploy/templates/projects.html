@@ -1,4 +1,7 @@
 {% extends "base.html" %}
+{% load render_table from django_tables2 %}
 {% block content %}
-    <div align="center"><h1>Projects</h1></div>
+    <div align="center"><h1>Projects</h1>
+    {% render_table table "table.html" %}
+    </div>
 {% endblock %}

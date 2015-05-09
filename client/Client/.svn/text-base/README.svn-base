@@ -1,0 +1,6 @@
+[Server]
+ServerHost: HOSTNAME/IP OF CRAWL SERVER
+ServerPort: CRAWL SERVER PORT
+
+[Client]
+Owner: NAME TO SEND FOR CRAWL SERVER

@@ -1,4 +1,19 @@
 from django.db import models
+from datetime import  datetime
+class sshKey(models.Model):
+    name=models.CharField(max_length=50,primary_key=True)
+    key=models.TextField()
+
+    def __unicode__(self):
+        return self.name
+
+
+class working_directory(models.Model):
+    name=models.CharField(max_length=50,primary_key=True)
+    path=models.CharField(max_length=1000)
+
+def __unicode__(self):
+        return self.name
 
 
 class Project(models.Model):
@@ -7,13 +22,22 @@ class Project(models.Model):
     repo = models.CharField(max_length=255, blank=True)
     lastCommit = models.CharField(max_length=32,blank=True)
     lastTag=models.CharField(max_length=255,blank=True)
-    lastCommitDate = models.DateTimeField(blank=True)
+    lastCommitDate = models.DateTimeField(blank=True,default="1970-01-01")
     working_dir=models.FileField(blank=True)
     configFile=models.FileField(blank=True)
-    lastUpdate=models.DateTimeField(blank=True)
+    lastUpdate=models.DateTimeField(blank=True,default=datetime.now())
+    sshKey=models.ForeignKey(sshKey,to_field="name",verbose_name="SSH Key")
+
+    def __unicode__(self):
+        return self.name
+
 
 class Server(models.Model):
     name=models.CharField(max_length=50,primary_key=True)
     dns=models.CharField(max_length=50)
     port=models.IntegerField(default=4567)
+    def __unicode__(self):
+        return self.name
+
+
 
