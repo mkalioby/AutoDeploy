@@ -7,7 +7,7 @@ class addProjectsForm(forms.ModelForm):
     repo_type=forms.ChoiceField(choices=repo_type,label="Repo Type")
     class Meta:
         model= models.Project
-        fields=("name","repo","working_dir","repo_type","sshKey")
+        fields=("name","repo","repo_link","working_dir","repo_type","sshKey","deployment_link")
 class addServerForm(forms.ModelForm):
     class Meta:
         model=models.Server
