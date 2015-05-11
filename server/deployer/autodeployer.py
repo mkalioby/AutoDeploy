@@ -15,11 +15,11 @@ def printNotication(message):
     print message
     print "="*len(message)
 
-def runEvents(config,event,raiseErrorOnStdErr=True):
+def runEvents(config,workdir,event,raiseErrorOnStdErr=True):
     if event in config["events"].keys():
         for script in config["events"][event]:
             wait=True
-            cmd=script["location"]
+            cmd=workdir+script["location"]
             if "interpreter" in script.keys():
                 cmd="%s %s"%(script["interpreter"],cmd)
             if "run-as" in script.keys():
@@ -55,8 +55,9 @@ def handlePermissions(permissions,raiseErrorOnStdErr):
             Common.run(cmd,raiseErrorOnStdErr)
 
 def deploy(config,workdir=".",raiseErrorOnStdErr=True):
+    if workdir[-1] != '/': workdir += "/"
     printNotication("Running Before Install scripts:")
-    runEvents(config,"beforeInstall")
+    runEvents(config,workdir,"beforeInstall",raiseErrorOnStdErr)
 
     printNotication("Starting Deployment")
     if not slient: print "     Copying Files"
@@ -70,7 +71,7 @@ def deploy(config,workdir=".",raiseErrorOnStdErr=True):
     printNotication("Deployment Done.......")
 
     printNotication("Starting After Install Scripts")
-    runEvents(config,"afterInstall",raiseErrorOnStdErr)
+    runEvents(config,workdir,"afterInstall",raiseErrorOnStdErr)
     return "Done"
 if __name__=="__main__":
     config=None
