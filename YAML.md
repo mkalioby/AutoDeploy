@@ -89,12 +89,12 @@ It should be in the following format:
 
 ```yaml
 beforeInstall:
-  - location: /home/mohamed/autoDeploy/autoDeploy/exampleConfig/EventsHandler/delDir.sh
+  - location: EventsHandler/delDir.sh
     run-as: www-data
     interpreter: bash
 ```
 
-+ **location**: the full path of the script to run.
++ **location**: the relative path of the script to run.
 +  **run-as**: the username of the user who will run this command (optional).
 +  **interpreter**: the name of the interpreter that should be used to run the script (optional but highly recommended)
   
