@@ -22,7 +22,7 @@ def add_project(request):
         return render_to_response("add_project.html",{"form":addProjectsForm()},context_instance=RequestContext(request))
     else:
         form=addProjectsForm(request.POST)
-        if form.is_valid:
+        if form.is_valid():
             form.save()
             return render_to_response("add_project.html",{form:form,"done":True},context_instance=RequestContext(request))
         else:
@@ -33,7 +33,7 @@ def add_server(request):
         return render_to_response("add_server.html",{"form":addServerForm},context_instance=RequestContext(request))
     else:
         form=addServerForm(request.POST)
-        if form.is_valid:
+        if form.is_valid():
             form.save()
             return render_to_response("add_server.html",{"form":form,"done":True},context_instance=RequestContext(request))
         else:
@@ -45,7 +45,7 @@ def add_ssh_key(request):
         return render_to_response("add_sshkey.html",{"form":addSSHKeyForm()},context_instance=RequestContext(request))
     else:
         form=addSSHKeyForm(request.POST)
-        if form.is_valid:
+        if form.is_valid():
             form.save()
             return render_to_response("add_sshkey.html",{"form":form,"done":True},context_instance=RequestContext(request))
         else:

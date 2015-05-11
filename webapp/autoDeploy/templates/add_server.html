@@ -1,13 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
+    <br/>
     {% if done %}
         <div align="center">
             <div class="alert alert-success" style="width: 250px">Server Saved</div>
         </div>
     {% endif %}
+
     {%  if error %}
+
+
     <div class="alert alert-danger">{{ form.errors }}</div>
     {% endif %}
+    <div align="center"> <h1>Add Servers</h1></div>
     <form action="./add_server" method="post">
     {% csrf_token %}
     <div align="center">
