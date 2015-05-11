@@ -36,8 +36,9 @@ class Project(models.Model):
 
 class Server(models.Model):
     name=models.CharField(max_length=50,primary_key=True)
-    dns=models.CharField(max_length=50)
+    ip=models.CharField(max_length=50)
     port=models.IntegerField(default=4567)
+    DNS=models.CharField(max_length=50,blank=True)
     def __unicode__(self):
         return self.name
 

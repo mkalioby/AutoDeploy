@@ -11,7 +11,7 @@ class addProjectsForm(forms.ModelForm):
 class addServerForm(forms.ModelForm):
     class Meta:
         model=models.Server
-        fields=('name','dns','port')
+        fields=('name','ip','port','DNS')
 class addSSHKeyForm(forms.ModelForm):
     class Meta:
         model=models.sshKey
