@@ -110,3 +110,6 @@ BASE_URL="/"
 
 STATIC_URL = BASE_URL+ 'static/'
 PROJECTS_DIR='/opt/autodeploy/projects/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'

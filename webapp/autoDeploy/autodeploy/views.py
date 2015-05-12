@@ -21,12 +21,12 @@ def add_project(request):
     if request.method=="GET":
         return render_to_response("add_project.html",{"form":addProjectsForm()},context_instance=RequestContext(request))
     else:
-        form=addProjectsForm(request.POST)
+        form=addProjectsForm(request.POST,request.FILES)
         if form.is_valid():
-            form.save()
-            return render_to_response("add_project.html",{form:form,"done":True},context_instance=RequestContext(request))
+            form.save(request.FILES,form.cleaned_data["name"])
+            return render_to_response("add_project.html",{"form":form,"done":True},context_instance=RequestContext(request))
         else:
-            return render_to_response("add_project.html",{form:form,"error":True},context_instance=RequestContext(request))
+            return render_to_response("add_project.html",{"form":form,"error":True},context_instance=RequestContext(request))
 @csrf_protect
 def add_server(request):
     if request.method=="GET":

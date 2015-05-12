@@ -28,7 +28,7 @@ class Project(models.Model):
     lastUpdate=models.DateTimeField(blank=True,default=datetime.now())
     sshKey=models.ForeignKey(sshKey,to_field="name",verbose_name="SSH Key")
     repo_link=models.URLField(blank=True)
-    deployment_link=models.URLField(blank=True)
+    deployment_link=models.CharField(max_length=200,blank=True)
 
     def __unicode__(self):
         return self.name

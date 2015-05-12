@@ -1,20 +1,59 @@
 __author__ = 'mohamed'
 from django import forms
 import models
+import os
+import autoDeploy.settings as settings
 repo_type=[('git','git')]
+def saveFile(file,project_name):
+    if file=='':
+        print "No File to save."
+        return ''
+    if not os.path.exists(settings.MEDIA_ROOT+"/"+project_name):
+        os.makedirs(settings.MEDIA_ROOT+"/"+project_name)
+    fpath=settings.MEDIA_ROOT+"/"+project_name+"/"+file.name
+    with open(fpath, 'wb+') as destination:
+        for chunk in file.chunks():
+            destination.write(chunk)
+    return fpath
+
 class addProjectsForm(forms.ModelForm):
-    working_dir=forms.CharField(label="Working Directory")
+    working_dir=forms.CharField(label="Working Directory",widget=forms.TextInput(attrs={'class':'form-control','size':30}))
     repo_type=forms.ChoiceField(choices=repo_type,label="Repo Type")
+    cfile=forms.FileField(label="Config File")
+    name = forms.CharField(label='Project Name',widget=forms.TextInput(attrs={'class':'form-control','size':30}))
+    repo_link= forms.CharField(label='Repo Link',widget=forms.TextInput(attrs={'class':'form-control','size':30}))
+    repo= forms.CharField(label='Repo',widget=forms.TextInput(attrs={'class':'form-control','size':30}))
+    deployment_link= forms.CharField(label='Deployment Link',widget=forms.TextInput(attrs={'class':'form-control','size':30}))
+
+    def save(self,files,name):
+        P= models.Project()
+        P.name=self.cleaned_data["name"]
+        P.deployment_link=self.cleaned_data["deployment_link"]
+        P.repo=self.cleaned_data["repo"]
+        P.repo_link=self.cleaned_data["repo_link"]
+        P.repo_type=self.cleaned_data["repo_type"]
+        P.working_dir=self.cleaned_data["working_dir"]
+        P.sshKey=self.cleaned_data["sshKey"]
+        print "Files is ",files
+        P.configFile = saveFile(files.get('cfile',''),name)
+        P.save()
     class Meta:
         model= models.Project
-        fields=("name","repo","repo_link","working_dir","repo_type","sshKey","deployment_link")
+        fields=("name","repo","repo_link","working_dir","repo_type","sshKey","deployment_link","cfile")
+
 class addServerForm(forms.ModelForm):
+    ip=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control','size':30}),label="Hostname/IP")
     class Meta:
         model=models.Server
+        widgets={"name":forms.TextInput(attrs={'class':'form-control','size':30}),
+                 "DNS":forms.TextInput(attrs={'class':'form-control','size':5})
+                 }
         fields=('name','ip','port','DNS')
 class addSSHKeyForm(forms.ModelForm):
     class Meta:
         model=models.sshKey
+        widgets={'name':forms.TextInput(attrs={'class':'form-control','size':30}),
+                 'key':forms.Textarea(attrs={'class':'form-control'})}
         fields=('name','key')
 
 class CloneForm(forms.Form):
