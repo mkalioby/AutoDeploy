@@ -8,6 +8,8 @@
     {%  if error %}
     <div class="alert alert-danger">{{ form.errors }}</div>
     {% endif %}
+    <br/>
+    <div align="center"> <h1>Add SSH Key</h1></div>
     <form action="./add_sshkey" method="post">
     {% csrf_token %}
     <div align="center">
