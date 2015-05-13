@@ -16,7 +16,7 @@ def saveFile(file,project_name):
             destination.write(chunk)
     return fpath
 
-class addProjectsForm(forms.ModelForm):
+class ProjectsForm(forms.ModelForm):
     working_dir=forms.CharField(label="Working Directory",widget=forms.TextInput(attrs={'class':'form-control','size':30}))
     repo_type=forms.ChoiceField(choices=repo_type,label="Repo Type")
     cfile=forms.FileField(label="Config File")
@@ -25,6 +25,11 @@ class addProjectsForm(forms.ModelForm):
     repo= forms.CharField(label='Repo',widget=forms.TextInput(attrs={'class':'form-control','size':30}))
     deployment_link= forms.CharField(label='Deployment Link',widget=forms.TextInput(attrs={'class':'form-control','size':30}))
 
+    def __init__(self, *args, **kwargs):
+        super(ProjectsForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            self.fields['name'].widget.attrs['readonly'] = True
     def save(self,files,name):
         P= models.Project()
         P.name=self.cleaned_data["name"]
@@ -41,17 +46,27 @@ class addProjectsForm(forms.ModelForm):
         model= models.Project
         fields=("name","repo","repo_link","working_dir","repo_type","sshKey","deployment_link","cfile")
 
-class addServerForm(forms.ModelForm):
+class ServerForm(forms.ModelForm):
     ip=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control','size':30}),label="Hostname/IP")
+    def __init__(self, *args, **kwargs):
+        super(ServerForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            self.fields['name'].widget.attrs['readonly'] = True
     class Meta:
         model=models.Server
         widgets={"name":forms.TextInput(attrs={'class':'form-control','size':30}),
                  "DNS":forms.TextInput(attrs={'class':'form-control','size':5})
                  }
         fields=('name','ip','port','DNS')
-class addSSHKeyForm(forms.ModelForm):
+class SSHKeyForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(SSHKeyForm, self).__init__(*args, **kwargs)
+        instance = getattr(self, 'instance', None)
+        if instance and instance.pk:
+            self.fields['name'].widget.attrs['readonly'] = True
     class Meta:
-        model=models.sshKey
+        model=models.SSHKey
         widgets={'name':forms.TextInput(attrs={'class':'form-control','size':30}),
                  'key':forms.Textarea(attrs={'class':'form-control'})}
         fields=('name','key')

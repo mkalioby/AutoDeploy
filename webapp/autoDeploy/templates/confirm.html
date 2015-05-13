@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+    <div align="center">
+    <h3 style="color:red">This action can NOT be undone</h3>
+    <form action="{{ form }}" method="post">
+        {% csrf_token %}
+        <input name="name" type="hidden" value="{{ name }}"/>
+        <input name="type" type="hidden" value="{{ type }}"/>
+        Are you sure that you want delete {{ type }} <b>{{ name }}</b><br/>
+        <button class="btn btn-danger" type="submit">Delete</button>
+        <a href="{{ back_url }}"><button class="btn btn-default">No</button></a>
+
+    </form>
+    </div>
+{% endblock %}
