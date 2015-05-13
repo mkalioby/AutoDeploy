@@ -66,7 +66,7 @@
                             <a href="#"> <i class="fa fa-key fa-fw"></i> SSH Keys <span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level collapse">
                                 <li><a href="./add_sshkey">Add SSH Key</a> </li>
-                                <li><a href="./modify_sshkey">Modify SSH Keys</a> </li>
+                                <li><a href="./manage_sshkey">Modify SSH Keys</a> </li>
                             </ul>
                         </li>
                    </ul>
@@ -78,6 +78,8 @@
 
         <div id="page-wrapper" style="min-height: 342px;">
             {% block content %}
+                <br/>
+                <div align="center" class="{{ class }}"> {{ text }}</div>
 {% endblock %}
 
                         </div>

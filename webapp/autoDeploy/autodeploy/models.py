@@ -1,6 +1,6 @@
 from django.db import models
 from datetime import  datetime
-class sshKey(models.Model):
+class SSHKey(models.Model):
     name=models.CharField(max_length=50,primary_key=True)
     key=models.TextField()
 
@@ -26,7 +26,7 @@ class Project(models.Model):
     working_dir=models.FileField(blank=True)
     configFile=models.FileField(blank=True)
     lastUpdate=models.DateTimeField(blank=True,default=datetime.now())
-    sshKey=models.ForeignKey(sshKey,to_field="name",verbose_name="SSH Key")
+    sshKey=models.ForeignKey(SSHKey,to_field="name",verbose_name="SSH Key")
     repo_link=models.URLField(blank=True)
     deployment_link=models.CharField(max_length=200,blank=True)
 
