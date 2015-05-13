@@ -24,3 +24,6 @@ input, button, select, textarea {
   line-height: inherit;
   margin: 5px;
 }
+.Operations {
+    text-align: center
+}
