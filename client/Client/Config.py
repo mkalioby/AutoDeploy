@@ -8,5 +8,5 @@ config = ConfigParser.RawConfigParser()
 config.read(os.path.join(mainPath ,'config' ,'config.cfg'))
 
 ServerHost=config.get('Server', 'ServerHost')
-ServerPort=config.get('Server','ServerPort')
+ServerPort=int(config.get('Server','ServerPort'))
 Owner=config.get('Client','ID')

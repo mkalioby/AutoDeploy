@@ -59,8 +59,9 @@ def clone(request):
     else:
         project=Project.objects.get(name=request.POST["project"])
         form=CloneForm(request.POST)
-        if form.is_valid:
-            c=Client("git")
+        if form.is_valid():
+            server=Server.objects.get(name=form.server)
+            c=Client("git",server.ip,server.port)
             res=c.Clone(project.repo,project.working_dir,project.sshKey.key)
             print res
             return render_to_response("clone.html",{"form":form,"result":res},context_instance=RequestContext(request))
@@ -75,14 +76,17 @@ def deploy(request):
         return redirect("../deploy2/")
 def deploy2(request):
     if request.method=="GET":
-        c=Client("git")
+        server=Server.objects.get(request.session["deploy_sever"])
+        c=Client("git",server.ip,server.port)
         project=Project.objects.get(name=request.session["deploy_project"])
         res=c.ListTags(project.working_dir)
         return render_to_response("deploy2.html",{"tags":res.split("\n")},context_instance=RequestContext(request))
 def deploy3(request):
     if request.method=="GET":
-        c=Client("git")
+        server=Server.objects.get(request.session["deploy_sever"])
+        c=Client("git",server.ip,server.port)
         project=Project.objects.get(name=request.session["deploy_project"])
+
         res=c.SwitchTag(project.working_dir,request.GET["tag"])
         res=c.Deploy(project.working_dir,project.configFile)
         return render_to_response("deploy2.html",{"result":res},context_instance=RequestContext(request))
@@ -115,3 +119,17 @@ def confirm_delete(request):
             key=SSHKey.objects.get(name=n)
             key.delete()
             return manage_ssh_keys(request)
+
+def checkServersStatus(request):
+    res=[]
+    for server in Server.objects.all():
+        c=Client("git", server.ip, server.port)
+        state=c.CheckUp()
+        d={"name":server.name}
+        if state:
+            d["state"]="UP"
+        else:
+            d["state"]="DOWN"
+        res.append(d)
+    #print res
+    return render_to_response("servers_status.html",{"servers":res},context_instance=RequestContext(request))
