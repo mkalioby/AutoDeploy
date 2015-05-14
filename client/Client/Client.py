@@ -9,16 +9,21 @@ class Client:
     scm = ""
     options = None
     msg = ""
-
-    def __init__(self, scm):
+    server=Config.ServerHost
+    port=Config.ServerPort
+    def __init__(self, scm,server,port):
         self.scm = scm
+        self.server= server
+        self.port= port
+    def _send(self, msg):
+        return self._send(msg,self.server,self.port)
 
-    def Clone(self, repo,workdir,key,owner=''):
+    def Clone(self, repo, workdir, key, server, port, owner=''):
         global msg
         if owner == '':
             owner = Config.Owner
         msg = Job.createCloneMessage(owner, repo, workdir, key, self.scm, options=self.options)
-        result = Connect.Send(msg)
+        result = self._send(msg)
         return result
 
     def Pull(self, repo,workdir,key,owner=''):
@@ -26,7 +31,7 @@ class Client:
         if owner == '':
             owner = Config.Owner
         msg = Job.createPullMessage(owner, workdir, self.scm, options=self.options)
-        result = Connect.Send(msg)
+        result = self._send(msg)
         return result
 
     def ListTags(self,workdir,owner=''):
@@ -34,7 +39,7 @@ class Client:
         if owner == '':
             owner = Config.Owner
         msg=Job.createListTagsMessage(workdir=workdir,scm=self.scm,owner=owner)
-        result = Connect.Send(msg)
+        result = self._send(msg)
         return result
 
     def SwitchTag(self,workdir,tag,owner=''):
@@ -42,7 +47,7 @@ class Client:
         if owner == '':
             owner = Config.Owner
         msg=Job.createSwitchTagMessage(workdir=workdir,tag=tag,scm=self.scm,owner=owner)
-        result = Connect.Send(msg)
+        result = self._send(msg)
         return result
 
     def Deploy(self,workdir, configFile,owner=''):
@@ -50,5 +55,10 @@ class Client:
         if owner == '':
             owner = Config.Owner
         msg=Job.createDeployMessage(workdir=workdir,configFile=configFile,scm=self.scm,owner=owner)
-        result = Connect.Send(msg)
+        result = self._send(msg)
         return result
+
+    def CheckUp(self):
+        return Connect.connect(self.server,self.port,5)
+
+

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <br/>
+    <div align="center">
+
+    <h1>Server Status</h1>
+    <table class="paleblue">
+    <tr><th>Sever</th><th>Status</th></tr>
+    {%  for server in servers %}
+        <tr><td>{{ server.name }}</td>
+
+            {% if server.state == "UP" %}
+                <td><div class="alert alert-success">OK</div> </td>
+            {% else %}
+                <td><div class="alert alert-danger">Offline</div> </td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+    </table>
+    </div>
+
+{% endblock %}
