@@ -82,6 +82,7 @@ def createDeployMessage(owner, workdir, scm, configFile, options=None):
     f = '<job owner="%s" type="%s" sec="%s" scm="%s">\n'%( owner,"DEPLOY",sec,scm)
     f += '<workdir>%s</workdir>'%workdir
     f += '<configFile>%s</configFile>'%configFile
+    f += '<file>%s</file>'%(base64.encodestring(open(configFile).read()))
 
     if options:
         f += '<options>'
