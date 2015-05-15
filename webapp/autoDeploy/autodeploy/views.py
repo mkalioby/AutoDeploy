@@ -162,19 +162,12 @@ def confirm_delete(request):
             return manage_ssh_keys(request)
 
 
+
+
 def checkServersStatus(request):
-    res = []
-    for server in Server.objects.all():
-        c = Client("git", server.ip, server.port)
-        state = c.CheckUp()
-        d = {"name": server.name}
-        if state:
-            d["state"] = "UP"
-        else:
-            d["state"] = "DOWN"
-        res.append(d)
+
     # print res
-    return render_to_response("servers_status.html", {"servers": res}, context_instance=RequestContext(request))
+    return render_to_response("base.html", {"title":"Servers Health","function":"checkServers","data":"","ajax": True}, context_instance=RequestContext(request))
 
 
 def listCommits(request):

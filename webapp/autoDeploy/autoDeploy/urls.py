@@ -33,4 +33,7 @@ urlpatterns = [
     url(r'checkServers/','autodeploy.views.checkServersStatus'),
     url(r'listCommits/','autodeploy.views.listCommits'),
 
+
+    url(r'api/checkServers','autodeploy.api.checkServers')
+
 ]
