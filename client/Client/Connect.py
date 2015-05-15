@@ -7,7 +7,7 @@ EOM = "\n\n###"
 def Send(message,server,port):
     if waitTillAlive(server, port):
         client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        client.connect(server, port)
+        client.connect((server, port))
         client.send(message + EOM)
         chunks = []
         while True:

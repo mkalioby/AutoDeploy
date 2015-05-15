@@ -82,7 +82,38 @@ def createDeployMessage(owner, workdir, scm, configFile, options=None):
     f = '<job owner="%s" type="%s" sec="%s" scm="%s">\n'%( owner,"DEPLOY",sec,scm)
     f += '<workdir>%s</workdir>'%workdir
     f += '<configFile>%s</configFile>'%configFile
-    f += '<file>%s</file>'%(base64.encodestring(open(configFile).read()))
+    print configFile
+    conf=open(str(configFile)).read()
+    f += '<file>%s</file>'%(base64.encodestring(conf))
+
+    if options:
+        f += '<options>'
+        for option in options.keys():
+            f += "<option name='%s'>%s</option>" % (option, options[option])
+
+        f += "</options>"
+    f += '</job>'
+    return f
+
+def createListCommitsMessage(owner, workdir, scm, options=None):
+    sec=base64.encodestring(importKey().encrypt(owner+scm+"LIST-COMMITS","")[0])
+    f = '<job  owner="%s" type="%s" sec="%s" scm="%s">\n'%( owner,"LIST-COMMITS",sec,scm)
+    f += '<workdir>%s</workdir>'%workdir
+    if options:
+        f += '<options>'
+        for option in options.keys():
+            f += "<option name='%s'>%s</option>" % (option, options[option])
+
+        f += "</options>"
+    f += '</job>'
+    return f
+
+
+def createSwitchCommitMessage(owner, workdir, commit,scm, options=None):
+    sec=base64.encodestring(importKey().encrypt(owner+scm+"SWITCH-COMMIT","")[0])
+    f = '<job owner="%s" type="%s" sec="%s" scm="%s">\n'%( owner,"SWITCH-COMMIT",sec,scm)
+    f += '<workdir>%s</workdir>'%workdir
+    f += '<commit>%s</commit>'%commit
 
     if options:
         f += '<options>'
