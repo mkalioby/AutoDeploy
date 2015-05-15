@@ -8,7 +8,7 @@ The project will have the following componemts:
 * **Deployment Client** (which can communicate with the server giving it the scripts to run).
 * **Deployment Interface** (to see the progress and it can be used to deploy certain code versions).
 
-The deployment configuration will be based on YAML Format, the multiple values can be seprated by ','.
+The deployment configuration will be based on YAML Format.
 
 The client should be callable from CI systems (like Jenkins) to deploy the code after a successful build.
 
@@ -26,8 +26,15 @@ Every event should have the following format:
 ```yaml
 events:
    event-name
-       location: script-location (can be seprated by ',')
-       runas: user-name
+       - location: script-location
+         runas: user-name
   ```
 ## Requirments ##
+### For the Server:
 * pyyaml (>3.0)
+* pycrypto
+
+### For the web-application
+* django 1.8.1+
+* django-table-2
+* django-table-report
