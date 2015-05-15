@@ -97,6 +97,11 @@ def parseDeployJob(message):
     configFile=getValue(Job,"configFile")
     requestType = Job.getAttribute('type')
     owner = Job.getAttribute('owner')
+    fileBase64=getValue(Job,"file")
+    if not os.path.exists(os.path.dirname(configFile)):
+        os.makedirs(os.path.dirname(configFile))
+    open(configFile,"w").write(base64.decodestring(fileBase64))
+
     """options = (Job.getElementsByTagName('option'))
     for option in options:
         name = option.getAttribute("name")
