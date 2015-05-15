@@ -67,6 +67,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.core.context_processors.static',
                 'django.contrib.messages.context_processors.messages',
+                'autoDeploy.processor.global_settings'
             ],
         },
     },
