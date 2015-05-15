@@ -31,5 +31,6 @@ urlpatterns = [
     url(r'deploy2/','autodeploy.views.deploy2'),
     url(r'deploy3/','autodeploy.views.deploy3'),
     url(r'checkServers/','autodeploy.views.checkServersStatus'),
+    url(r'listCommits/','autodeploy.views.listCommits'),
 
 ]

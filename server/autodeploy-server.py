@@ -64,7 +64,7 @@ def HandleClient(clientsock):
             if (req["requestType"]=="CLONE"):
                 job = Request.parseCloneJob(msg)
                 if job["scm"]=="git":
-                    gclient=git.GIT(job["repo"],job["workdir"])
+                    gclient=git.GIT(job["workdir"],job["repo"])
                     gclient.setKey(job["key"])
                     cmd=gclient.get_clone_cmd()
             elif (req["requestType"] == "PULL"):
@@ -77,12 +77,21 @@ def HandleClient(clientsock):
                 if job["scm"]=="git":
                     gclient=git.GIT(workdir=job["workdir"])
                     cmd=gclient.get_list_tags_cmd()
+            elif req["requestType"]=="LIST-COMMITS":
+                job = Request.parseGetCommitsJob(msg)
+                if job["scm"]=="git":
+                    gclient=git.GIT(workdir=job["workdir"])
+                    cmd=gclient.get_history_cmd()
             elif req["requestType"]=="SWITCH-TAG":
                 job = Request.parseSwitchTagJob(msg)
                 if job["scm"]=="git":
                     gclient=git.GIT(workdir=job["workdir"])
                     cmd=gclient.get_switch_to_tag_cmd(tag=job["tag"])
-
+            elif req["requestType"]=="SWITCH-COMMIT":
+                job = Request.parseSwitchCommitJob(msg)
+                if job["scm"]=="git":
+                    gclient=git.GIT(workdir=job["workdir"])
+                    cmd=gclient.switch_to_histroy_cmd(commit=job["commit"])
             elif req["requestType"]=="DEPLOY":
                 print msg
                 job = Request.parseDeployJob(msg)

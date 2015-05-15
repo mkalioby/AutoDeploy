@@ -111,3 +111,36 @@ def parseDeployJob(message):
     params = {"workdir": workdir,"owner": owner,  "requestType": requestType,"configFile":configFile,
               "scm":scm,"options": optionsDict}
     return params
+
+def parseGetCommitsJob(message):
+    optionsDict={}
+    doc = xml.dom.minidom.parseString(message)
+    Job = doc.getElementsByTagName('job')[0]
+    scm=Job.getAttribute("scm")
+    workdir= getValue(Job, 'workdir')
+    requestType = Job.getAttribute('type')
+    owner = Job.getAttribute('owner')
+    params = {"workdir": workdir,"owner": owner,  "requestType": requestType,
+              "scm":scm,"options": optionsDict}
+    return params
+
+
+def parseSwitchCommitJob(message):
+    params = {}
+    optionsDict = {}
+    doc = xml.dom.minidom.parseString(message)
+    Job = doc.getElementsByTagName('job')[0]
+    scm=Job.getAttribute("scm")
+    workdir= getValue(Job, 'workdir')
+    commit=getValue(Job,"commit")
+    requestType = Job.getAttribute('type')
+    owner = Job.getAttribute('owner')
+    """options = (Job.getElementsByTagName('option'))
+    for option in options:
+        name = option.getAttribute("name")
+        optionsDict[name] = option.firstChild.nodeValue
+    """
+    print 'Recieved New Job from  ' + owner + '.....'
+    params = {"workdir": workdir,"owner": owner,  "requestType": requestType,"commit":commit,
+              "scm":scm,"options": optionsDict}
+    return params

@@ -2,7 +2,7 @@
 {% block content %}
  <div align="center">
     <h1>Clone Project</h1>
-    <form action="../deploy/" method="post">
+    <form action="../deploy2/" method="post">
         {% csrf_token %}
         <table>
         <input name="project" value="{{ request.GET.project }}" type="hidden"/>
