@@ -20,3 +20,16 @@ function checkServers(servers)
     html+='</table>'
     $("#content").html(html)
     }
+
+
+function clone(data) {
+    html=""
+    console.log(data)
+    if (data == "Done")
+        html = "<div class='alert alert-success'>Cloning is succesful</div>"
+    else
+        html = "<div class='alert alert-danger'>" + data + "</div>"
+
+
+    $("#content").html(html)
+}
