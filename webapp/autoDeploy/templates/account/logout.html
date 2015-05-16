@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <br/>
+    {{ err }}
+    {%  if err %}
+    <div class="alert alert-warning">{{ err }}</div>
+    {% endif %}
+    <div align="center">
+        <h4> Log In to continue</h4>
+    <form method="POST" action=".">
+        {% csrf_token %}
+        <table>
+
+            <tr><td align="center" colspan="2"><div class="alert alert-info">You Logout Successfully</div> </td> </tr>
+        </table>
+    </form>
+    </div>
+{% endblock %}

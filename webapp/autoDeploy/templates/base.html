@@ -48,7 +48,9 @@
             <!-- /.navbar-header -->
 
             <ul class="nav navbar-top-links navbar-right">
-
+                    {% if user.is_authenticated %}
+                        <a href="{{ BASE_URL }}accounts/logout" style="margin-right: 25px;position: relative;top: 10px"><span class="fa fa-sign-out" title="Log out"></span></a>
+                    {% endif %}
             </ul>
             <!-- /.navbar-top-links -->
 

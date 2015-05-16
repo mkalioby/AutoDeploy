@@ -39,7 +39,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'autodeploy',
     'django_tables2',
-    'django_tables2_reports'
+    'django_tables2_reports',
+    'accounts'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -58,7 +59,7 @@ ROOT_URLCONF = 'autoDeploy.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, "templates")],
+        'DIRS': [os.path.join(BASE_DIR, "templates"),os.path.join(BASE_DIR, "accounts/templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -74,7 +75,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'autoDeploy.wsgi.application'
-
 STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),
 )
 
@@ -114,3 +114,5 @@ PROJECTS_DIR='/opt/autodeploy/projects/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+#LOGIN_URL=BASE_URL+"admin"

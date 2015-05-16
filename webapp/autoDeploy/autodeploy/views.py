@@ -2,7 +2,7 @@ from django.shortcuts import render, render_to_response
 from django.template import RequestContext
 from django_tables2_reports.utils import create_report_http_response
 from forms import *
-from models import *
+from models import Project, Server, SSHKey
 from tables import *
 from django.views.decorators.csrf import csrf_protect
 from django_tables2_reports.config import RequestConfigReport
@@ -10,7 +10,10 @@ from django_tables2.config import RequestConfig
 from client.Client import Client
 from django.shortcuts import redirect
 from django.template.context_processors import csrf
+from django.contrib.auth.decorators import login_required
 
+
+@login_required(redirect_field_name="redirect")
 def projects(request):
     name = "Projects"
     xlstable = ProjectReport(Project.objects.all())
@@ -22,6 +25,7 @@ def projects(request):
 
 
 @csrf_protect
+@login_required(redirect_field_name="redirect")
 def add_project(request):
     if request.method == "GET":
         return render_to_response("add_project.html", {"form": ProjectsForm()},
@@ -38,6 +42,7 @@ def add_project(request):
 
 
 @csrf_protect
+@login_required(redirect_field_name="redirect")
 def add_server(request):
     if request.method == "GET":
         return render_to_response("add_server.html", {"form": ServerForm}, context_instance=RequestContext(request))
@@ -53,6 +58,7 @@ def add_server(request):
 
 
 @csrf_protect
+@login_required(redirect_field_name="redirect")
 def add_ssh_key(request):
     if request.method == "GET":
         return render_to_response("add_sshkey.html", {"form": SSHKeyForm()}, context_instance=RequestContext(request))
@@ -68,6 +74,7 @@ def add_ssh_key(request):
 
 
 @csrf_protect
+@login_required(redirect_field_name="redirect")
 def clone(request):
     if request.method == "GET":
         project = Project.objects.get(name=request.GET["project"])
@@ -83,14 +90,14 @@ def clone(request):
             return render_to_response("base.html", {"ajax":True, "data": data, "dataType":"html",
                                                     "title":"Cloning "+ project.name, "function":"clone"}, context_instance=RequestContext(request))
 
-
+@login_required(redirect_field_name="redirect")
 @csrf_protect
 def deploy(request):
     if request.method == "GET":
         request.session["deploy_project"] = request.GET["project"]
         return render_to_response("deploy.html", {"form": CloneForm}, context_instance=RequestContext(request))
 
-
+@login_required(redirect_field_name="redirect")
 def deploy2(request):
     server = None
     if request.method == "POST":
@@ -100,7 +107,7 @@ def deploy2(request):
         server = Server.objects.get(name=request.session["deploy_server"])
     return listTags(request, server)
 
-
+@login_required(redirect_field_name="redirect")
 def listTags(request, server):
     c = Client("git", server.ip, server.port)
     project = Project.objects.get(name=request.session["deploy_project"])
@@ -108,7 +115,7 @@ def listTags(request, server):
 
     return render_to_response("deploy2.html", {"mode":"tags","tags": res }, context_instance=RequestContext(request))
 
-
+@login_required(redirect_field_name="redirect")
 def deploy3(request):
     if request.method == "GET":
         token=csrf(request).get("csrf_token")
@@ -121,14 +128,14 @@ def deploy3(request):
         server=Server.objects.get(name=request.session["deploy_server"])
         return render_to_response("base.html", {"ajax": True,"data":data,"dataType":"html","function":"deploy","title":"Deploying %s on %s"%(project.name,server.name)}, context_instance=RequestContext(request))
 
-
+@login_required(redirect_field_name="redirect")
 def edit_ssh_key(request, sshKey):
     if request.method == "GET":
         key = SSHKey.objects.get(name=sshKey)
         form = SSHKeyForm(instance=key)
         return render_to_response("add_sshkey.html", {"form": form}, context_instance=RequestContext(request))
 
-
+@login_required(redirect_field_name="redirect")
 def manage_ssh_keys(request):
     name = "SSH Keys"
     xlstable = SSHKeysReport(SSHKey.objects.all())
@@ -140,13 +147,14 @@ def manage_ssh_keys(request):
 
 
 @csrf_protect
+@login_required(redirect_field_name="redirect")
 def delete_ssh_keys(request, name):
     if request.method == "GET":
         return render_to_response("confirm.html", {"form": "../confirm_delete", "name": name, "type": "SSH Key",
                                                    "back_url": "./manage_sshkys"},
                                   context_instance=RequestContext(request))
 
-
+@login_required(redirect_field_name="redirect")
 def confirm_delete(request):
     if request.method == "POST":
         n = request.POST["name"]
@@ -161,13 +169,13 @@ def confirm_delete(request):
 
 
 
-
+@login_required(redirect_field_name="redirect")
 def checkServersStatus(request):
 
     # print res
     return render_to_response("base.html", {"title":"Servers Health","function":"checkServers","dataType":"JSON","data":"","ajax": True}, context_instance=RequestContext(request))
 
-
+@login_required(redirect_field_name="redirect")
 def listCommits(request):
     if request.method == "GET":
         res = None
