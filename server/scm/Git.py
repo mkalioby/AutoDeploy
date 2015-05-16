@@ -11,7 +11,6 @@ class GIT(BaseSCM):
         from os.path import expanduser
         home = expanduser("~")
         keyfile=home+"/.ssh/id_rsa"
-        print keyfile
         Common.run("chmod 700 %s"%keyfile)
         f=open(keyfile,"w")
         f.write(key)
