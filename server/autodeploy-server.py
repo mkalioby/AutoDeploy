@@ -13,7 +13,7 @@ import  traceback
 import yaml
 JOBS = {}
 EOM = Common.EOM
-
+debug = False
 
 def startServer():
     port = int(config.port)
@@ -52,8 +52,10 @@ def HandleClient(clientsock):
         chunks.append(str(buf))
         if (EOM in chunks[-1]):
             msg = "".join(chunks)[:-5]
-            print msg
+            if debug: print msg
             if (msg == "TEST: HELLO"):
+                Response.sendData(clientsock,"Hello")
+                clientsock.close()
                 return
             req = Request.parseRequest(msg)
             if (not validReq(req)):
@@ -108,12 +110,16 @@ def HandleClient(clientsock):
                 print cmd
                 res=Common.run(cmd)
             Response.sendData(clientsock,res)
-            print "Ended,",res
+            if debug:
+                print "Ended,",res
+            else:
+                print "Ended"
             clientsock.close()
 
             break
 
-
+import  sys
+if "--debug" in sys.argv:  debug=True
 s = startServer()
 i = 0
 while 1:
