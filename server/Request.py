@@ -50,6 +50,7 @@ def parseListTagsJob(message):
     optionsDict = {}
     doc = xml.dom.minidom.parseString(message)
     Job = doc.getElementsByTagName('job')[0]
+    key= getValue(Job, 'sshkey')
     scm=Job.getAttribute("scm")
     workdir= getValue(Job, 'workdir')
 
@@ -61,7 +62,7 @@ def parseListTagsJob(message):
         optionsDict[name] = option.firstChild.nodeValue
     """
     print 'Recieved New Job from  ' + owner + '.....'
-    params = {"workdir": workdir,"owner": owner,  "requestType": requestType,
+    params = {"workdir": workdir,"owner": owner,  "requestType": requestType,"key":key,
               "scm":scm,"options": optionsDict}
     return params
 
@@ -119,8 +120,9 @@ def parseGetCommitsJob(message):
     scm=Job.getAttribute("scm")
     workdir= getValue(Job, 'workdir')
     requestType = Job.getAttribute('type')
+    key= getValue(Job, 'sshkey')
     owner = Job.getAttribute('owner')
-    params = {"workdir": workdir,"owner": owner,  "requestType": requestType,
+    params = {"workdir": workdir,"owner": owner,  "requestType": requestType,"key":key,
               "scm":scm,"options": optionsDict}
     return params
 

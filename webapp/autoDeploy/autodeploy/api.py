@@ -1,7 +1,7 @@
 __author__ = 'mohamed'
 from models import *
 import simplejson
-from  client.Client import Client
+from  autodeploy_client.Client import Client
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_protect
 
@@ -22,8 +22,8 @@ def clone(request):
     ip = str(request.GET["ip"])
     port = int(request.GET["port"])
     project=Project.objects.get(name=request.GET["project_name"])
-    c = Client(scm,ip,port)
-    res = c.Clone(project.repo, project.working_dir, project.sshKey.key)
+    c = Client(scm,ip,port,project.sshKey.key)
+    res = c.Clone(project.repo, project.working_dir)
     return HttpResponse(res)
 
 @csrf_protect
