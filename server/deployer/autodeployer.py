@@ -19,7 +19,10 @@ def runEvents(config,workdir,event,raiseErrorOnStdErr=True):
     if event in config["events"].keys():
         for script in config["events"][event]:
             wait=True
-            cmd=workdir+script["location"]
+            if not script["location"].startswith("/"):
+                cmd=workdir+script["location"]
+            else:
+                cmd=script["location"]
             if "interpreter" in script.keys():
                 cmd="%s %s"%(script["interpreter"],cmd)
             if "run-as" in script.keys():
@@ -35,8 +38,10 @@ def handleFiles(files,workdir):
         if file["destination"].endswith("/") and not file["source"].endswith("/"):
             if not os.path.exists(file["destination"]):
                 os.makedirs(file["destination"])
-        if file["source"].endswith("/"):
-            Common.run("sudo rsync -rz --delete --exclude='.git' %s %s"%(workdir+file["source"],file["destination"]))
+        #if file["source"].endswith("/"):
+        rsyn_cmd="sudo rsync -rz --delete --exclude='.git' %s %s"%(workdir+file["source"],file["destination"])
+        print "     %s"%rsyn_cmd
+        Common.run(rsyn_cmd)
 
 def handlePermissions(permissions,raiseErrorOnStdErr):
     for permission in permissions:
