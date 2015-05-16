@@ -9,7 +9,7 @@ from django_tables2_reports.config import RequestConfigReport
 from django_tables2.config import RequestConfig
 from client.Client import Client
 from django.shortcuts import redirect
-
+from django.template.context_processors import csrf
 
 def projects(request):
     name = "Projects"
@@ -78,11 +78,10 @@ def clone(request):
         form = CloneForm(request.POST)
         if form.is_valid():
             server = Server.objects.get(name=form.cleaned_data["server"])
-            c = Client("git", server.ip, server.port)
-            res = c.Clone(project.repo, project.working_dir, project.sshKey.key)
-            print res
-            return render_to_response("clone.html", {"form": form, "result": res},
-                                      context_instance=RequestContext(request))
+            token=csrf(request).get("csrf_token")
+            data="{scm: '%s', ip: '%s', port: '%s', project_name: '%s',csrfmiddlewaretoken: '%s' }" % (project.repo_type,server.ip,server.port,project.name,token)
+            return render_to_response("base.html", {"ajax":True, "data": data, "dataType":"html",
+                                                    "title":"Cloning "+ project.name, "function":"clone"}, context_instance=RequestContext(request))
 
 
 @csrf_protect
@@ -167,7 +166,7 @@ def confirm_delete(request):
 def checkServersStatus(request):
 
     # print res
-    return render_to_response("base.html", {"title":"Servers Health","function":"checkServers","data":"","ajax": True}, context_instance=RequestContext(request))
+    return render_to_response("base.html", {"title":"Servers Health","function":"checkServers","dataType":"JSON","data":"","ajax": True}, context_instance=RequestContext(request))
 
 
 def listCommits(request):

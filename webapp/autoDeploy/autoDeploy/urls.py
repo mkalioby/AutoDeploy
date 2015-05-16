@@ -34,6 +34,7 @@ urlpatterns = [
     url(r'listCommits/','autodeploy.views.listCommits'),
 
 
-    url(r'api/checkServers','autodeploy.api.checkServers')
+    url(r'api/checkServers','autodeploy.api.checkServers'),
+    url(r'api/clone','autodeploy.api.clone'),
 
 ]
