@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <br/>
+
+    {%  if err %}
+    <div class="alert alert-warning">{{ err }}</div>
+    {% endif %}
+    <div align="center">
+        <h4> Log In to continue</h4>
+    <form method="POST" action=".">
+        {% csrf_token %}
+        {% if request.GET.redirect %}
+            <input type="hidden" name="redirect" value="{{ request.GET.redirect }}"/>
+        {% endif %}
+        <table>
+            <tr>
+                <td>Username:</td>
+                <td><input type="text" class="form-control" name="username"/> </td>
+            </tr>
+            <tr>
+                <td>Password:</td>
+                <td><input type="password" class="form-control" name="password"/></td>
+
+            </tr>
+
+            <tr><td align="center" colspan="2"><button class="btn btn-primary" type="submit">Log In</button> </td> </tr>
+        </table>
+    </form>
+    </div>
+{% endblock %}
