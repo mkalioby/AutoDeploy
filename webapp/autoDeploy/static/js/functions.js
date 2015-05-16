@@ -22,14 +22,29 @@ function checkServers(servers)
     }
 
 
-function clone(data) {
+function renderResult(data,success) {
     html=""
     console.log(data)
     if (data == "Done")
-        html = "<div class='alert alert-success'>Cloning is succesful</div>"
+        html = "<div class='alert alert-success'>"+success+"</div>"
     else
         html = "<div class='alert alert-danger'>" + data + "</div>"
 
 
     $("#content").html(html)
+}
+
+function clone(data)
+{
+    renderResult(data,"Cloning is successful")
+}
+function deploy(data)
+{
+    if (data.indexOf("Done")>-1)
+    {
+        res = data.split(",,")
+        renderResult(res[0], "Deployment was successful. Visit <a href='" + res[1] + "'>" + res[1] + "</a>")
+    }
+    else
+        renderResult(data,"Done.")
 }

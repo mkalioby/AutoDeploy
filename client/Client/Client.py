@@ -78,8 +78,11 @@ class Client:
          #   if HEAD:
           #      info[0] = "HEAD"
            #     HEAD = False
-            d = {"Hash": info[0], "Short": info[1], "Author": info[2], "Committed": info[3], "Message": info[4]}
-            result.append(d)
+            try:
+                d = {"Hash": info[0], "Short": info[1], "Author": info[2], "Committed": info[3], "Message": info[4]}
+                result.append(d)
+            except:
+                print "Error while parsing line (%s)"%line
         print result
         return result
 

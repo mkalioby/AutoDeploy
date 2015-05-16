@@ -111,16 +111,15 @@ def listTags(request, server):
 
 def deploy3(request):
     if request.method == "GET":
-        server = Server.objects.get(name=request.session["deploy_server"])
-        c = Client("git", server.ip, server.port)
-        project = Project.objects.get(name=request.session["deploy_project"])
+        token=csrf(request).get("csrf_token")
         if "tag" in request.GET:
-            res = c.SwitchTag(project.working_dir, request.GET["tag"])
+            data='{tag:"%s",csrfmiddlewaretoken:"%s"}'%(request.GET["tag"],token)
         elif "commit" in request.GET:
-            if  request.GET["commit"]!="HEAD":
-                res=c.SwitchCommit(project.working_dir,request.GET["commit"])
-        res = c.Deploy(project.working_dir, project.configFile)
-        return render_to_response("deploy2.html", {"result": res}, context_instance=RequestContext(request))
+            data='{"commit":"%s",csrfmiddlewaretoken:"%s"}'%(request.GET["commit"],token)
+
+        project=Project.objects.get(name=request.session["deploy_project"])
+        server=Server.objects.get(name=request.session["deploy_server"])
+        return render_to_response("base.html", {"ajax": True,"data":data,"dataType":"html","function":"deploy","title":"Deploying %s on %s"%(project.name,server.name)}, context_instance=RequestContext(request))
 
 
 def edit_ssh_key(request, sshKey):

@@ -36,5 +36,6 @@ urlpatterns = [
 
     url(r'api/checkServers','autodeploy.api.checkServers'),
     url(r'api/clone','autodeploy.api.clone'),
+    url(r'api/deploy','autodeploy.api.deploy'),
 
 ]

@@ -25,3 +25,19 @@ def clone(request):
     c = Client(scm,ip,port)
     res = c.Clone(project.repo, project.working_dir, project.sshKey.key)
     return HttpResponse(res)
+
+@csrf_protect
+def deploy(request):
+    server = Server.objects.get(name=request.session["deploy_server"])
+    c = Client("git", server.ip, server.port)
+    project = Project.objects.get(name=request.session["deploy_project"])
+    if "tag" in request.GET:
+        res = c.SwitchTag(project.working_dir, request.GET["tag"])
+    elif "commit" in request.GET:
+        if  request.GET["commit"]!="HEAD":
+            res=c.SwitchCommit(project.working_dir,request.GET["commit"])
+    res = c.Deploy(project.working_dir, project.configFile)
+    if not "http://" in project.deployment_link:
+        return HttpResponse(res+",,http://"+server.DNS+project.deployment_link)
+    else:
+        return HttpResponse(res+",,"+project.deployment_link)

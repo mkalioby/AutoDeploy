@@ -1,0 +1,18 @@
+files:
+  - source: /webapp/autoDeploy/*
+    destination: /var/www/autodeploy/
+
+permissions:
+  - object: /var/www/autodeploy/
+    owner: mohamed
+    group: users
+    mode: 755
+    type: directory
+
+events:
+  beforeInstall:
+    - location: "/bin/rm -r /var/www/autodeploy"
+  afterInstall:
+    - location: "/var/www/autodeploy/manage.py runserver 0.0.0.0:9002"
+      interpreter: python
+      wait: False
