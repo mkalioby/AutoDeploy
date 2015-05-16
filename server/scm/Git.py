@@ -11,11 +11,12 @@ class GIT(BaseSCM):
         from os.path import expanduser
         home = expanduser("~")
         keyfile=home+"/.ssh/id_rsa"
+        print keyfile
         Common.run("chmod 700 %s"%keyfile)
         f=open(keyfile,"w")
         f.write(key)
         f.close()
-        Common.run("chmod 400 %s"%keyfile)
+        Common.run("chmod 400 %s;ssh-add %s"%(keyfile,keyfile))
     def get_clone_cmd(self):
         return "git clone %s %s"%(self.repo,self.workdir)
     def get_pull_cmd(self):

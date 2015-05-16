@@ -7,7 +7,7 @@ from tables import *
 from django.views.decorators.csrf import csrf_protect
 from django_tables2_reports.config import RequestConfigReport
 from django_tables2.config import RequestConfig
-from client.Client import Client
+from autodeploy_client import Client
 from django.shortcuts import redirect
 from django.template.context_processors import csrf
 from django.contrib.auth.decorators import login_required
@@ -109,8 +109,9 @@ def deploy2(request):
 
 @login_required(redirect_field_name="redirect")
 def listTags(request, server):
-    c = Client("git", server.ip, server.port)
     project = Project.objects.get(name=request.session["deploy_project"])
+    c = Client("git", server.ip, server.port,key=project.sshKey.key)
+
     res = c.ListTags(project.working_dir)
 
     return render_to_response("deploy2.html", {"mode":"tags","tags": res }, context_instance=RequestContext(request))
@@ -185,8 +186,8 @@ def listCommits(request):
                 return redirect("./listCommits")
         if not "commits" in request.session:
             server = Server.objects.get(name=request.session["deploy_server"])
-            c = Client("git", server.ip, server.port)
             project = Project.objects.get(name=request.session["deploy_project"])
+            c = Client("git", server.ip, server.port,key=project.sshKey.key)
             res = c.ListCommits(project.working_dir)
             request.session["commits"] = res
         else:

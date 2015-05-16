@@ -71,16 +71,19 @@ def HandleClient(clientsock):
                 job = Request.parsePullJob(msg)
                 if job["scm"]=="git":
                     gclient=git.GIT(workdir=job["workdir"])
+                    gclient.setKey(job["key"])
                     cmd=gclient.get_pull_cmd()
             elif req["requestType"]=="LIST-TAGS":
                 job = Request.parseListTagsJob(msg)
                 if job["scm"]=="git":
                     gclient=git.GIT(workdir=job["workdir"])
+                    gclient.setKey(job["key"])
                     cmd=gclient.get_list_tags_cmd()
             elif req["requestType"]=="LIST-COMMITS":
                 job = Request.parseGetCommitsJob(msg)
                 if job["scm"]=="git":
                     gclient=git.GIT(workdir=job["workdir"])
+                    gclient.setKey(job["key"])
                     cmd=gclient.get_history_cmd()
             elif req["requestType"]=="SWITCH-TAG":
                 job = Request.parseSwitchTagJob(msg)
