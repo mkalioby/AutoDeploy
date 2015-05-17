@@ -42,5 +42,13 @@ class Server(models.Model):
     def __unicode__(self):
         return self.name
 
+class Deployment_Server(models.Model):
+    datetime = models.DateTimeField()
+    update_type = models.CharField(max_length=6)
+    update_version = models.CharField(max_length=255)
+    has_new_version = models.IntegerField()
+    project = models.ForeignKey(Project)
+    server = models.ForeignKey(Server)
+
 
 
