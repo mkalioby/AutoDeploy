@@ -127,3 +127,20 @@ def createSwitchCommitMessage(owner, workdir, commit,scm, options=None):
         f += "</options>"
     f += '</job>'
     return f
+
+def creategetCommitsDiffMessage(owner, workdir, commit, scm,options=None):
+    print owner,workdir,commit,scm
+    sec=base64.encodestring(importKey().encrypt(owner+str(scm)+"DIFF-COMMIT","")[0])
+    #sec=base64.encodestring(importKey().encrypt(owner+scm+"DIFF-COMMIT","")[0])
+    f = '<job owner="%s" type="%s" sec="%s" scm="%s">\n'%( owner,"DIFF-COMMIT",sec,scm)
+    f += '<workdir>%s</workdir>'%workdir
+    f += '<commit>%s</commit>'%commit
+
+    if options:
+        f += '<options>'
+        for option in options.keys():
+            f += "<option name='%s'>%s</option>" % (option, options[option])
+
+        f += "</options>"
+    f += '</job>'
+    return f

@@ -27,7 +27,7 @@ class Client:
         global msg
         if owner == '':
             owner = Config.Owner
-        msg = Job.createCloneMessage(owner, repo, workdir, aself.sshkey, self.scm, options=self.options)
+        msg = Job.createCloneMessage(owner, repo, workdir, self.sshkey, self.scm, options=self.options)
         result = self._send(msg)
         return result
 
@@ -94,3 +94,14 @@ class Client:
         msg = Job.createSwitchCommitMessage(owner, workdir, commit, self.scm)
         res = self._send(msg)
         return res
+
+    def getCommitsDiff(self,workdir,commit,owner=''):
+        if owner == '':
+            owner = Config.Owner
+        msg = Job.creategetCommitsDiffMessage(owner, workdir, commit, self.scm)
+        res = self._send(msg)
+        result=[]
+        for item in res.split("\n"):
+            if item=="" or item=="Done" : continue
+            result.append(item)
+        return result

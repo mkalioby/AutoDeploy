@@ -31,7 +31,7 @@ def deploy(request):
     server = Server.objects.get(name=request.session["deploy_server"])
     project = Project.objects.get(name=request.session["deploy_project"])
     D= Deployment_Server()
-    c = Client("git", server.ip, server.port)
+    c = Client(str(project.repo_type), server.ip, server.port)
     D.project = project
     D.server = server
     if "tag" in request.GET:
@@ -44,12 +44,11 @@ def deploy(request):
         D.update_type="commit"
         D.update_version = request.GET["commit"]
     res = c.Deploy(project.working_dir, project.configFile)
-    D.datetime=timezone.now()
-    D.has_new_version=False
-    D.save()
-
-    if not "http://" in project.deployment_link:
-        return HttpResponse(res+",,http://"+server.DNS+project.deployment_link)
-    else:
-        return HttpResponse(res+",,"+project.deployment_link)
-    
+    if not "ERR:" in res:
+        D.datetime=timezone.now()
+        D.has_new_version=False
+        D.save()
+        if "http://" not in project.deployment_link:
+            return HttpResponse(res+",,http://"+server.DNS+project.deployment_link)
+        else:
+            return HttpResponse(res+",,"+project.deployment_link)

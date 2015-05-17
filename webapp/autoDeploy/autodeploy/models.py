@@ -46,9 +46,10 @@ class Deployment_Server(models.Model):
     datetime = models.DateTimeField()
     update_type = models.CharField(max_length=6)
     update_version = models.CharField(max_length=255)
-    has_new_version = models.IntegerField()
+    has_new_version = models.IntegerField(verbose_name="Updates Behind")
     project = models.ForeignKey(Project)
     server = models.ForeignKey(Server)
+
 
 
 

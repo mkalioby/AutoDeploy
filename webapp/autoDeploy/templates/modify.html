@@ -5,6 +5,9 @@
 {% block content %}
     <br/>
     <div align="center"><h1>{{ name }}</h1>
+        {% if text %}
+        {{ text|safe }}<br/>
+        {% endif %}
     {% render_table table "table.html" %}
     </div>
 {% endblock %}

@@ -197,3 +197,31 @@ def listCommits(request):
         if table_to_report:
             return create_report_http_response(table_to_report, request)
         return render_to_response("deploy2.html", {"mode":"commits","commits": table}, context_instance=RequestContext(request))
+
+
+@login_required(redirect_field_name="redirect")
+def getProjectDepHistory(request):
+    project_name=request.GET["project"]
+    details=False
+    text=text="<a href='?project="+project_name+"&details=True'>Show all deployment history</a>"
+    if "details" in request.GET:
+        if request.GET["details"]=="True":
+            details=True
+            text="<a href='?project="+project_name+"'>Show latest updates</a>"
+    deployments=Deployment_Server.objects.filter(project__name=project_name).order_by("-datetime")
+    res=[]
+    servers=[]
+    for deployment in deployments:
+        if not details and deployment.server.name in servers: continue
+        servers.append(deployment.server.name)
+        c = Client(deployment.project.repo_type, deployment.server.ip, deployment.server.port)
+        if deployment.update_type == "commit":
+            commits=c.getCommitsDiff(deployment.project.working_dir,deployment.update_version)
+            print commits
+            deployment.has_new_version = len(commits)
+            res.append(deployment)
+            print deployment.server,deployment.has_new_version
+
+    table=DeploymentHistory(res)
+    RequestConfigReport(request, paginate={"per_page": 15}).configure(table)
+    return render_to_response("modify.html",{"table":table,"name": "Deployments for %s"%project_name,"text":text},context_instance=RequestContext(request))
