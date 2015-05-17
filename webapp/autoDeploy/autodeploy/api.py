@@ -4,7 +4,7 @@ import simplejson
 from  autodeploy_client.Client import Client
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_protect
-
+from django.utils import timezone
 def checkServers(request):
     res = {}
     for server in Server.objects.all():
@@ -29,15 +29,27 @@ def clone(request):
 @csrf_protect
 def deploy(request):
     server = Server.objects.get(name=request.session["deploy_server"])
-    c = Client("git", server.ip, server.port)
     project = Project.objects.get(name=request.session["deploy_project"])
+    D= Deployment_Server()
+    c = Client("git", server.ip, server.port)
+    D.project = project
+    D.server = server
     if "tag" in request.GET:
         res = c.SwitchTag(project.working_dir, request.GET["tag"])
+        D.update_type="tag"
+        D.update_version=request.GET["tag"]
     elif "commit" in request.GET:
-        if  request.GET["commit"]!="HEAD":
+        if request.GET["commit"] != "HEAD":
             res=c.SwitchCommit(project.working_dir,request.GET["commit"])
+        D.update_type="commit"
+        D.update_version = request.GET["commit"]
     res = c.Deploy(project.working_dir, project.configFile)
+    D.datetime=timezone.now()
+    D.has_new_version=False
+    D.save()
+
     if not "http://" in project.deployment_link:
         return HttpResponse(res+",,http://"+server.DNS+project.deployment_link)
     else:
         return HttpResponse(res+",,"+project.deployment_link)
+    
