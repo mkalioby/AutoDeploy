@@ -97,6 +97,11 @@ def HandleClient(clientsock):
                 if job["scm"]=="git":
                     gclient=git.GIT(workdir=job["workdir"])
                     cmd=gclient.switch_to_histroy_cmd(commit=job["commit"])
+            elif req["requestType"]=="DIFF-COMMIT":
+                job = Request.parseSwitchCommitJob(msg)
+                if job["scm"]=="git":
+                    gclient=git.GIT(workdir=job["workdir"])
+                    cmd=gclient.commit_diff_cmd(commit=job["commit"])
             elif req["requestType"]=="DEPLOY":
                 print msg
                 job = Request.parseDeployJob(msg)
@@ -117,6 +122,10 @@ def HandleClient(clientsock):
             clientsock.close()
 
             break
+import os
+if not os.geteuid()==0:
+    print "The user should be a root."
+    exit(-6)
 
 import  sys
 if "--debug" in sys.argv:  debug=True

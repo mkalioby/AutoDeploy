@@ -14,4 +14,5 @@ class BaseSCM():
         pass
     def switch_to_histroy_cmd(self,commit):
         pass
-
+    def commit_diff_cmd(self,commit):
+        pass

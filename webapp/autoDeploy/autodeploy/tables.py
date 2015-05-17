@@ -7,7 +7,7 @@ __author__ = 'mohamed'
 
 class ProjectReport(TableReport):
     name=Table.Column(verbose_name="Project Name")
-    Operations=Table.TemplateColumn("<a href='./clone?project={{record.name}}'><span title='Clone' class='fa fa-download'></span></a>&nbsp;&nbsp;<a href='./deploy?project={{record.name}}'><span title='Deploy' class='fa fa-codepen'></span></a>")
+    Operations=Table.TemplateColumn("<a href='{{BASE_URL}}clone?project={{record.name}}'><span title='Clone' class='fa fa-download'></span></a>&nbsp;&nbsp;<a href='./deploy?project={{record.name}}'><span title='Deploy' class='fa fa-codepen'></span></a>&nbsp;<a href='{{BASE_URL}}getDeploymentHistory?project={{record.name}}'><span class='fa fa-history' title='Deployment History'></span></a>")
     repo_link=Table.TemplateColumn("<a href='{{ record.repo_link }}' target='blank'>{{ record.repo_link }}</a> ")
     deployment_link=Table.TemplateColumn("<a href='{{ record.deployment_link }}' target='blank'>{{ record.deployment_link }}</a> ")
 
@@ -33,3 +33,10 @@ class CommitTable(Table.Table):
         attrs={"class": "paleblue"}
         fields=["Short","Author","Committed","Message"]
         sequence=["Short","Author","Committed","Message"]
+
+class DeploymentHistory(TableReport):
+    class Meta:
+        model=Deployment_Server
+        fields=["datetime","server","update_type","update_version","has_new_version"]
+        sequence=["datetime","server","update_type","update_version","has_new_version"]
+        attrs={"class": "paleblue"}

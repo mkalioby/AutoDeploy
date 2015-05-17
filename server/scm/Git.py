@@ -28,3 +28,6 @@ class GIT(BaseSCM):
         return self.get_pull_cmd()+'; git log --all --pretty=format:"%H,,%h,,%an,,%ar,,%s"  | cat -'
     def switch_to_histroy_cmd(self,commit):
         return 'cd %s; git reset --hard %s'%(self.workdir,commit)
+    def commit_diff_cmd(self,commit):
+        Common.run(self.get_pull_cmd())
+        return 'git rev-list %s..HEAD'%(commit)

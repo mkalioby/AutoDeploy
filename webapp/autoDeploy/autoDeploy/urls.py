@@ -29,6 +29,7 @@ urlpatterns = [
     url(r'confirm_delete','autodeploy.views.confirm_delete'),
     url(r'manage_sshkey','autodeploy.views.manage_ssh_keys', name='mange_sshkeys'),
     url(r'clone/','autodeploy.views.clone'),
+    url(r'getDeploymentHistory/','autodeploy.views.getProjectDepHistory'),
     url(r'deploy/','autodeploy.views.deploy'),
     url(r'deploy2/','autodeploy.views.deploy2'),
     url(r'deploy3/','autodeploy.views.deploy3'),

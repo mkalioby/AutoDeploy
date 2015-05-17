@@ -146,3 +146,7 @@ def parseSwitchCommitJob(message):
     params = {"workdir": workdir,"owner": owner,  "requestType": requestType,"commit":commit,
               "scm":scm,"options": optionsDict}
     return params
+
+
+def parseGetCommitDiff(message):
+    return parseSwitchCommitJob(message)
