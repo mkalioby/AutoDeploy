@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'add_project','autodeploy.views.add_project'),
     url(r'add_server','autodeploy.views.add_server'),
     url(r'add_sshkey','autodeploy.views.add_ssh_key'),
+    url(r'manage_sshkey','autodeploy.views.manage_ssh_keys', name='mange_sshkeys'),
     url(r'edit_sshkey/(\w+)','autodeploy.views.edit_ssh_key'),
     url(r'delete_sshkey/(\w+)','autodeploy.views.delete_ssh_keys'),
     url(r'confirm_delete','autodeploy.views.confirm_delete'),
@@ -35,6 +36,9 @@ urlpatterns = [
     url(r'deploy3/','autodeploy.views.deploy3'),
     url(r'checkServers/','autodeploy.views.checkServersStatus'),
     url(r'listCommits/','autodeploy.views.listCommits'),
+    url(r'manage_servers','autodeploy.views.manage_servers', name='mange_sshkeys'),
+    url(r'edit_server/(\w+)','autodeploy.views.edit_server'),
+    url(r'delete_server/(\w+)','autodeploy.views.delete_server'),
 
 
     url(r'api/checkServers','autodeploy.api.checkServers'),
