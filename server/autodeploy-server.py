@@ -126,7 +126,9 @@ import os
 if not os.geteuid()==0:
     print "The user should be a root."
     exit(-6)
-
+f=open('/var/run/autodeploy-server', "w")
+f.write(str(os.getpid()))
+f.close()
 import  sys
 if "--debug" in sys.argv:  debug=True
 s = startServer()
