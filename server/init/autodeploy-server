@@ -1,0 +1,19 @@
+#! /bin/bash
+
+AUTODEPLOY_PATH="/home/mohamed/autoDeploy/autoDeploy/server/"
+
+if [ $EUID != 0 ]; then
+	echo "Should run root."
+	exit -1
+fi
+if [ $1 == "start" ]; then 
+	cmd=$AUTODEPLOY_PATH"autodeploy-server.py &"
+	$($cmd)
+	echo "Server Started"
+elif [ "$1" == "stop" ]; then
+        cat /var/run/autodeploy-server | xargs kill 
+	echo "Server Stopped"
+elif [ "$1" == "force-stop" ]; then
+        cat /var/run/autodeploy-server | xargs kill -9
+	echo "Server Stopped"
+fi 
