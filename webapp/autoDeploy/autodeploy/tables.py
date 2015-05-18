@@ -13,7 +13,7 @@ class ProjectReport(TableReport):
 
     class Meta:
         model=Project
-        fields=('name','repo_link','deployment_link')
+        fields=('name','repo_link','lastUpdate','deployment_link')
         attrs = {"class": "paleblue"}
 
 

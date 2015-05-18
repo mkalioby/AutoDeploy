@@ -48,7 +48,10 @@ def deploy(request):
         D.datetime=timezone.now()
         D.has_new_version=False
         D.save()
+        project.lastUpdate=timezone.now()
+        project.save()
         if "http://" not in project.deployment_link:
             return HttpResponse(res+",,http://"+server.DNS+project.deployment_link)
         else:
             return HttpResponse(res+",,"+project.deployment_link)
+    else: return  res
