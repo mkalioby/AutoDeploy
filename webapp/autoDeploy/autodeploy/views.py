@@ -48,13 +48,22 @@ def add_server(request):
         return render_to_response("add_server.html", {"form": ServerForm}, context_instance=RequestContext(request))
     else:
         form = ServerForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return render_to_response("add_server.html", {"form": form, "done": True},
-                                      context_instance=RequestContext(request))
+        print request.POST["edit"]
+        if request.POST["edit"] == "True":
+                server=Server.objects.get(name=request.POST["name"])
+                server.DNS=request.POST["DNS"]
+                server.ip=request.POST["ip"]
+                server.port=request.POST["port"]
+                server.save()
         else:
-            return render_to_response("add_server.html", {"form": form, "error": True},
+            if form.is_valid():
+                form.save()
+            else:
+                return render_to_response("add_server.html", {"form": form, "error": True},
                                       context_instance=RequestContext(request))
+        return render_to_response("add_server.html", {"form": form, "done": True},
+                                      context_instance=RequestContext(request))
+
 
 
 @csrf_protect
@@ -137,6 +146,14 @@ def edit_ssh_key(request, sshKey):
         return render_to_response("add_sshkey.html", {"form": form}, context_instance=RequestContext(request))
 
 @login_required(redirect_field_name="redirect")
+def edit_server(request, server):
+    if request.method == "GET":
+        server= Server.objects.get(name=server)
+        form = ServerForm(instance=server)
+        return render_to_response("add_server.html", {"form": form,"edit":True}, context_instance=RequestContext(request))
+
+
+@login_required(redirect_field_name="redirect")
 def manage_ssh_keys(request):
     name = "SSH Keys"
     xlstable = SSHKeysReport(SSHKey.objects.all())
@@ -146,14 +163,32 @@ def manage_ssh_keys(request):
     return render_to_response("modify.html", {"name": name, "table": xlstable},
                               context_instance=RequestContext(request))
 
+@login_required(redirect_field_name="redirect")
+def manage_servers(request):
+    name = "Servers"
+    xlstable = ServersReport(Server.objects.all())
+    table_to_report = RequestConfigReport(request, paginate={"per_page": 15}).configure(xlstable)
+    if table_to_report:
+        return create_report_http_response(table_to_report, request)
+    return render_to_response("modify.html", {"name": name, "table": xlstable},
+                              context_instance=RequestContext(request))
 
 @csrf_protect
 @login_required(redirect_field_name="redirect")
 def delete_ssh_keys(request, name):
     if request.method == "GET":
         return render_to_response("confirm.html", {"form": "../confirm_delete", "name": name, "type": "SSH Key",
-                                                   "back_url": "./manage_sshkys"},
+                                                   "back_url": "./manage_sshkeys"},
                                   context_instance=RequestContext(request))
+
+@csrf_protect
+@login_required(redirect_field_name="redirect")
+def delete_server(request, name):
+    if request.method == "GET":
+        return render_to_response("confirm.html", {"form": "../confirm_delete", "name": name, "type": "Server",
+                                                   "back_url": "./manage_servers"},
+                                  context_instance=RequestContext(request))
+
 
 @login_required(redirect_field_name="redirect")
 def confirm_delete(request):
@@ -167,6 +202,11 @@ def confirm_delete(request):
             key = SSHKey.objects.get(name=n)
             key.delete()
             return manage_ssh_keys(request)
+        elif request.POST["type"]=="Server":
+            server=Server.objects.get(name=n)
+            server.delete()
+            return manage_servers(request)
+
 
 
 

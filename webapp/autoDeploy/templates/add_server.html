@@ -18,6 +18,11 @@
     <div align="center">
     <table>
         {{  form.as_table }}
+        {% if edit %}
+        <input name="edit" value="True" type="hidden">
+        {% else %}
+        <input name="edit" value="False" type="hidden">
+        {% endif %}
     </table>
     <button class="btn btn-primary" type="submit">Add Server</button>
     </div>

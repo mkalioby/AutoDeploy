@@ -24,6 +24,13 @@ class SSHKeysReport(TableReport):
         fields=("name","Operations")
         attrs = {"class": "paleblue"}
 
+class ServersReport(TableReport):
+    Operations=Table.TemplateColumn("<a href='edit_server/{{record.name}}'><span class='fa fa-edit' title='Edit'></span></a>&nbsp;&nbsp;<a href='delete_server/{{record.name}}'><span class='fa fa-trash' title='Delete'></span></a>")
+    class Meta:
+        model=SSHKey
+        fields=("name","Operations")
+        attrs = {"class": "paleblue"}
+
 class CommitTable(Table.Table):
     Short=Table.TemplateColumn("<a href='../deploy3?commit={{record.Hash}}'>{{record.Short}}</a>",verbose_name="Hash")
     Author=Table.Column()
