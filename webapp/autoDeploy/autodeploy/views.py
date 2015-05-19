@@ -40,6 +40,8 @@ def add_project(request):
             project.repo_link=request.POST["repo_link"]
             project.sshKey=SSHKey.objects.get(name=request.POST["sshKey"])
             project.working_dir=request.POST["working_dir"]
+            project.default_server=form.cleaned_data["default_server"]
+            project.update_style=form.cleaned_data["update_style"]
             if request.FILES.get("cfile","")!="":
                 project.configFile=saveFile(request.FILES["cfile"],project.name)
             project.save()
@@ -132,11 +134,15 @@ def deploy2(request):
 @login_required(redirect_field_name="redirect")
 def listTags(request, server):
     project = Project.objects.get(name=request.session["deploy_project"])
-    c = Client("git", server.ip, server.port,key=project.sshKey.key)
+    c = Client(str(project.repo_type), server.ip, server.port,key=project.sshKey.key)
 
     res = c.ListTags(project.working_dir)
-
-    return render_to_response("deploy2.html", {"mode":"tags","tags": res }, context_instance=RequestContext(request))
+    print res
+    table=TagTable(res)
+    table_to_report = RequestConfig(request, paginate={"per_page": 15}).configure(table)
+    if table_to_report:
+            return create_report_http_response(table_to_report, request)
+    return render_to_response("deploy2.html", {"count":len(res),"mode":"tags","tags":table}, context_instance=RequestContext(request))
 
 @login_required(redirect_field_name="redirect")
 def deploy3(request):
