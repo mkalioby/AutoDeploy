@@ -15,11 +15,21 @@ class working_directory(models.Model):
 def __unicode__(self):
         return self.name
 
+class Server(models.Model):
+    name=models.CharField(max_length=50,primary_key=True)
+    ip=models.CharField(max_length=50)
+    port=models.IntegerField(default=4567)
+    DNS=models.CharField(max_length=50,blank=True)
+    def __unicode__(self):
+        return self.name
+
 
 class Project(models.Model):
     name = models.CharField(max_length=50, blank=False,primary_key=True)
     repo_type=models.CharField(max_length=10,blank=True)
     repo = models.CharField(max_length=255, blank=True)
+    default_server=models.ForeignKey(Server,blank=True)
+    update_style=models.CharField(max_length=10,blank=True)
     lastCommit = models.CharField(max_length=32,blank=True)
     lastTag=models.CharField(max_length=255,blank=True)
     lastCommitDate = models.DateTimeField(blank=True,default="1970-01-01")
@@ -34,13 +44,6 @@ class Project(models.Model):
         return self.name
 
 
-class Server(models.Model):
-    name=models.CharField(max_length=50,primary_key=True)
-    ip=models.CharField(max_length=50)
-    port=models.IntegerField(default=4567)
-    DNS=models.CharField(max_length=50,blank=True)
-    def __unicode__(self):
-        return self.name
 
 class Deployment_Server(models.Model):
     datetime = models.DateTimeField()

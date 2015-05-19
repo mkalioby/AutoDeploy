@@ -4,6 +4,7 @@ import models
 import os
 import autoDeploy.settings as settings
 repo_type=[('git','git')]
+update_style=[('commit',"commits"),("tag","tags")]
 def saveFile(file,project_name):
     if file=='':
         print "No File to save."
@@ -19,6 +20,7 @@ def saveFile(file,project_name):
 class ProjectsForm(forms.ModelForm):
     working_dir=forms.CharField(label="Working Directory",widget=forms.TextInput(attrs={'class':'form-control','size':30}))
     repo_type=forms.ChoiceField(choices=repo_type,label="Repo Type")
+    update_style=forms.ChoiceField(choices=update_style,label="Update Style")
     cfile=forms.FileField(label="Config File")
     name = forms.CharField(label='Project Name',widget=forms.TextInput(attrs={'class':'form-control','size':30}))
     repo_link= forms.CharField(label='Repo Link',widget=forms.TextInput(attrs={'class':'form-control','size':30}))
@@ -39,12 +41,14 @@ class ProjectsForm(forms.ModelForm):
         P.repo_type=self.cleaned_data["repo_type"]
         P.working_dir=self.cleaned_data["working_dir"]
         P.sshKey=self.cleaned_data["sshKey"]
+        P.default_server=self.cleaned_data["default_server"]
+        P.update_style=self.cleaned_data["update_style"]
         print "Files is ",files
         P.configFile = saveFile(files.get('cfile',''),name)
         P.save()
     class Meta:
         model= models.Project
-        fields=("name","repo","repo_link","working_dir","repo_type","sshKey","deployment_link","cfile")
+        fields=("name","repo","repo_link","working_dir","update_style","default_server","repo_type","sshKey","deployment_link","cfile")
 
 class ServerForm(forms.ModelForm):
     ip=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control','size':30}),label="Hostname/IP")
