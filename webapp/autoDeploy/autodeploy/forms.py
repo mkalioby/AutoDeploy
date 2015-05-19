@@ -76,6 +76,6 @@ class SSHKeyForm(forms.ModelForm):
         fields=('name','key')
 
 class CloneForm(forms.Form):
-    server=forms.ModelChoiceField(queryset=models.Server.objects.all(),label="Server")
+    server=forms.ModelChoiceField(queryset=models.Server.objects.all(),label="Server",required=True)
 
 

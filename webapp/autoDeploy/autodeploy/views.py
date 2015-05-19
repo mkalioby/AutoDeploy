@@ -11,7 +11,7 @@ from autodeploy_client import Client
 from django.shortcuts import redirect
 from django.template.context_processors import csrf
 from django.contrib.auth.decorators import login_required
-
+from django.http import HttpResponseRedirect
 
 @login_required(redirect_field_name="redirect")
 def projects(request):
@@ -125,8 +125,12 @@ def deploy(request):
 def deploy2(request):
     server = None
     if request.method == "POST":
-        server = Server.objects.get(name=request.POST["server"])
-        request.session["deploy_server"] = request.POST["server"]
+        form=CloneForm(request.POST)
+        if form.is_valid():
+            server = Server.objects.get(name=request.POST["server"])
+            request.session["deploy_server"] = request.POST["server"]
+        else:
+            return HttpResponseRedirect("../deploy?project="+request.session["deploy_project"])
     else:
         server = Server.objects.get(name=request.session["deploy_server"])
     return listTags(request, server)
