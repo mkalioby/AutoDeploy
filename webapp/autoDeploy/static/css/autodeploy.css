@@ -27,3 +27,29 @@ input, button, select, textarea {
 .Operations {
     text-align: center
 }
+
+.table.paleblue > tbody > tr > td > span.true, table.paleblue > tbody > tr > td > span.true
+{
+    background-color: #f0ad4e;
+    border-color: #d6e9c6;
+    color: #ffffff;
+    border-radius: 4px;
+    padding: 10px;
+    text-indent: 0px;
+    overflow: visible;
+    width: auto;
+    height: auto;
+}
+
+.table.paleblue > tbody > tr > td > span.true, table.paleblue > tbody > tr > td > span.false
+{
+   background-color: #5cb85c;
+    border-color: #ffffff;
+    color: #3c763d;
+    border-radius: 4px;
+    padding: 10px;
+    text-indent: 0px;
+    overflow: visible;
+    width: auto;
+    height: auto;
+}

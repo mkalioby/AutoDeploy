@@ -17,17 +17,9 @@
  {% else %}
 
  {% if mode == "tags" %}
-     <h4>List of Tags <a href="../../listCommits">Show Commits</a></h4>
-     {% if tags|length > 0 %}
-     Select Tag:
-        <br/>
-        <ul>
-            {% for tag in tags %}
-                {% if tag != "" %}
-                <li><a href='../deploy3/?tag={{ tag }}'>{{ tag }}</a></li>
-                {% endif %}
-            {% endfor %}
-        </ul>
+     <h4>List of Tags <a href="../../listCommits">Show Commits</a>&nbsp;<a href="?refresh=True"><span class="fa fa-refresh" title="Refresh"></span> </a></h4>
+     {% if count > 0 %}
+     {% render_table tags %}
     {% else %}
          <div align="center" class="alert alert-info">There is no tags in the repo</div>
     {% endif %}

@@ -81,6 +81,28 @@ def HandleClient(clientsock):
                     gclient=git.GIT(workdir=job["workdir"])
                     gclient.setKey(job["key"])
                     cmd=gclient.get_list_tags_cmd()
+                    result=[]
+                    res=Common.run(cmd)
+                    if "ERR:" in res:
+                        Response.sendData(clientsock,res)
+                    else:
+                        for line in res.split("\n"):
+                            try:
+                                cmd="cd %s; git show %s"%(job["workdir"],line)
+                                res=Common.run(cmd)
+                                lines=res.split("diff --git ")[0]
+                                info=lines.split("\n")
+                                #print info
+                                tag=info[0][4:]
+                                tagger=info[1].split(": ")[1].split("<")[0].strip()
+                                date=info[2].split(": ")[1].strip()
+                                commit=info[6].split("commit ")[1]
+                                result.append(",,".join([tag,tagger,date,commit]))
+                            except:
+                                pass
+                        Response.sendData(clientsock,"\n".join(result))
+                        return
+
             elif req["requestType"]=="LIST-COMMITS":
                 job = Request.parseGetCommitsJob(msg)
                 if job["scm"]=="git":

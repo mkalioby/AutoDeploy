@@ -3,7 +3,8 @@ import ClientJob as Job
 import Connect
 import simplejson
 import xml.dom.minidom
-
+from operator import itemgetter
+import datetime
 
 class Client:
     scm = ""
@@ -46,8 +47,18 @@ class Client:
         msg = Job.createListTagsMessage(workdir=workdir, scm=self.scm, key=self.sshkey, owner=owner)
         result = self._send(msg)
         if result == "Done": return []
-        return result.split("\n")
-
+        #print result
+        res=[]
+        for line in result.split("\n"):
+            if line=="": continue
+            info=line.split(",,")
+            Date=datetime.datetime.strptime(info[2][:-6],"%a %b %d %H:%M:%S %Y").strftime("%Y-%m-%d %H:%M:%S")
+            res.append({"Tag":info[0],"Tagger":info[1],"Date":Date,"Commit":info[3]})
+        if len(res)>0:
+            newlist = sorted(res, key=itemgetter('Date'), reverse=True)
+            return newlist
+        else:
+            return []
     def SwitchTag(self, workdir, tag, owner=''):
         global msg
         if owner == '':
@@ -75,17 +86,20 @@ class Client:
         result = []
         #HEAD = True
         for line in res.split("\n")[1:]:
+            if line=="": continue
             info = line.split(",,")
             # print line
          #   if HEAD:
           #      info[0] = "HEAD"
            #     HEAD = False
             try:
+
                 d = {"Hash": info[0], "Short": info[1], "Author": info[2], "Committed": info[3], "Message": info[4]}
                 result.append(d)
+
             except:
                 print "Error while parsing line (%s)"%line
-        print result
+        #print result
         return result
 
     def SwitchCommit(self, workdir, commit, owner=''):

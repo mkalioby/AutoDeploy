@@ -38,20 +38,28 @@ def deploy(request):
         res = c.SwitchTag(project.working_dir, request.GET["tag"])
         D.update_type="tag"
         D.update_version=request.GET["tag"]
+        project.lastTag=request.GET["tag"]
     elif "commit" in request.GET:
         if request.GET["commit"] != "HEAD":
             res=c.SwitchCommit(project.working_dir,request.GET["commit"])
         D.update_type="commit"
         D.update_version = request.GET["commit"]
+        project.lastCommit=request.GET["commit"]
     res = c.Deploy(project.working_dir, project.configFile)
     if not "ERR:" in res:
         D.datetime=timezone.now()
         D.has_new_version=False
         D.save()
         project.lastUpdate=timezone.now()
+        project.newVersion=False
         project.save()
-        if "http://" not in project.deployment_link:
-            return HttpResponse(res+",,http://"+server.DNS+project.deployment_link)
+        print project.deployment_link
+        if not "http://" in project.deployment_link:
+            print "in if"
+            link="http://"+server.DNS+project.deployment_link
+            print link
+            return HttpResponse(res+",,"+link)
         else:
+            print "in else"
             return HttpResponse(res+",,"+project.deployment_link)
     else: return  res

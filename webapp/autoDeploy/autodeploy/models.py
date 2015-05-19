@@ -39,6 +39,7 @@ class Project(models.Model):
     sshKey=models.ForeignKey(SSHKey,to_field="name",verbose_name="SSH Key")
     repo_link=models.URLField(blank=True)
     deployment_link=models.CharField(max_length=200,blank=True)
+    newVersion=models.BooleanField(default=False)
 
     def __unicode__(self):
         return self.name
