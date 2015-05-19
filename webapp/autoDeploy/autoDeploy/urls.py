@@ -39,6 +39,9 @@ urlpatterns = [
     url(r'manage_servers','autodeploy.views.manage_servers', name='mange_sshkeys'),
     url(r'edit_server/(\w+)','autodeploy.views.edit_server'),
     url(r'delete_server/(\w+)','autodeploy.views.delete_server'),
+    url(r'edit_server/(\w+)','autodeploy.views.edit_server'),
+    url(r'edit_project/(\w+)','autodeploy.views.edit_project'),
+    url(r'delete_project/(\w+)','autodeploy.views.delete_project'),
 
 
     url(r'api/checkServers','autodeploy.api.checkServers'),
