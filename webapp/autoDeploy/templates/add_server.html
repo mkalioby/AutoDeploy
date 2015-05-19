@@ -24,7 +24,11 @@
         <input name="edit" value="False" type="hidden">
         {% endif %}
     </table>
+    {% if not edit %}
     <button class="btn btn-primary" type="submit">Add Server</button>
+    {% else %}
+        <button class="btn btn-primary" type="submit">Edit Server</button>
+    {% endif %}
     </div>
     </form>
 

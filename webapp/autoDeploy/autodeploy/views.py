@@ -32,6 +32,19 @@ def add_project(request):
                                   context_instance=RequestContext(request))
     else:
         form = ProjectsForm(request.POST, request.FILES)
+        if request.POST.get("edit","False") == "True":
+            project=Project.objects.get(name=request.POST["name"])
+            project.deployment_link=request.POST["deployment_link"]
+            project.repo=request.POST["repo"]
+            project.repo_type=request.POST["repo_type"]
+            project.repo_link=request.POST["repo_link"]
+            project.sshKey=SSHKey.objects.get(name=request.POST["sshKey"])
+            project.working_dir=request.POST["working_dir"]
+            if request.FILES.get("cfile","")!="":
+                project.configFile=saveFile(request.FILES["cfile"],project.name)
+            project.save()
+            return render_to_response("add_project.html", {"form": form, "done": True},
+                                      context_instance=RequestContext(request))
         if form.is_valid():
             form.save(request.FILES, form.cleaned_data["name"])
             return render_to_response("add_project.html", {"form": form, "done": True},
@@ -153,6 +166,13 @@ def edit_server(request, server):
         return render_to_response("add_server.html", {"form": form,"edit":True}, context_instance=RequestContext(request))
 
 
+def edit_project(request, project):
+    if request.method == "GET":
+        project= Project.objects.get(name=project)
+        form = ProjectsForm(instance=project)
+        return render_to_response("add_project.html", {"form": form,"edit":True}, context_instance=RequestContext(request))
+
+
 @login_required(redirect_field_name="redirect")
 def manage_ssh_keys(request):
     name = "SSH Keys"
@@ -190,6 +210,13 @@ def delete_server(request, name):
                                   context_instance=RequestContext(request))
 
 
+def delete_project(request, name):
+    if request.method == "GET":
+        return render_to_response("confirm.html", {"form": "../confirm_delete", "name": name, "type": "Project",
+                                                   "back_url": "../../"},
+                                  context_instance=RequestContext(request))
+
+
 @login_required(redirect_field_name="redirect")
 def confirm_delete(request):
     if request.method == "POST":
@@ -206,6 +233,11 @@ def confirm_delete(request):
             server=Server.objects.get(name=n)
             server.delete()
             return manage_servers(request)
+
+        elif request.POST["type"]=="Project":
+            project=Project.objects.get(name=n)
+            project.delete()
+            return projects(request)
 
 
 
