@@ -9,7 +9,7 @@ class ProjectReport(TableReport):
     name=Table.Column(verbose_name="Project Name")
     Operations=Table.TemplateColumn("<a href='{{BASE_URL}}clone?project={{record.name}}'><span title='Clone' class='fa fa-download'></span></a>&nbsp;&nbsp;<a href='./deploy?project={{record.name}}'><span title='Deploy' class='fa fa-codepen'></span></a>&nbsp;<a href='{{BASE_URL}}getDeploymentHistory?project={{record.name}}'><span class='fa fa-history' title='Deployment History'></span></a><a href='edit_project/{{record.name}}'>&nbsp;<span class='fa fa-edit' title='Edit'></span></a>&nbsp;&nbsp;<a href='delete_project/{{record.name}}'><span class='fa fa-trash' title='Delete'></span></a>")
     repo_link=Table.TemplateColumn("<a href='{{ record.repo_link }}' target='blank'>{{ record.repo_link }}</a> ")
-    deployment_link=Table.TemplateColumn("<a href='{{ record.deployment_link }}' target='blank'>{{ record.deployment_link }}</a> ")
+    deployment_link=Table.TemplateColumn("<a href='http://{{record.default_server.DNS}}{{ record.deployment_link }}' target='blank'>http://{{record.default_server.DNS}}{{ record.deployment_link }}</a> ")
     newVersion=Table.BooleanColumn(yesno="Yes,No")
 
     class Meta:
