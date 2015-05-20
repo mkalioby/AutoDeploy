@@ -17,14 +17,14 @@
  {% else %}
 
  {% if mode == "tags" %}
-     <h4>List of Tags <a href="../../listCommits">Show Commits</a>&nbsp;<a href="?refresh=True"><span class="fa fa-refresh" title="Refresh"></span> </a></h4>
+     <h4>List of Tags <a href="{{ BASE_URL }}listCommits">Show Commits</a>&nbsp;<a href="?refresh=True"><span class="fa fa-refresh" title="Refresh"></span> </a></h4>
      {% if count > 0 %}
      {% render_table tags %}
     {% else %}
          <div align="center" class="alert alert-info">There is no tags in the repo</div>
     {% endif %}
     {% elif mode == "commits" %}
-     <h4>List of Commits <a href="../deploy2?server={{ server }}">Show Tags</a> <a href="?refresh=True"><span class="fa fa-refresh" title="Refresh"></span> </a></h4>
+     <h4>List of Commits <a href={{ BASE_URL }}"deploy2?server={{ server }}">Show Tags</a> <a href="?refresh=True"><span class="fa fa-refresh" title="Refresh"></span> </a></h4>
      <div align="center">
     {% render_table commits %}
      </div>
