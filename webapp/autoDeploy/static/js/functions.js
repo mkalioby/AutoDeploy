@@ -28,7 +28,7 @@ function renderResult(data,success) {
     if (data == "Done")
         html = "<div class='alert alert-success'>"+success+"</div>"
     else
-        html = "<div class='alert alert-danger'>" + data + "</div>"
+        html = "<div class='alert alert-danger' align='left'><pre>" + data + "</pre></div>"
 
 
     $("#content").html(html)
@@ -43,7 +43,7 @@ function deploy(data)
     if (data.indexOf("Done")>-1)
     {
         res = data.split(",,")
-        renderResult(res[0], "Deployment was successful. Visit <a href='" + res[1] + "'>" + res[1] + "</a>")
+        renderResult(res[0], "Deployment was successful. Visit <a target='_blank' href='" + res[1] + "'>" + res[1] + "</a>")
     }
     else
         renderResult(data,"Done.")
