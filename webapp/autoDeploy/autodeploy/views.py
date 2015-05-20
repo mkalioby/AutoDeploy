@@ -40,8 +40,8 @@ def add_project(request):
             project.repo_link=request.POST["repo_link"]
             project.sshKey=SSHKey.objects.get(name=request.POST["sshKey"])
             project.working_dir=request.POST["working_dir"]
-            project.default_server=form.cleaned_data["default_server"]
-            project.update_style=form.cleaned_data["update_style"]
+            project.default_server=Server.objects.get(name=request.POST["default_server"])
+            project.update_style=request.POST["update_style"]
             if request.FILES.get("cfile","")!="":
                 project.configFile=saveFile(request.FILES["cfile"],project.name)
             project.save()
