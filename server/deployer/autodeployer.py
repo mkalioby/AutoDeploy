@@ -65,14 +65,19 @@ def deploy(config,workdir=".",raiseErrorOnStdErr=True):
     runEvents(config,workdir,"beforeInstall",raiseErrorOnStdErr)
 
     printNotication("Starting Deployment")
-    if not slient: print "     Copying Files"
-    handleFiles(config["files"],workdir)
-    if not slient: print "     Copying done"
 
-    if not slient: print "     Setting Permissions"
-    handlePermissions(config["permissions"],raiseErrorOnStdErr)
-    if not slient: print "     Permissions Done"
-
+    if not "files" in config.keys():
+        if not slient: print "  No files to copy...skipping"
+    else:
+        if not slient: print "     Copying Files"
+        handleFiles(config["files"],workdir)
+        if not slient: print "     Copying done"
+    if not "permissions" in config.keys():
+        if not slient: print "  No permission to set...skipping"
+    else:
+        if not slient: print "     Setting Permissions"
+        handlePermissions(config["permissions"],raiseErrorOnStdErr)
+        if not slient: print "     Permissions Done"
     printNotication("Deployment Done.......")
 
     printNotication("Starting After Install Scripts")

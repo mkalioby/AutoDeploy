@@ -62,4 +62,4 @@ def deploy(request):
         else:
             print "in else"
             return HttpResponse(res+",,"+project.deployment_link)
-    else: return  res
+    else: return  HttpResponse(res)
