@@ -78,6 +78,7 @@ def deploy(config,workdir=".",raiseErrorOnStdErr=True):
         if not slient: print "     Setting Permissions"
         handlePermissions(config["permissions"],raiseErrorOnStdErr)
         if not slient: print "     Permissions Done"
+
     printNotication("Deployment Done.......")
 
     printNotication("Starting After Install Scripts")
