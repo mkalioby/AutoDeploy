@@ -8,7 +8,7 @@
     {% endif %}
     <div align="center">
         <h4> Log In to continue</h4>
-    <form method="POST" action=".">
+    <form method="POST" action="./login">
         {% csrf_token %}
         {% if request.GET.redirect %}
             <input type="hidden" name="redirect" value="{{ request.GET.redirect }}"/>
