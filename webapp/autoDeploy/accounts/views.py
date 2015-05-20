@@ -4,6 +4,7 @@ from django.shortcuts import render
 from django.shortcuts import render, render_to_response,redirect
 from django.contrib.auth import authenticate, login,logout
 from django.template import RequestContext
+from autoDeploy import settings
 
 
 
@@ -19,7 +20,7 @@ def check(request):
             if user.is_active:
                 login(request, user)
                 if "redirect" in request.POST:
-                    return redirect(request.POST["redirect"])
+                    return redirect(settings.BASE_URL+request.POST["redirect"])
                 else:
                     return redirect("/")
                 # Redirect to a success page.
