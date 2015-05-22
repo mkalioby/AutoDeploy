@@ -21,11 +21,11 @@ class GIT(BaseSCM):
     def get_pull_cmd(self):
         return "cd %s; git pull"%self.workdir
     def get_list_tags_cmd(self):
-        return self.get_pull_cmd()+";git tag -l"%self.workdir
+        return "cd %s;git tag -l"%self.workdir
     def get_switch_to_tag_cmd(self,tag):
         return "cd %s; git checkout tags/%s"%(self.workdir,tag)
     def get_history_cmd(self):
-        return self.get_pull_cmd()+'; git log --all --pretty=format:"%H,,%h,,%an,,%ar,,%s,,%cd"  | cat -'
+        return 'cd ' + self.workdir +'; git log --all --pretty=format:"%H,,%h,,%an,,%ar,,%s,,%cd"  | cat -'
     def switch_to_histroy_cmd(self,commit):
         return 'cd %s; git reset --hard %s'%(self.workdir,commit)
     def commit_diff_cmd(self,commit):

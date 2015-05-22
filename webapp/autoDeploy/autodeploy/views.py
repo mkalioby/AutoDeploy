@@ -133,7 +133,11 @@ def deploy2(request):
             return HttpResponseRedirect("../deploy?project="+request.session["deploy_project"])
     else:
         server = Server.objects.get(name=request.session["deploy_server"])
-    return listTags(request, server)
+        if request.GET.get("refresh","False")=="True":
+            project=Project.objects.get(name=request.session["deploy_project"])
+            c=Client(str(project.repo_type),server.ip,server.port,project.sshKey.key)
+            c.Pull(project.repo,project.working_dir,project.sshKey.key)
+        return listTags(request, server)
 
 @login_required(redirect_field_name="redirect")
 def listTags(request, server):
@@ -270,6 +274,7 @@ def listCommits(request):
             server = Server.objects.get(name=request.session["deploy_server"])
             project = Project.objects.get(name=request.session["deploy_project"])
             c = Client("git", server.ip, server.port,key=project.sshKey.key)
+            c.Pull(project.repo,project.working_dir,project.sshKey.key)
             res = c.ListCommits(project.working_dir)
             request.session["commits"] = res
         else:
