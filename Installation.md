@@ -2,15 +2,15 @@
 
 This document shows how to install autoDeploy on Ubuntu System
 
-*. Create an autodeploy user
+* Create an autodeploy user
 ```sh
 # adduser --system --home /opt/autodeploy/home --shell /bin/bash autodeploy
 ```
-*. Add autodeploy to sudoers.
+* Add autodeploy to sudoers.
 ```sh
 # adduser autodeploy sudo
 ```
-*. Copy the file in UnixConfig to /etc/sudoers.d/
+* Copy the file in UnixConfig to /etc/sudoers.d/
 
 * Install the Client Library
 ```sh
