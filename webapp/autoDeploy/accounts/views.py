@@ -20,9 +20,9 @@ def check(request):
             if user.is_active:
                 login(request, user)
                 if "redirect" in request.POST:
-                    return redirect(settings.BASE_URL+request.POST["redirect"])
+                    return redirect(request.POST["redirect"])
                 else:
-                    return redirect("/")
+                    return redirect(settings.BASE_URL)
                 # Redirect to a success page.
             else:
                 err="This user is NOT activated yet."
