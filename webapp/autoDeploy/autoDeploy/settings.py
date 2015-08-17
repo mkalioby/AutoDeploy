@@ -97,7 +97,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Riyadh'
 
 USE_I18N = True
 
@@ -115,4 +115,16 @@ PROJECTS_DIR='/opt/autodeploy/projects/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
-#LOGIN_URL=BASE_URL+"admin"
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+SESSION_COOKIE_AGE = 30000  # time in seconds
+
+LOGIN_URL=BASE_URL+"accounts/login"
+
+SMTP= {
+        'HOST': 'smtp.gmail.com',
+        'PORT': '587',
+        'USERNAME': '',
+        'PASSWORD': '',
+        'FROM':'Auto Deploy'
+
+            }

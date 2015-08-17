@@ -85,7 +85,7 @@ class Client:
         res = self._send(msg)
         result = []
         #HEAD = True
-        for line in res.split("\n")[1:]:
+        for line in res.split("\n"):
             if line=="": continue
             info = line.split(",,")
             # print line
