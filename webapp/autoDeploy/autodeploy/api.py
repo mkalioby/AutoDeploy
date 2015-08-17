@@ -28,6 +28,7 @@ def clone(request):
 
 @csrf_protect
 def deploy(request):
+    import Common
     server = Server.objects.get(name=request.session["deploy_server"])
     project = Project.objects.get(name=request.session["deploy_project"])
     D= Deployment_Server()
@@ -58,8 +59,16 @@ def deploy(request):
             print "in if"
             link="http://"+server.DNS+project.deployment_link
             print link
+            if project.emailUsers!="" or project.emailUsers!=" ":
+                for user in project.emailUsers.split(","):
+                    Common.send(user,"New version of %s deployed"%project.name,"Dear User,<br/> This is an automated notification that a new version of %s has been deployed at: %s"%(project.name,link),fromUser=None,cc="",bcc="",)
+
             return HttpResponse(res+",,"+link)
         else:
             print "in else"
+            if project.emailUsers!="" or project.emailUsers!=" ":
+                for user in project.emailUsers.split(","):
+                    Common.send(user,"New version of %s deployed"%project.name,"Dear User,<br/> This is an automated notification that a new version of %s has been deployed at: %s"%(project.name,project.deployment_link),fromUser=None,cc="",bcc="",)
+
             return HttpResponse(res+",,"+project.deployment_link)
     else: return  HttpResponse(res)

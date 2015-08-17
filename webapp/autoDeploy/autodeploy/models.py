@@ -40,6 +40,7 @@ class Project(models.Model):
     repo_link=models.URLField(blank=True)
     deployment_link=models.CharField(max_length=200,blank=True)
     newVersion=models.BooleanField(default=False)
+    emailUsers=models.TextField(default="",blank=True)
 
     def __unicode__(self):
         return self.name
@@ -54,6 +55,8 @@ class Deployment_Server(models.Model):
     project = models.ForeignKey(Project)
     server = models.ForeignKey(Server)
 
-
+class Plugins(models.Model):
+    name=models.CharField(max_length=50)
+    settings=models.TextField()
 
 

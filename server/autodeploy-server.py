@@ -136,6 +136,7 @@ def HandleClient(clientsock):
             if cmd!="":
                 print cmd
                 res=Common.run(cmd)
+		print res
             Response.sendData(clientsock,res)
             if debug:
                 print "Ended,",res

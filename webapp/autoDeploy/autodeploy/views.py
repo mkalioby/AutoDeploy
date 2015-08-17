@@ -124,6 +124,7 @@ def deploy(request):
 @login_required(redirect_field_name="redirect")
 def deploy2(request):
     server = None
+    project=Project.objects.get(name=request.session["deploy_project"])
     if request.method == "POST":
         form=CloneForm(request.POST)
         if form.is_valid():
@@ -134,10 +135,12 @@ def deploy2(request):
     else:
         server = Server.objects.get(name=request.session["deploy_server"])
         if request.GET.get("refresh","False")=="True":
-            project=Project.objects.get(name=request.session["deploy_project"])
             c=Client(str(project.repo_type),server.ip,server.port,project.sshKey.key)
             c.Pull(project.repo,project.working_dir,project.sshKey.key)
+    if project.update_style=="tag":
         return listTags(request, server)
+    else:
+        return listCommits(request)
 
 @login_required(redirect_field_name="redirect")
 def listTags(request, server):
@@ -264,26 +267,28 @@ def checkServersStatus(request):
 
 @login_required(redirect_field_name="redirect")
 def listCommits(request):
-    if request.method == "GET":
-        res = None
-        if request.GET.get("refresh","False")=="True":
-            if "commits" in request.session:
-                del request.session["commits"]
-                return redirect("./listCommits")
-        if not "commits" in request.session:
-            server = Server.objects.get(name=request.session["deploy_server"])
-            project = Project.objects.get(name=request.session["deploy_project"])
-            c = Client("git", server.ip, server.port,key=project.sshKey.key)
-            c.Pull(project.repo,project.working_dir,project.sshKey.key)
-            res = c.ListCommits(project.working_dir)
-            request.session["commits"] = res
-        else:
-            res = request.session["commits"]
-        table = CommitTable(res)
-        table_to_report = RequestConfig(request, paginate={"per_page": 15}).configure(table)
-        if table_to_report:
-            return create_report_http_response(table_to_report, request)
-        return render_to_response("deploy2.html", {"mode":"commits","commits": table}, context_instance=RequestContext(request))
+    #if request.method == "GET":
+    res = None
+    print request.GET.get("refresh","False")
+    if request.GET.get("refresh","False")=="True":
+        if "commits" in request.session:
+            del request.session["commits"]
+            return redirect("./listCommits")
+    if not "commits" in request.session:
+        server = Server.objects.get(name=request.session["deploy_server"])
+        project = Project.objects.get(name=request.session["deploy_project"])
+        c = Client("git", server.ip, server.port,key=project.sshKey.key)
+        c.Pull(project.repo,project.working_dir,project.sshKey.key)
+        res = c.ListCommits(project.working_dir)
+        print res
+        request.session["commits"] = res
+    else:
+        res = request.session["commits"]
+    table = CommitTable(res)
+    table_to_report = RequestConfig(request, paginate={"per_page": 15}).configure(table)
+    if table_to_report:
+        return create_report_http_response(table_to_report, request)
+    return render_to_response("deploy2.html", {"mode":"commits","commits": table}, context_instance=RequestContext(request))
 
 
 @login_required(redirect_field_name="redirect")

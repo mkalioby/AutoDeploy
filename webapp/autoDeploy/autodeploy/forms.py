@@ -26,6 +26,7 @@ class ProjectsForm(forms.ModelForm):
     repo_link= forms.CharField(label='Repo Link',widget=forms.TextInput(attrs={'class':'form-control','size':30}))
     repo= forms.CharField(label='Repo',widget=forms.TextInput(attrs={'class':'form-control','size':30}))
     deployment_link= forms.CharField(label='Deployment Link',widget=forms.TextInput(attrs={'class':'form-control','size':30}))
+    emailUsers=forms.CharField(label='Users emails',help_text="comma seprated list of emails of users to notify when new version deployed",widget=forms.TextInput(attrs={'class':'form-control','size':30}))
 
     def __init__(self, *args, **kwargs):
         super(ProjectsForm, self).__init__(*args, **kwargs)
@@ -43,12 +44,15 @@ class ProjectsForm(forms.ModelForm):
         P.sshKey=self.cleaned_data["sshKey"]
         P.default_server=self.cleaned_data["default_server"]
         P.update_style=self.cleaned_data["update_style"]
+        P.emailUsers=self.clened_data["emailUsers"]
         print "Files is ",files
-        P.configFile = saveFile(files.get('cfile',''),name)
+        f=files.get('cfile','')
+        if f!="":
+            P.configFile = saveFile(files.get('cfile',''),name)
         P.save()
     class Meta:
         model= models.Project
-        fields=("name","repo","repo_link","working_dir","update_style","default_server","repo_type","sshKey","deployment_link","cfile")
+        fields=("name","repo","repo_link","working_dir","update_style","default_server","repo_type","sshKey","deployment_link","cfile","emailUsers")
 
 class ServerForm(forms.ModelForm):
     ip=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control','size':30}),label="Hostname/IP")
