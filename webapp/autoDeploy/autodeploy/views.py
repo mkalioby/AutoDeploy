@@ -42,6 +42,7 @@ def add_project(request):
             project.working_dir=request.POST["working_dir"]
             project.default_server=Server.objects.get(name=request.POST["default_server"])
             project.update_style=request.POST["update_style"]
+            project.emailUsers=request.POST["emailUsers"]
             if request.FILES.get("cfile","")!="":
                 project.configFile=saveFile(request.FILES["cfile"],project.name)
             project.save()
