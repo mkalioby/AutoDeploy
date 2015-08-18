@@ -60,15 +60,16 @@ def deploy(request):
             link="http://"+server.DNS+project.deployment_link
             print link
             if project.emailUsers!="" or project.emailUsers!=" ":
-                for user in project.emailUsers.split(","):
-                    Common.send(user,"New version of %s deployed"%project.name,"Dear User,<br/> This is an automated notification that a new version of %s has been deployed at: %s"%(project.name,link),fromUser=None,cc="",bcc="",)
+#                for user in project.emailUsers.split(","):
+                 Common.send(project.emailUsers.replace(",",";"),"New version of %s deployed"%project.name,"Dear User,<br/> This is an automated notification that a new version of %s has been deployed at: %s"%(project.name,link),fromUser=None,cc="",bcc="",)
 
             return HttpResponse(res+",,"+link)
         else:
             print "in else"
             if project.emailUsers!="" or project.emailUsers!=" ":
-                for user in project.emailUsers.split(","):
-                    Common.send(user,"New version of %s deployed"%project.name,"Dear User,<br/> This is an automated notification that a new version of %s has been deployed at: %s"%(project.name,project.deployment_link),fromUser=None,cc="",bcc="",)
+		Common.send(project.emailUsers.replace(",",";"),"New version of %s deployed"%project.name,"Dear User,<br/> This is an automated notification that a new version of %s has been deployed at: %s"%(project.name,link),fromUser=None,cc="",bcc="",)
+#                for user in project.emailUsers.split(","):
+ #                   Common.send(user,"New version of %s deployed"%project.name,"Dear User,<br/> This is an automated notification that a new version of %s has been deployed at: %s"%(project.name,project.deployment_link),fromUser=None,cc="",bcc="",)
 
             return HttpResponse(res+",,"+project.deployment_link)
     else: return  HttpResponse(res)
