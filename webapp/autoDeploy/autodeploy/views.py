@@ -312,8 +312,9 @@ def getProjectDepHistory(request):
             commits=c.getCommitsDiff(deployment.project.working_dir,deployment.update_version)
             print commits
             deployment.has_new_version = len(commits)
-            res.append(deployment)
             print deployment.server,deployment.has_new_version
+        res.append(deployment)
+
 
     table=DeploymentHistory(res)
     RequestConfigReport(request, paginate={"per_page": 15}).configure(table)
