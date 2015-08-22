@@ -26,7 +26,8 @@ def send(to,subject,body,fromUser=None,cc="",bcc="",):
             server.ehlo()
             server.starttls()
             server.login(settings.SMTP["USERNAME"], settings.SMTP["PASSWORD"])
-            server.sendmail(From, to, msg.as_string())
+            for t in to.split(";"):
+                server.sendmail(From, t, msg.as_string())
             if cc!="":
                 server.sendmail(From, cc, msg.as_string())
             if bcc!="":
