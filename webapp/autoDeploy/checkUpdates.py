@@ -5,8 +5,34 @@ import os,django
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "autoDeploy.settings")
 django.setup()
 
+def savePID():
+    f=open('/var/run/autodeploy-check', "w")
+    f.write(str(os.getpid()))
+    f.close()
+
+def getPreviousPID():
+    if not os.path.exists("/var/run/autodeploy-check"): return 0
+    f=open('/var/run/autodeploy-check', "r")
+    return int(f.read().strip())
+
+def check_pid(pid):
+    """ Check For the existence of a unix pid. """
+    try:
+        os.kill(pid, 0)
+    except OSError:
+        return False
+    else:
+        return True
+
 from autodeploy.models import *
 from autodeploy_client import Client
+
+pid=getPreviousPID()
+if pid!=0:
+    if check_pid(pid):
+        print "Another check is running, exiting...."
+        exit(-13)
+savePID()
 
 for project in Project.objects.all():
     updateRequired=False
