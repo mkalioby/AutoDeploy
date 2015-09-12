@@ -1,9 +1,9 @@
 # AutoDeploy
-Buildong an automated deployment system which is similar to AWS CodeDeploy but is hostable inside enterprise.
+Building an automated deployment system which is similar to AWS CodeDeploy but is hostable inside enterprise.
 
 The target is to minimize the manual prone errors of code deployment.
 
-The project will have the following componemts:
+The project has the following componemts:
 * **Deployment Daemon** (to run under root role so it can restart servers).
 * **Deployment Client** (which can communicate with the server giving it the scripts to run).
 * **Deployment Interface** (to see the progress and it can be used to deploy certain code versions).
