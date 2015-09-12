@@ -39,4 +39,6 @@ events:
 * django-table-2
 * django-table-report
 
+## Installation ##
 
+An Installation guide is avaliable [here.](https://github.com/mkalioby/AutoDeploy/blob/master/Installation.md)
