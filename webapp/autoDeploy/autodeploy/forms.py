@@ -56,17 +56,24 @@ class ProjectsForm(forms.ModelForm):
 
 class ServerForm(forms.ModelForm):
     ip=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control','size':30}),label="Hostname/IP")
+    behindFirewall=forms.BooleanField(widget=forms.CheckboxInput(attrs={'class':'form-control','style':'left:5px; position:relative'}),label='Use Behind Firewall Protocol?')
+    token=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control','size':35}),label="Secret Token")
     def __init__(self, *args, **kwargs):
         super(ServerForm, self).__init__(*args, **kwargs)
         instance = getattr(self, 'instance', None)
         if instance and instance.pk:
             self.fields['name'].widget.attrs['readonly'] = True
+        else:
+            import Common
+            token=Common.getToken()
+            print token
+            self.fields['token'].initial =token
     class Meta:
         model=models.Server
         widgets={"name":forms.TextInput(attrs={'class':'form-control','size':30}),
                  "DNS":forms.TextInput(attrs={'class':'form-control','size':5})
                  }
-        fields=('name','ip','port','DNS')
+        fields=('name','ip','port','DNS','behindFirewall','token')
 class SSHKeyForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(SSHKeyForm, self).__init__(*args, **kwargs)

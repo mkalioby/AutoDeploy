@@ -20,6 +20,9 @@ class Server(models.Model):
     ip=models.CharField(max_length=50)
     port=models.IntegerField(default=4567)
     DNS=models.CharField(max_length=50,blank=True)
+    behindFirewall=models.BooleanField(default=False)
+    token=models.CharField(max_length=32,default=None,blank=True)
+
     def __unicode__(self):
         return self.name
 

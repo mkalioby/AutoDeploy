@@ -70,10 +70,27 @@ def add_server(request):
                 server.DNS=request.POST["DNS"]
                 server.ip=request.POST["ip"]
                 server.port=request.POST["port"]
+                server.behindFirewall=request.POST["behindFirewall"]
+                server.token=request.POST["token"]
                 server.save()
+                if request.POST["behindFirewall"]:
+                    from  autodeploy_client.Client import Client
+                    if Client.addServer(server.name,server.token) !="Saved":
+                        return render_to_response("add_server.html", {"form": form, "error": True},
+                                      context_instance=RequestContext(request))
+
+
         else:
             if form.is_valid():
+                if request.POST["behindFirewall"]:
+                    from  autodeploy_client.Client import Client
+                    c = Client("git", server.ip, server.port)
+                    if c.addServer(request.POST["name"],request.POST["token"])!='Saved':
+                        return render_to_response("add_server.html", {"form": form, "error": True},
+                                      context_instance=RequestContext(request))
+
                 form.save()
+
             else:
                 return render_to_response("add_server.html", {"form": form, "error": True},
                                       context_instance=RequestContext(request))

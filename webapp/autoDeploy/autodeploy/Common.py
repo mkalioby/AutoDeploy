@@ -37,3 +37,9 @@ def send(to,subject,body,fromUser=None,cc="",bcc="",):
 
     except Exception as exp:
         return False
+
+
+def getToken():
+    from django.utils.crypto import get_random_string
+    return get_random_string(length=32)
+    return get_random_string(length=32)
