@@ -1,14 +1,14 @@
 # AutoDeploy
-Buildong an automated deployment system which is similar to AWS CodeDeploy but is hostable inside enterprise.
+Building an automated deployment system which is similar to AWS CodeDeploy but is hostable inside enterprise.
 
 The target is to minimize the manual prone errors of code deployment.
 
-The project will have the following componemts:
+The project has the following componemts:
 * **Deployment Daemon** (to run under root role so it can restart servers).
 * **Deployment Client** (which can communicate with the server giving it the scripts to run).
 * **Deployment Interface** (to see the progress and it can be used to deploy certain code versions).
 
-The deployment configuration will be based on YAML Format.
+The deployment configuration will be based on YAML Format. The full specification can be [here.](https://github.com/mkalioby/AutoDeploy/blob/master/YAML.md)
 
 The client should be callable from CI systems (like Jenkins) to deploy the code after a successful build.
 
@@ -38,3 +38,7 @@ events:
 * django 1.8.1+
 * django-table-2
 * django-table-report
+
+## Installation ##
+
+An Installation guide is avaliable [here.](https://github.com/mkalioby/AutoDeploy/blob/master/Installation.md)
