@@ -42,3 +42,7 @@ events:
 ## Installation ##
 
 An Installation guide is avaliable [here.](https://github.com/mkalioby/AutoDeploy/blob/master/Installation.md)
+
+## Next Version ##
+
+The next version will support nodes behind firewalls that are not directly accessible by deployment server. The design can be found [here.](https://github.com/mkalioby/AutoDeploy/blob/master/v2.md)
