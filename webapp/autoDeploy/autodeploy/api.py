@@ -45,7 +45,7 @@ def deploy(request):
             res=c.SwitchCommit(project.working_dir,request.GET["commit"])
         D.update_type="commit"
         D.update_version = request.GET["commit"]
-        project.lastCommit=request.GET["commit"]zzzz
+        project.lastCommit=request.GET["commit"]
     res = c.Deploy(project.working_dir, project.configFile)
     if not "ERR:" in res:
         D.datetime=timezone.now()
@@ -61,18 +61,19 @@ def deploy(request):
             print link
             if project.emailUsers!="" or project.emailUsers!=" ":
 #                for user in project.emailUsers.split(","):
-		try:
-                	Common.send(project.emailUsers.replace(",",";"),"New version of %s deployed"%project.name,"Dear User,<br/> This is an automated notification that a new version of %s has been deployed at: %s"%(project.name,link),fromUser=None,cc="",bcc="",)
-		except:
-			pass
+		        try:
+                    Common.send(project.emailUsers.replace(",",";"),"New version of %s deployed"%project.name,"Dear User,<br/> This is an automated notification that a new version of %s has been deployed at: %s"%(project.name,link),fromUser=None,cc="",bcc="",)
+                except:
+                    pass
             return HttpResponse(res+",,"+link)
         else:
             print "in else"
             link=project.deployment_link
             if project.emailUsers!="" or project.emailUsers!=" ":
-		try:
-	                Common.send(project.emailUsers.replace(",",";"),"New version of %s deployed"%project.name,"Dear User,<br/> This is an automated notification that a new version of %s has been deployed at: %s"%(project.name,link),fromUser=None,cc="",bcc="",)
-		except:
-			pass
+                try:
+                    Common.send(project.emailUsers.replace(",",";"),"New version of %s deployed"%project.name,"Dear User,<br/> This is an automated notification that a new version of %s has been deployed at: %s"%(project.name,link),fromUser=None,cc="",bcc="",)
+                except:
+                    pass
             return HttpResponse(res+",,"+link)
-    else: return  HttpResponse(res)
+    else:
+        return HttpResponse(res)

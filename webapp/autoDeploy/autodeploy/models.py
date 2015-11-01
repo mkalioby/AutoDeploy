@@ -44,6 +44,7 @@ class Project(models.Model):
     deployment_link=models.CharField(max_length=200,blank=True)
     newVersion=models.BooleanField(default=False)
     emailUsers=models.TextField(default="",blank=True)
+    autoDeploy=models.BooleanField(default=False,verbose_name="Deploy new changes automatically?")
 
     def __unicode__(self):
         return self.name
@@ -57,9 +58,11 @@ class Deployment_Server(models.Model):
     has_new_version = models.IntegerField(verbose_name="Updates Behind")
     project = models.ForeignKey(Project)
     server = models.ForeignKey(Server)
+    deployed=models.BooleanField(default=False)
 
 class Plugins(models.Model):
     name=models.CharField(max_length=50)
     settings=models.TextField()
+
 
 

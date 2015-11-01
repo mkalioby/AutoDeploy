@@ -27,7 +27,7 @@ class ProjectsForm(forms.ModelForm):
     repo= forms.CharField(label='Repo',widget=forms.TextInput(attrs={'class':'form-control','size':30}))
     deployment_link= forms.CharField(label='Deployment Link',widget=forms.TextInput(attrs={'class':'form-control','size':30}))
     emailUsers=forms.CharField(label='Users emails',help_text="comma seprated list of emails of users to notify when new version deployed",widget=forms.TextInput(attrs={'class':'form-control','size':30}))
-
+    #autoDeploy=forms.ChoiceField(widget=forms.CheckboxInput(attrs={'class':'form-control','style':'text-align:left;left:10px; position:relative'}))
     def __init__(self, *args, **kwargs):
         super(ProjectsForm, self).__init__(*args, **kwargs)
         instance = getattr(self, 'instance', None)
@@ -52,7 +52,7 @@ class ProjectsForm(forms.ModelForm):
         P.save()
     class Meta:
         model= models.Project
-        fields=("name","repo","repo_link","working_dir","update_style","default_server","repo_type","sshKey","deployment_link","cfile","emailUsers")
+        fields=("name","repo","repo_link","working_dir","update_style","default_server","repo_type","sshKey","deployment_link","cfile","autoDeploy","emailUsers")
 
 class ServerForm(forms.ModelForm):
     ip=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control','size':30}),label="Hostname/IP")
