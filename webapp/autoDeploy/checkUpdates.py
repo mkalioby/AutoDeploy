@@ -2,6 +2,8 @@
 __author__ = 'mohamed'
 
 import os,django,django.utils.timezone as timezone
+import Common
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "autoDeploy.settings")
 django.setup()
 
@@ -65,7 +67,7 @@ def deploy(project,server,dep_type,version):
             link="http://"+server.DNS+project.deployment_link
             print link
             if project.emailUsers!="" or project.emailUsers!=" ":
-               try:
+                try:
                     Common.send(project.emailUsers.replace(",",";"),"New version of %s deployed"%project.name,"Dear User,<br/> This is an automated notification that a new version of %s has been deployed at: %s"%(project.name,link),fromUser=None,cc="",bcc="",)
                 except:
                     pass
@@ -94,7 +96,8 @@ for project in Project.objects.all():
         if  project.lastCommit != commits[0]["Hash"]:
             updateRequired=True
         if project.autoDeploy:
-            deploy(project,project.default_server,"commit",commits[0]["Hash"])
+            if not "ERR:" in deploy(project,project.default_server,"commit",commits[0]["Hash"]):
+                updateRequired=False
 
 
     else:
@@ -103,7 +106,8 @@ for project in Project.objects.all():
             if project.lastTag != tags[0]["Tag"]:
                 updateRequired=True
                 if project.autoDeploy:
-                    deploy(project,project.default_server,"tag",tags[0]["Tag"])
+                    if not "ERR:" in deploy(project,project.default_server,"tag",tags[0]["Tag"]):
+                        updateRequired=False
         else:
             print "No Tags Found"
 
