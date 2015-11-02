@@ -55,25 +55,15 @@ def deploy(request):
         project.newVersion=False
         project.save()
         print project.deployment_link
+        link=project.deployment_link
         if not "http://" in project.deployment_link:
             print "in if"
             link="http://"+server.DNS+project.deployment_link
-            print link
-            if project.emailUsers!="" or project.emailUsers!=" ":
-#                for user in project.emailUsers.split(","):
-		        try:
-                    Common.send(project.emailUsers.replace(",",";"),"New version of %s deployed"%project.name,"Dear User,<br/> This is an automated notification that a new version of %s has been deployed at: %s"%(project.name,link),fromUser=None,cc="",bcc="",)
-                except:
-                    pass
-            return HttpResponse(res+",,"+link)
-        else:
-            print "in else"
-            link=project.deployment_link
-            if project.emailUsers!="" or project.emailUsers!=" ":
-                try:
-                    Common.send(project.emailUsers.replace(",",";"),"New version of %s deployed"%project.name,"Dear User,<br/> This is an automated notification that a new version of %s has been deployed at: %s"%(project.name,link),fromUser=None,cc="",bcc="",)
-                except:
-                    pass
-            return HttpResponse(res+",,"+link)
+        if project.emailUsers!="" or project.emailUsers!=" ":
+            try:
+                Common.send(project.emailUsers.replace(",",";"),"New version of %s deployed"%project.name,"Dear User,<br/> This is an automated notification that a new version of %s has been deployed at: %s"%(project.name,link),fromUser=None,cc="",bcc="",)
+            except:
+                pass
+        return HttpResponse(res+",,"+link)
     else:
         return HttpResponse(res)
