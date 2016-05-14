@@ -55,6 +55,9 @@ class Deployment_Server(models.Model):
     project = models.ForeignKey(Project)
     server = models.ForeignKey(Server)
 
+    class Meta:
+        get_latest_by="id"
+
 class Plugins(models.Model):
     name=models.CharField(max_length=50)
     settings=models.TextField()
