@@ -13,6 +13,20 @@ def importKey():
         return key
 
 
+def createGetBranchs(workdir, scm, owner,options=None):
+    sec = base64.encodestring(importKey().encrypt(owner + scm + "LIST-BRNACHS", "")[0])
+    f = '<job  owner="%s" type="%s" sec="%s" scm="%s">\n' % (owner, "LIST-BRNACHS", sec, scm)
+    f += '<workdir>%s</workdir>' % workdir
+
+    if options:
+        f += '<options>'
+        for option in options.keys():
+            f += "<option name='%s'>%s</option>" % (option, options[option])
+
+        f += "</options>"
+    f += '</job>'
+    return f
+
 
 # Provide id, owner and command as string
 # inputsFiles as List of file path

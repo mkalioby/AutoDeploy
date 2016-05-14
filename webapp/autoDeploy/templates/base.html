@@ -22,8 +22,11 @@
         $.ajax({url:"{{ BASE_URL }}api/{{ function }}","method":"GET","dataType":"{{ dataType }}", success:function(data)
             {
                 {{ function }}(data)
-            }{% if data != "" %},data:{{ data|safe }}       {% endif %}
-
+            },error:function (data) {
+                renderResult(data.responseText,"Error")
+        }
+            {% if data != "" %},data:{{ data|safe }}       {% endif %}
+    
         })
         </script>
     {% endif %}
