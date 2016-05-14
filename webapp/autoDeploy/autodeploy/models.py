@@ -30,7 +30,7 @@ class Project(models.Model):
     repo = models.CharField(max_length=255, blank=True)
     default_server=models.ForeignKey(Server,blank=True)
     update_style=models.CharField(max_length=10,blank=True)
-    lastCommit = models.CharField(max_length=32,blank=True)
+    lastCommit = models.CharField(max_length=50,blank=True)
     lastTag=models.CharField(max_length=255,blank=True)
     lastCommitDate = models.DateTimeField(blank=True,default="1970-01-01")
     working_dir=models.FileField(blank=True)

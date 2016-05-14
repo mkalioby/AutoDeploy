@@ -1,6 +1,13 @@
 {% extends "base.html"%}
 {% load render_table from django_tables2 %}
-
+{% block head %}
+    <script type="text/javascript">
+    function filter_branch()
+    {
+        window.location="{% url 'autodeploy.views.deploy2'%}?filter="+$("#branchs").val();
+    }
+    </script>
+{% endblock %}
 {% block content %}
     <br/>
  <div align="left">
@@ -25,6 +32,15 @@
     {% endif %}
     {% elif mode == "commits" %}
      <h4>List of Commits <a href={{ BASE_URL }}"deploy2?server={{ server }}">Show Tags</a> <a href="?refresh=True"><span class="fa fa-refresh" title="Refresh"></span> </a></h4>
+     {% if branchs|length > 1 %}
+     Filter By Branch: <select name="branch" id="branchs">
+        {% for branch in branchs %}
+            <option value="{{ branch }}"
+                    {% if  current_branch == branch %} selected {% endif %}
+            >{{ branch }}</option>
+        {% endfor %}
+     </select><a href="javascript:void(0);" onclick="filter_branch()"><span class="glyphicon glyphicon-filter"></span> </a>
+         {% endif %}
      <div align="center">
     {% render_table commits %}
      </div>

@@ -147,7 +147,8 @@ def deploy2(request):
     if project.update_style=="tag":
         return listTags(request, server)
     else:
-        return listCommits(request)
+        filter=request.GET.get("filter",None)
+        return listCommits(request,filter)
 
 @login_required(redirect_field_name="redirect")
 def listTags(request, server):
@@ -273,29 +274,43 @@ def checkServersStatus(request):
     return render_to_response("base.html", {"title":"Servers Health","function":"checkServers","dataType":"JSON","data":"","ajax": True}, context_instance=RequestContext(request))
 
 @login_required(redirect_field_name="redirect")
-def listCommits(request):
+def listCommits(request,filter=None):
     #if request.method == "GET":
     res = None
+    branches=[]
+    c=None
+    server=None
+    project=None
     print request.GET.get("refresh","False")
     if request.GET.get("refresh","False")=="True":
         if "commits" in request.session:
-            del request.session["commits"]
+            request.session.pop("commits","")
+            request.session.pop("branchs","")
             return redirect("./listCommits")
-    if not "commits" in request.session:
+    if filter or not "commits" in request.session:
         server = Server.objects.get(name=request.session["deploy_server"])
         project = Project.objects.get(name=request.session["deploy_project"])
         c = Client("git", server.ip, server.port,key=project.sshKey.key)
         c.Pull(project.repo,project.working_dir,project.sshKey.key)
-        res = c.ListCommits(project.working_dir)
-        print res
+        res = c.ListCommits(project.working_dir,options={"branch":filter})
         request.session["commits"] = res
     else:
         res = request.session["commits"]
+
+    if not "branchs" in request.session:
+        if not c:
+            server = Server.objects.get(name=request.session["deploy_server"])
+            project = Project.objects.get(name=request.session["deploy_project"])
+            c = Client("git", server.ip, server.port, key=project.sshKey.key)
+        branches=c.ListBranchs(project.working_dir)
+    else:
+        branches=request.session["branchs"]
+        request.session["branchs"]=branches
     table = CommitTable(res)
     table_to_report = RequestConfig(request, paginate={"per_page": 15}).configure(table)
     if table_to_report:
         return create_report_http_response(table_to_report, request)
-    return render_to_response("deploy2.html", {"mode":"commits","commits": table}, context_instance=RequestContext(request))
+    return render_to_response("deploy2.html", {"mode":"commits","commits": table,"branchs":branches,"current_branch":filter}, context_instance=RequestContext(request))
 
 
 @login_required(redirect_field_name="redirect")
