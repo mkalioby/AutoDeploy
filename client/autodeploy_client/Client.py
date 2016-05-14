@@ -126,3 +126,14 @@ class Client:
             if item=="" or item=="Done" : continue
             result.append(item)
         return result
+
+    def getChangeLog(self, workdir, since,to, owner=''):
+        if owner == '':
+            owner = Config.Owner
+        msg = Job.createGetChangeLog(owner, workdir,  self.scm,options={"since":since,"to":to})
+        res = self._send(msg)
+        result = []
+        for item in res.split("\n"):
+            if item == "" or item == "Done": continue
+            result.append(item)
+        return result

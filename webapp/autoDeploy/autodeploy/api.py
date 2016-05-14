@@ -31,6 +31,7 @@ def deploy(request):
     import Common
     server = Server.objects.get(name=request.session["deploy_server"])
     project = Project.objects.get(name=request.session["deploy_project"])
+    last_Deployment=Deployment_Server.objects.filter(server=server,project=project).latest()
     D= Deployment_Server()
     c = Client(str(project.repo_type), server.ip, server.port)
     D.project = project
@@ -60,14 +61,36 @@ def deploy(request):
             link="http://"+server.DNS+project.deployment_link
             print link
             if project.emailUsers!="" or project.emailUsers!=" ":
-#                for user in project.emailUsers.split(","):
-                 Common.send(project.emailUsers.replace(",",";"),"New version of %s deployed"%project.name,"Dear User,<br/> This is an automated notification that a new version of %s has been deployed at: %s"%(project.name,link),fromUser=None,cc="",bcc="",)
+                changes=c.getChangeLog(project.working_dir,since=last_Deployment.update_version,to=request.GET["commit"])
+                changes_text="<h3>Changes</h3><ul>"
+                found=False
+                for change in changes:
+                    if change.endswith(":"): continue
+                    changes_text+="<li>%s</li>"%change
+                    found=True
+                if found:
+                    changes_text+="</ul>"
+                else:
+                    changes_text=""
+                Common.send(project.emailUsers.replace(",",";"),"New version of %s deployed"%project.name,"Dear User,<br/> This is an automated notification that a new version of %s has been deployed at: %s<br/>%s"%(project.name,link,changes_text),fromUser=None,cc="",bcc="",)
 
             return HttpResponse(res+",,"+link)
         else:
             print "in else"
             link=project.deployment_link
             if project.emailUsers!="" or project.emailUsers!=" ":
-                Common.send(project.emailUsers.replace(",",";"),"New version of %s deployed"%project.name,"Dear User,<br/> This is an automated notification that a new version of %s has been deployed at: %s"%(project.name,link),fromUser=None,cc="",bcc="",)
+                changes=c.getChangeLog(project.working_dir,since=last_Deployment.update_version,to=request.GET["commit"])
+                changes_text="<h3>Changes</h3><ul>"
+                found=False
+                for change in changes:
+                    if change.endswith(":"): continue
+                    changes_text+="<li>%s</li>"%change
+                    found=True
+                if found:
+                    changes_text += "</ul>"
+                else:
+                    changes_text = ""
+
+                Common.send(project.emailUsers.replace(",",";"),"New version of %s deployed"%project.name,"Dear User,<br/> This is an automated notification that a new version of %s has been deployed at: %s.<br>%s"%(project.name,link,changes_text),fromUser=None,cc="",bcc="",)
             return HttpResponse(res+",,"+link)
     else: return  HttpResponse(res)

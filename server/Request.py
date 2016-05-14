@@ -174,3 +174,23 @@ def parseSwitchCommitJob(message):
 
 def parseGetCommitDiff(message):
     return parseSwitchCommitJob(message)
+
+def parseGetChangeLog(message):
+    params = {}
+    optionsDict = {}
+    doc = xml.dom.minidom.parseString(message)
+    Job = doc.getElementsByTagName('job')[0]
+    scm = Job.getAttribute("scm")
+    workdir = getValue(Job, 'workdir')
+
+    requestType = Job.getAttribute('type')
+    owner = Job.getAttribute('owner')
+    options = (Job.getElementsByTagName('option'))
+    for option in options:
+        name = option.getAttribute("name")
+        optionsDict[name] = option.firstChild.nodeValue
+
+    print 'Recieved New Job from  ' + owner + '.....'
+    params = {"workdir": workdir, "owner": owner, "requestType": requestType,
+              "scm": scm, "options": optionsDict}
+    return params
