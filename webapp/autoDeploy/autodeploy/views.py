@@ -89,13 +89,18 @@ def add_ssh_key(request):
         return render_to_response("add_sshkey.html", {"form": SSHKeyForm()}, context_instance=RequestContext(request))
     else:
         form = SSHKeyForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return render_to_response("add_sshkey.html", {"form": form, "done": True},
-                                      context_instance=RequestContext(request))
+        if request.POST["edit"] == "True":
+            key=SSHKey.objects.get(name=request.POST["name"])
+            key.key=request.POST["key"]
+            key.save()
         else:
-            return render_to_response("add_sshkey.html", {"form": form, "error": True},
+            if form.is_valid():
+                form.save()
+            else:
+                return render_to_response("add_sshkey.html", {"form": form, "error": True},
                                       context_instance=RequestContext(request))
+        return render_to_response("add_sshkey.html", {"form": form, "done": True},
+                                  context_instance=RequestContext(request))
 
 
 @csrf_protect
@@ -103,7 +108,7 @@ def add_ssh_key(request):
 def clone(request):
     if request.method == "GET":
         project = Project.objects.get(name=request.GET["project"])
-        return render_to_response("clone.html", {"form": CloneForm, "project_workdir": project.working_dir},
+        return render_to_response("clone.html", {"form": CloneForm(initial={"server":project.default_server}), "project_workdir": project.working_dir},
                                   context_instance=RequestContext(request))
     else:
         project = Project.objects.get(name=request.POST["project"])
@@ -119,8 +124,9 @@ def clone(request):
 @csrf_protect
 def deploy(request):
     if request.method == "GET":
+        project = Project.objects.get(name=request.GET["project"])
         request.session["deploy_project"] = request.GET["project"]
-        return render_to_response("deploy.html", {"form": CloneForm}, context_instance=RequestContext(request))
+        return render_to_response("deploy.html", {"form": CloneForm(initial={"server":project.default_server})}, context_instance=RequestContext(request))
 
 @login_required(redirect_field_name="redirect")
 def deploy2(request):
@@ -174,7 +180,7 @@ def edit_ssh_key(request, sshKey):
     if request.method == "GET":
         key = SSHKey.objects.get(name=sshKey)
         form = SSHKeyForm(instance=key)
-        return render_to_response("add_sshkey.html", {"form": form}, context_instance=RequestContext(request))
+        return render_to_response("add_sshkey.html", {"form": form,"edit":True}, context_instance=RequestContext(request))
 
 @login_required(redirect_field_name="redirect")
 def edit_server(request, server):

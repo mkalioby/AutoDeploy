@@ -44,7 +44,8 @@ class ProjectsForm(forms.ModelForm):
         P.sshKey=self.cleaned_data["sshKey"]
         P.default_server=self.cleaned_data["default_server"]
         P.update_style=self.cleaned_data["update_style"]
-        P.emailUsers=self.clened_data["emailUsers"]
+        P.emailUsers=self.cleaned_data["emailUsers"]
+
         print "Files is ",files
         f=files.get('cfile','')
         if f!="":
