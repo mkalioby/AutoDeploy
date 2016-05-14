@@ -30,14 +30,14 @@ This document shows how to install autoDeploy on Ubuntu System
 * Copy server init script to /etc/init.d
 * Add the init script to the start defaults
 ```sh
-sudo update-rc.d autodeploy-server start
+# update-rc.d autodeploy-server start
 ```
 
 # Install Web Application
 
 * Install required Packages
 ```sh
-sudo pip install django==1.8 django-tables2==1.0.4 django-tables2-reports
+# pip install django==1.8 django-tables2==1.0.4 django-tables2-reports
 ```
 
 * Configure your database
@@ -46,7 +46,7 @@ sudo pip install django==1.8 django-tables2==1.0.4 django-tables2-reports
 
 * Create Database by 
 ```sh
-python manage.py migrate
+$ python manage.py migrate
 ```
 1. Start Django Sever
 ```sh
