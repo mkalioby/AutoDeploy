@@ -1,5 +1,6 @@
 # AutoDeploy
 Buildong an automated deployment system which is similar to AWS CodeDeploy but is hostable inside enterprise.
+[![StackShare](http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](http://stackshare.io/mkalioby/autodeploy)
 
 The target is to minimize the manual prone errors of code deployment.
 
