@@ -158,3 +158,16 @@ def creategetCommitsDiffMessage(owner, workdir, commit, scm,options=None):
         f += "</options>"
     f += '</job>'
     return f
+
+def createGetChangeLog(owner,workdir,scm,options=None):
+    sec = base64.encodestring(importKey().encrypt(owner + scm + "LIST-CHANGES", "")[0])
+    f = '<job  owner="%s" type="%s" sec="%s" scm="%s">\n' % (owner, "LIST-CHANGES", sec, scm)
+    f += '<workdir>%s</workdir>' % workdir
+    if options:
+        f += '<options>'
+        for option in options.keys():
+            f += "<option name='%s'>%s</option>" % (option, options[option])
+
+        f += "</options>"
+    f += '</job>'
+    return f
