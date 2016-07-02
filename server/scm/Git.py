@@ -42,3 +42,6 @@ class GIT(BaseSCM):
     def commit_diff_cmd(self,commit):
         Common.run(self.get_pull_cmd())
         return 'git rev-list %s..HEAD'%(commit)
+    def get_changelog(self,since,to):
+        return "cd %s;git shortlog %s..%s"%(self.workdir,since,to)
+
