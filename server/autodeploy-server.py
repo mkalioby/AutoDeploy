@@ -102,13 +102,32 @@ def HandleClient(clientsock):
                                 pass
                         Response.sendData(clientsock,"\n".join(result))
                         return
-
+            elif req["requestType"] == "LIST-BRNACHS":
+                job = Request.parseListBranchsJob(msg)
+                if job["scm"] == "git":
+                    gclient = git.GIT(workdir=job["workdir"])
+                    cmd = gclient.get_list_branches()
+                    result = []
+                    res = Common.run(cmd)
+                    print res
+                    if "ERR:" in res:
+                        Response.sendData(clientsock, res)
+                    else:
+                        for line in res.split("\n"):
+                            try:
+                                if line!="":
+                                    result.append(line.replace("*","").strip())
+                            except:
+                                pass
+                        print result
+                        Response.sendData(clientsock, "\n".join(result))
+                        return
             elif req["requestType"]=="LIST-COMMITS":
                 job = Request.parseGetCommitsJob(msg)
                 if job["scm"]=="git":
                     gclient=git.GIT(workdir=job["workdir"])
                     gclient.setKey(job["key"])
-                    cmd=gclient.get_history_cmd()
+                    cmd=gclient.get_history_cmd(job["options"])
             elif req["requestType"]=="SWITCH-TAG":
                 job = Request.parseSwitchTagJob(msg)
                 if job["scm"]=="git":

@@ -67,6 +67,26 @@ def parseListTagsJob(message):
     return params
 
 
+def parseListBranchsJob(message):
+    params = {}
+    optionsDict = {}
+    doc = xml.dom.minidom.parseString(message)
+    Job = doc.getElementsByTagName('job')[0]
+    scm=Job.getAttribute("scm")
+    workdir= getValue(Job, 'workdir')
+
+    requestType = Job.getAttribute('type')
+    owner = Job.getAttribute('owner')
+    """options = (Job.getElementsByTagName('option'))
+    for option in options:
+        name = option.getAttribute("name")
+        optionsDict[name] = option.firstChild.nodeValue
+    """
+    print 'Recieved New Job from  ' + owner + '.....'
+    params = {"workdir": workdir,"owner": owner,  "requestType": requestType,"scm":scm,"options": optionsDict}
+    return params
+
+
 def parseSwitchTagJob(message):
     params = {}
     optionsDict = {}
@@ -125,8 +145,12 @@ def parseGetCommitsJob(message):
     requestType = Job.getAttribute('type')
     key= getValue(Job, 'sshkey')
     owner = Job.getAttribute('owner')
-    params = {"workdir": workdir,"owner": owner,  "requestType": requestType,"key":key,
-              "scm":scm,"options": optionsDict}
+    options = (Job.getElementsByTagName('option'))
+    for option in options:
+        name = option.getAttribute("name")
+        optionsDict[name] = option.firstChild.nodeValue
+    params = {"workdir": workdir, "owner": owner, "requestType": requestType, "key": key,
+              "scm": scm, "options": optionsDict}
     return params
 
 

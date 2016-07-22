@@ -22,10 +22,21 @@ class GIT(BaseSCM):
         return "cd %s; git pull"%self.workdir
     def get_list_tags_cmd(self):
         return "cd %s;git tag -l"%self.workdir
+
+    def get_list_branches(self):
+        return "cd %s;git branch -a" % self.workdir
+
     def get_switch_to_tag_cmd(self,tag):
         return "cd %s; git checkout tags/%s"%(self.workdir,tag)
-    def get_history_cmd(self):
-        return 'cd ' + self.workdir +'; git log --all --pretty=format:"%H,,%h,,%an,,%ar,,%s,,%cd"  | cat -'
+    def get_history_cmd(self,options={}):
+        branch=options.get("branch","")
+        cmd =  'cd ' + self.workdir +'; git log '
+        if branch!="":
+            cmd += branch
+        else:
+            cmd+= ' --all '
+        cmd += ' --pretty=format:"%H,,%h,,%an,,%ar,,%s,,%cd"  | cat -'
+        return cmd
     def switch_to_histroy_cmd(self,commit):
         return 'cd %s; git reset --hard %s'%(self.workdir,commit)
     def commit_diff_cmd(self,commit):

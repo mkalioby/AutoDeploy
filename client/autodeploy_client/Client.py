@@ -59,6 +59,13 @@ class Client:
             return newlist
         else:
             return []
+    def ListBranchs(self,workdir,owner=''):
+        global msg
+        if owner == '':
+            owner = Config.Owner
+        msg = Job.createGetBranchs(workdir=workdir, scm=self.scm, owner=owner)
+        result = self._send(msg)
+        return result.split("\n")
     def SwitchTag(self, workdir, tag, owner=''):
         global msg
         if owner == '':
@@ -78,10 +85,10 @@ class Client:
     def CheckUp(self):
         return Connect.connect(self.server, self.port, 5)
 
-    def ListCommits(self, workdir, page=0, rpp=10, owner=''):
+    def ListCommits(self, workdir, page=0, rpp=10, owner='',options=None):
         if owner == '':
             owner = Config.Owner
-        msg = Job.createListCommitsMessage(workdir=workdir, scm=self.scm, owner=owner,key=self.sshkey)
+        msg = Job.createListCommitsMessage(workdir=workdir, scm=self.scm, owner=owner,key=self.sshkey,options=options)
         res = self._send(msg)
         result = []
         #HEAD = True

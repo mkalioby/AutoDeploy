@@ -93,13 +93,18 @@ def add_ssh_key(request):
         return render_to_response("add_sshkey.html", {"form": SSHKeyForm()}, context_instance=RequestContext(request))
     else:
         form = SSHKeyForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return render_to_response("add_sshkey.html", {"form": form, "done": True},
-                                      context_instance=RequestContext(request))
+        if request.POST["edit"] == "True":
+            key=SSHKey.objects.get(name=request.POST["name"])
+            key.key=request.POST["key"]
+            key.save()
         else:
-            return render_to_response("add_sshkey.html", {"form": form, "error": True},
+            if form.is_valid():
+                form.save()
+            else:
+                return render_to_response("add_sshkey.html", {"form": form, "error": True},
                                       context_instance=RequestContext(request))
+        return render_to_response("add_sshkey.html", {"form": form, "done": True},
+                                  context_instance=RequestContext(request))
 
 
 @csrf_protect
@@ -107,7 +112,7 @@ def add_ssh_key(request):
 def clone(request):
     if request.method == "GET":
         project = Project.objects.get(name=request.GET["project"])
-        return render_to_response("clone.html", {"form": CloneForm, "project_workdir": project.working_dir},
+        return render_to_response("clone.html", {"form": CloneForm(initial={"server":project.default_server}), "project_workdir": project.working_dir},
                                   context_instance=RequestContext(request))
     else:
         project = Project.objects.get(name=request.POST["project"])
@@ -123,8 +128,9 @@ def clone(request):
 @csrf_protect
 def deploy(request):
     if request.method == "GET":
+        project = Project.objects.get(name=request.GET["project"])
         request.session["deploy_project"] = request.GET["project"]
-        return render_to_response("deploy.html", {"form": CloneForm}, context_instance=RequestContext(request))
+        return render_to_response("deploy.html", {"form": CloneForm(initial={"server":project.default_server})}, context_instance=RequestContext(request))
 
 @login_required(redirect_field_name="redirect")
 def deploy2(request):
@@ -145,7 +151,8 @@ def deploy2(request):
     if project.update_style=="tag":
         return listTags(request, server)
     else:
-        return listCommits(request)
+        filter=request.GET.get("filter",None)
+        return listCommits(request,filter)
 
 @login_required(redirect_field_name="redirect")
 def listTags(request, server):
@@ -178,7 +185,7 @@ def edit_ssh_key(request, sshKey):
     if request.method == "GET":
         key = SSHKey.objects.get(name=sshKey)
         form = SSHKeyForm(instance=key)
-        return render_to_response("add_sshkey.html", {"form": form}, context_instance=RequestContext(request))
+        return render_to_response("add_sshkey.html", {"form": form,"edit":True}, context_instance=RequestContext(request))
 
 @login_required(redirect_field_name="redirect")
 def edit_server(request, server):
@@ -268,29 +275,43 @@ def checkServersStatus(request):
     return render_to_response("base.html", {"title":"Servers Health","function":"checkServers","dataType":"JSON","data":"","ajax": True}, context_instance=RequestContext(request))
 
 @login_required(redirect_field_name="redirect")
-def listCommits(request):
+def listCommits(request,filter=None):
     #if request.method == "GET":
     res = None
+    branches=[]
+    c=None
+    server=None
+    project=None
     print request.GET.get("refresh","False")
     if request.GET.get("refresh","False")=="True":
         if "commits" in request.session:
-            del request.session["commits"]
+            request.session.pop("commits","")
+            request.session.pop("branchs","")
             return redirect("./listCommits")
-    if not "commits" in request.session:
+    if filter or not "commits" in request.session:
         server = Server.objects.get(name=request.session["deploy_server"])
         project = Project.objects.get(name=request.session["deploy_project"])
         c = Client("git", project.default_server.ip, project.default_server.port,key=project.sshKey.key)
         c.Pull(project.repo,project.working_dir,project.sshKey.key)
-        res = c.ListCommits(project.working_dir)
-        print res
+        res = c.ListCommits(project.working_dir,options={"branch":filter})
         request.session["commits"] = res
     else:
         res = request.session["commits"]
+
+    if not "branchs" in request.session:
+        if not c:
+            server = Server.objects.get(name=request.session["deploy_server"])
+            project = Project.objects.get(name=request.session["deploy_project"])
+            c = Client("git", server.ip, server.port, key=project.sshKey.key)
+        branches=c.ListBranchs(project.working_dir)
+    else:
+        branches=request.session["branchs"]
+        request.session["branchs"]=branches
     table = CommitTable(res)
     table_to_report = RequestConfig(request, paginate={"per_page": 15}).configure(table)
     if table_to_report:
         return create_report_http_response(table_to_report, request)
-    return render_to_response("deploy2.html", {"mode":"commits","commits": table}, context_instance=RequestContext(request))
+    return render_to_response("deploy2.html", {"mode":"commits","commits": table,"branchs":branches,"current_branch":filter}, context_instance=RequestContext(request))
 
 
 @login_required(redirect_field_name="redirect")
