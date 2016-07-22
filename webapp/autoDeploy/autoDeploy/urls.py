@@ -35,6 +35,8 @@ urlpatterns = [
     url(r'deploy2/','autodeploy.views.deploy2'),
     url(r'deploy3/','autodeploy.views.deploy3'),
     url(r'checkServers/','autodeploy.views.checkServersStatus'),
+    url(r'check/(\w+)','autodeploy.api.checkJobs'),
+    url(r'notify/(\w+)','autodeploy.api.markDone'),
     url(r'listCommits/','autodeploy.views.listCommits'),
     url(r'manage_servers','autodeploy.views.manage_servers', name='mange_sshkeys'),
     url(r'edit_server/(\w+)','autodeploy.views.edit_server'),

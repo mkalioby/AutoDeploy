@@ -79,15 +79,16 @@ def createSwitchTagMessage(owner, workdir, scm, tag, options=None):
     f += '</job>'
     return f
 
-def createDeployMessage(owner, workdir, scm, configFile, options=None):
+def createDeployMessage(owner, workdir, scm, configFile, update_type, update_version, key, options=None):
     sec=base64.encodestring(importKey().encrypt(owner+scm+"DEPLOY","")[0])
     f = '<job owner="%s" type="%s" sec="%s" scm="%s">\n'%( owner,"DEPLOY",sec,scm)
     f += '<workdir>%s</workdir>'%workdir
     f += '<configFile>%s</configFile>'%configFile
-    print configFile
+    f += '<update_type>%s</update_type>'%update_type
+    f += '<update_version>%s</update_version>'%update_version
     conf=open(str(configFile)).read()
     f += '<file>%s</file>'%(base64.encodestring(conf))
-
+    f += '<sshkey>%s</sshkey>' % key
     if options:
         f += '<options>'
         for option in options.keys():

@@ -73,22 +73,9 @@ def add_server(request):
                 server.behindFirewall=request.POST["behindFirewall"]
                 server.token=request.POST["token"]
                 server.save()
-                if request.POST["behindFirewall"]:
-                    from  autodeploy_client.Client import Client
-                    if Client.addServer(server.name,server.token) !="Saved":
-                        return render_to_response("add_server.html", {"form": form, "error": True},
-                                      context_instance=RequestContext(request))
-
 
         else:
             if form.is_valid():
-                if request.POST["behindFirewall"]:
-                    from  autodeploy_client.Client import Client
-                    c = Client("git", server.ip, server.port)
-                    if c.addServer(request.POST["name"],request.POST["token"])!='Saved':
-                        return render_to_response("add_server.html", {"form": form, "error": True},
-                                      context_instance=RequestContext(request))
-
                 form.save()
 
             else:
@@ -153,7 +140,7 @@ def deploy2(request):
     else:
         server = Server.objects.get(name=request.session["deploy_server"])
         if request.GET.get("refresh","False")=="True":
-            c=Client(str(project.repo_type),server.ip,server.port,project.sshKey.key)
+            c=Client(str(project.repo_type),project.default_server.ip,project.default_server.port,project.sshKey.key)
             c.Pull(project.repo,project.working_dir,project.sshKey.key)
     if project.update_style=="tag":
         return listTags(request, server)
@@ -163,7 +150,7 @@ def deploy2(request):
 @login_required(redirect_field_name="redirect")
 def listTags(request, server):
     project = Project.objects.get(name=request.session["deploy_project"])
-    c = Client(str(project.repo_type), server.ip, server.port,key=project.sshKey.key)
+    c = Client(str(project.repo_type), project.default_server.ip, project.default_server.port,key=project.sshKey.key)
 
     res = c.ListTags(project.working_dir)
     print res
@@ -274,9 +261,6 @@ def confirm_delete(request):
             project.delete()
             return projects(request)
 
-
-
-
 @login_required(redirect_field_name="redirect")
 def checkServersStatus(request):
 
@@ -295,7 +279,7 @@ def listCommits(request):
     if not "commits" in request.session:
         server = Server.objects.get(name=request.session["deploy_server"])
         project = Project.objects.get(name=request.session["deploy_project"])
-        c = Client("git", server.ip, server.port,key=project.sshKey.key)
+        c = Client("git", project.default_server.ip, project.default_server.port,key=project.sshKey.key)
         c.Pull(project.repo,project.working_dir,project.sshKey.key)
         res = c.ListCommits(project.working_dir)
         print res

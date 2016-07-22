@@ -26,7 +26,7 @@ class ProjectsForm(forms.ModelForm):
     repo_link= forms.CharField(label='Repo Link',widget=forms.TextInput(attrs={'class':'form-control','size':30}))
     repo= forms.CharField(label='Repo',widget=forms.TextInput(attrs={'class':'form-control','size':30}))
     deployment_link= forms.CharField(label='Deployment Link',widget=forms.TextInput(attrs={'class':'form-control','size':30}))
-    emailUsers=forms.CharField(label='Users emails',help_text="comma seprated list of emails of users to notify when new version deployed",widget=forms.TextInput(attrs={'class':'form-control','size':30}))
+    emailUsers=forms.CharField(label='Users emails',help_text="comma seprated list of emails of users to notify when new version deployed",widget=forms.TextInput(attrs={'class':'form-control','size':30}),required=False)
     #autoDeploy=forms.ChoiceField(widget=forms.CheckboxInput(attrs={'class':'form-control','style':'text-align:left;left:10px; position:relative'}))
     def __init__(self, *args, **kwargs):
         super(ProjectsForm, self).__init__(*args, **kwargs)
@@ -44,7 +44,7 @@ class ProjectsForm(forms.ModelForm):
         P.sshKey=self.cleaned_data["sshKey"]
         P.default_server=self.cleaned_data["default_server"]
         P.update_style=self.cleaned_data["update_style"]
-        P.emailUsers=self.clened_data["emailUsers"]
+        P.emailUsers=self.cleaned_data["emailUsers"]
         print "Files is ",files
         f=files.get('cfile','')
         if f!="":
@@ -56,7 +56,7 @@ class ProjectsForm(forms.ModelForm):
 
 class ServerForm(forms.ModelForm):
     ip=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control','size':30}),label="Hostname/IP")
-    behindFirewall=forms.BooleanField(widget=forms.CheckboxInput(attrs={'class':'form-control','style':'left:5px; position:relative'}),label='Use Behind Firewall Protocol?')
+    behindFirewall=forms.BooleanField(widget=forms.CheckboxInput(attrs={'class':'form-control','style':'left:5px; position:relative'}),label='Use Behind Firewall Protocol?',required=False)
     token=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control','size':35}),label="Secret Token")
     def __init__(self, *args, **kwargs):
         super(ServerForm, self).__init__(*args, **kwargs)

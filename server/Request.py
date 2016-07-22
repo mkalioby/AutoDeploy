@@ -97,6 +97,9 @@ def parseDeployJob(message):
     workdir= getValue(Job, 'workdir')
     configFile=getValue(Job,"configFile")
     requestType = Job.getAttribute('type')
+    update_type=getValue(Job,"update_type")
+    update_version=getValue(Job,"update_version")
+    key=getValue(Job,"sshkey")
     owner = Job.getAttribute('owner')
     fileBase64=getValue(Job,"file")
     if not os.path.exists(os.path.dirname(configFile)):
@@ -110,7 +113,7 @@ def parseDeployJob(message):
     """
     print 'Recieved New Job from  ' + owner + '.....'
     params = {"workdir": workdir,"owner": owner,  "requestType": requestType,"configFile":configFile,
-              "scm":scm,"options": optionsDict}
+              "scm":scm,"options": optionsDict,"update_type":update_type,"update_version":update_version,"key":key}
     return params
 
 def parseGetCommitsJob(message):

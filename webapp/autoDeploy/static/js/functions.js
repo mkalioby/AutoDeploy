@@ -12,6 +12,19 @@ function checkServers(servers)
 
         if (servers[server] == "UP")
             html += '<td><div class="alert alert-success">OK</div> </td>'
+        else if (servers[server].indexOf("Last Seen")>-1)
+        {
+            x=parseFloat(servers[server].split(":")[1])
+            if (x<1800)
+            {
+                html += '<td><div class="alert alert-success">'
+            }
+            else if (x<3600)
+                html += '<td><div class="alert alert-warning">';
+            else
+                html+='<td><div class="alert alert-danger">'
+            html+='Last Seen: ' + x +' Seconds ago</div> </td>';
+        }
         else
             html += '<td><div class="alert alert-danger">Offline</div> </td>'
 
@@ -27,6 +40,10 @@ function renderResult(data,success) {
     console.log(data)
     if (data == "Done")
         html = "<div class='alert alert-success'>"+success+"</div>"
+    else if(data.indexOf("submitted")>-1)
+    {
+        html="<div class='alert alert-success'>"+data+"</div>"
+    }
     else
         html = "<div class='alert alert-danger' align='left'><pre>" + data + "</pre></div>"
 

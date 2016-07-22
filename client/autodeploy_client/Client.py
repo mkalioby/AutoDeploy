@@ -67,11 +67,11 @@ class Client:
         result = self._send(msg)
         return result
 
-    def Deploy(self, workdir, configFile, owner=''):
+    def Deploy(self, workdir, configFile,update_type,update_version, key,owner=''):
         global msg
         if owner == '':
             owner = Config.Owner
-        msg = Job.createDeployMessage(workdir=workdir, configFile=configFile, scm=self.scm, owner=owner)
+        msg = Job.createDeployMessage(workdir=workdir, configFile=configFile, scm=self.scm, owner=owner,update_type=update_type,update_version=update_version,key=key)
         result = self._send(msg)
         return result
 
