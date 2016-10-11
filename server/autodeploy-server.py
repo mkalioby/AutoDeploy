@@ -146,6 +146,26 @@ def HandleClient(clientsock):
                 if job["scm"]=="git":
                     gclient=git.GIT(workdir=job["workdir"])
                     cmd=gclient.commit_diff_cmd(commit=job["commit"])
+
+            elif req["requestType"]=="LIST-CHANGES":
+                job = Request.parseGetChangeLog(msg)
+                if job["scm"] == "git":
+                    gclient = git.GIT(workdir=job["workdir"])
+                    cmd = gclient.get_changelog(since=job["options"]["since"], to=job["options"]["to"])
+                    result = []
+                    res = Common.run(cmd)
+                    print res
+                    if "ERR:" in res:
+                        Response.sendData(clientsock, res)
+                    else:
+                        for line in res.split("\n"):
+                            try:
+                                if line != "":
+                                    result.append(line.replace("*", "").strip())
+                            except:
+                                pass
+                        print result
+                        Response.sendData(clientsock, "\n".join(result))
             elif req["requestType"]=="DEPLOY":
                 print msg
                 job = Request.parseDeployJob(msg)
