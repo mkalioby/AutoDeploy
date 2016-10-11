@@ -49,7 +49,10 @@ def HandleClient(clientsock):
     cmd=""
     while 1:
         buf = clientsock.recv(2048)
-        chunks.append(str(buf))
+        if len(buf)<6:
+            chunks[-1]+=buf
+        else:
+            chunks.append(str(buf))
         if (EOM in chunks[-1]):
             msg = "".join(chunks)[:-5]
             if debug: print msg
