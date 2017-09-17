@@ -54,7 +54,7 @@ class Deployment_Server(models.Model):
     has_new_version = models.IntegerField(verbose_name="Updates Behind")
     project = models.ForeignKey(Project)
     server = models.ForeignKey(Server)
-
+    deployed=models.BooleanField(default=True)
     class Meta:
         get_latest_by="id"
 
