@@ -120,11 +120,9 @@ SESSION_COOKIE_AGE = 30000  # time in seconds
 
 LOGIN_URL=BASE_URL+"accounts/login"
 
-SMTP= {
-        'HOST': 'smtp.gmail.com',
-        'PORT': '587',
-        'USERNAME': '',
-        'PASSWORD': '',
-        'FROM':'Auto Deploy'
-
-            }
+EMAIL_HOST= 'smtp.gmail.com'
+EMAIL_PORT= 587
+EMAIL_HOST_USER= ''
+EMAIL_HOST_PASSWORD=''
+EMAIL_USE_TLS=True
+EMAIL_FROM="AutoDeploy"
