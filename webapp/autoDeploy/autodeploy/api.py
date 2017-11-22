@@ -31,7 +31,11 @@ def deploy(request):
     import Common
     server = Server.objects.get(name=request.session["deploy_server"])
     project = Project.objects.get(name=request.session["deploy_project"])
-    last_Deployment=Deployment_Server.objects.filter(server=server,project=project).latest()
+    last_Deployment=None
+    try:
+        last_Deployment=Deployment_Server.objects.filter(server=server,project=project).latest()
+    except:
+        pass
     D= Deployment_Server()
     c = Client(str(project.repo_type), server.ip, server.port)
     D.project = project
@@ -60,7 +64,7 @@ def deploy(request):
             print "in if"
             link="http://"+server.DNS+project.deployment_link
             print link
-            if project.emailUsers!="" or project.emailUsers!=" ":
+            if project.emailUsers!="" or project.emailUsers!=" " and last_Deployment!=None:
                 changes=c.getChangeLog(project.working_dir,since=last_Deployment.update_version,to=request.GET["commit"])
                 changes_text="<h3>Changes</h3><ul>"
                 found=False
