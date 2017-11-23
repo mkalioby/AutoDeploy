@@ -33,13 +33,23 @@
     {% elif mode == "commits" %}
      <h4>List of Commits <a href={{ BASE_URL }}"deploy2?server={{ server }}">Show Tags</a> <a href="?refresh=True"><span class="fa fa-refresh" title="Refresh"></span> </a></h4>
      {% if branchs|length > 1 %}
-     Filter By Branch: <select name="branch" id="branchs">
+         <div class="row">
+          <div class="col-md-2" style="position: relative; top:10px;">
+              <label>Filter By Branch:</label>
+          </div>
+         <div class="col-md-4">
+          <select name="branch" id="branchs" class="form-control">
         {% for branch in branchs %}
             <option value="{{ branch }}"
                     {% if  current_branch == branch %} selected {% endif %}
             >{{ branch }}</option>
         {% endfor %}
-     </select><a href="javascript:void(0);" onclick="filter_branch()"><span class="glyphicon glyphicon-filter"></span> </a>
+     </select>
+         </div>
+         <div class="col-md-1" style="position: relative; top:10px;">
+     <a href="javascript:void(0);" onclick="filter_branch()"><span class="glyphicon glyphicon-filter"></span> </a>
+         </div>
+         </div>
          {% endif %}
      <div align="center">
     {% render_table commits %}

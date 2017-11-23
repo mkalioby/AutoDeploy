@@ -41,7 +41,8 @@ class Project(models.Model):
     deployment_link=models.CharField(max_length=200,blank=True)
     newVersion=models.BooleanField(default=False)
     emailUsers=models.TextField(default="",blank=True)
-
+    autoDeploy = models.BooleanField(default=False)
+    default_branch=models.CharField(max_length=255,null=True)
     def __unicode__(self):
         return self.name
 
