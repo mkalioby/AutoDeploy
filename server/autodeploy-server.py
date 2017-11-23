@@ -42,6 +42,7 @@ def validReq(req):
 
 
 def HandleClient(clientsock):
+    import config
     name = threading.currentThread().getName()
     print name, ' Started.............'
     global EOM
@@ -112,7 +113,6 @@ def HandleClient(clientsock):
                     cmd = gclient.get_list_branches()
                     result = []
                     res = Common.run(cmd)
-                    print res
                     if "ERR:" in res:
                         Response.sendData(clientsock, res)
                     else:
@@ -122,7 +122,7 @@ def HandleClient(clientsock):
                                     result.append(line.replace("*","").strip())
                             except:
                                 pass
-                        print result
+                        #print result
                         Response.sendData(clientsock, "\n".join(result))
                         return
             elif req["requestType"]=="LIST-COMMITS":
@@ -130,7 +130,7 @@ def HandleClient(clientsock):
                 if job["scm"]=="git":
                     gclient=git.GIT(workdir=job["workdir"])
                     gclient.setKey(job["key"])
-                    cmd=gclient.get_history_cmd(job["options"])
+                    cmd=gclient.get_history_cmd(job["options"],limit=config.log_limit)
             elif req["requestType"]=="SWITCH-TAG":
                 job = Request.parseSwitchTagJob(msg)
                 if job["scm"]=="git":
@@ -178,7 +178,7 @@ def HandleClient(clientsock):
             if cmd!="":
                 print cmd
                 res=Common.run(cmd)
-		print res
+
             Response.sendData(clientsock,res)
             if debug:
                 print "Ended,",res
