@@ -28,13 +28,12 @@ class GIT(BaseSCM):
 
     def get_switch_to_tag_cmd(self,tag):
         return "cd %s; git checkout tags/%s"%(self.workdir,tag)
-    def get_history_cmd(self,options={}):
+    def get_history_cmd(self,options={},limit=0):
         branch=options.get("branch","")
         cmd =  'cd ' + self.workdir +'; git log '
-        if branch!="":
-            cmd += branch
-        else:
-            cmd+= ' --all '
+        if limit!=0: cmd+= "-n %s "%limit
+        if branch!="": cmd += branch
+        else: cmd+= ' --all '
         cmd += ' --pretty=format:"%H,,%h,,%an,,%ar,,%s,,%cd"  | cat -'
         return cmd
     def switch_to_histroy_cmd(self,commit):
