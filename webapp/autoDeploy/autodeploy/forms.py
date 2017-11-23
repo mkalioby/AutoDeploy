@@ -19,14 +19,17 @@ def saveFile(file,project_name):
 
 class ProjectsForm(forms.ModelForm):
     working_dir=forms.CharField(label="Working Directory",widget=forms.TextInput(attrs={'class':'form-control','size':30}))
-    repo_type=forms.ChoiceField(choices=repo_type,label="Repo Type")
-    update_style=forms.ChoiceField(choices=update_style,label="Update Style")
+    repo_type=forms.ChoiceField(choices=repo_type,label="Repo Type",widget=forms.Select(attrs={"class":"form-control"}))
+    update_style=forms.ChoiceField(choices=update_style,label="Update Style",widget=forms.Select(attrs={"class":"form-control"}))
     cfile=forms.FileField(label="Config File")
     name = forms.CharField(label='Project Name',widget=forms.TextInput(attrs={'class':'form-control','size':30}))
     repo_link= forms.CharField(label='Repo Link',widget=forms.TextInput(attrs={'class':'form-control','size':30}))
     repo= forms.CharField(label='Repo',widget=forms.TextInput(attrs={'class':'form-control','size':30}))
     deployment_link= forms.CharField(label='Deployment Link',widget=forms.TextInput(attrs={'class':'form-control','size':30}))
-    emailUsers=forms.CharField(label='Users emails',help_text="comma seprated list of emails of users to notify when new version deployed",widget=forms.TextInput(attrs={'class':'form-control','size':30}))
+    emailUsers=forms.CharField(required=False,label='Users emails',help_text="comma seprated list of emails of users to notify when new version deployed",widget=forms.TextInput(attrs={'class':'form-control','size':30}))
+    default_server=forms.ModelChoiceField(queryset=models.Server.objects.all(),empty_label="Select",widget=forms.Select(attrs={"class":"form-control"}),label="Default Server")
+    sshKey = forms.ModelChoiceField(queryset=models.SSHKey.objects.all(), empty_label="Select",label="SSH Key",widget=forms.Select(attrs={"class": "form-control"}))
+    default_branch = forms.CharField(label='Default Branch', widget=forms.TextInput(attrs={'class': 'form-control', 'size': 30}))
 
     def __init__(self, *args, **kwargs):
         super(ProjectsForm, self).__init__(*args, **kwargs)
@@ -45,6 +48,7 @@ class ProjectsForm(forms.ModelForm):
         P.default_server=self.cleaned_data["default_server"]
         P.update_style=self.cleaned_data["update_style"]
         P.emailUsers=self.cleaned_data["emailUsers"]
+        P.default_branch=self.cleaned_data["default_branch"]
 
         print "Files is ",files
         f=files.get('cfile','')
@@ -53,7 +57,7 @@ class ProjectsForm(forms.ModelForm):
         P.save()
     class Meta:
         model= models.Project
-        fields=("name","repo","repo_link","working_dir","update_style","default_server","repo_type","sshKey","deployment_link","cfile","emailUsers")
+        fields=("name","repo","repo_link","working_dir","update_style","default_branch","default_server","repo_type","sshKey","deployment_link","cfile","emailUsers")
 
 class ServerForm(forms.ModelForm):
     ip=forms.CharField(widget=forms.TextInput(attrs={'class':'form-control','size':30}),label="Hostname/IP")
@@ -81,6 +85,6 @@ class SSHKeyForm(forms.ModelForm):
         fields=('name','key')
 
 class CloneForm(forms.Form):
-    server=forms.ModelChoiceField(queryset=models.Server.objects.all(),label="Server",required=True)
+    server=forms.ModelChoiceField(queryset=models.Server.objects.all(),label="Server",required=True,widget=forms.Select(attrs={"class":"form-control"}))
 
 

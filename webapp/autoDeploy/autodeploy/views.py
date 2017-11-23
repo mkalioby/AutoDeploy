@@ -43,6 +43,7 @@ def add_project(request):
             project.default_server=Server.objects.get(name=request.POST["default_server"])
             project.update_style=request.POST["update_style"]
             project.emailUsers=request.POST["emailUsers"]
+            project.default_branch=request.POST["default_branch"]
             if request.FILES.get("cfile","")!="":
                 project.configFile=saveFile(request.FILES["cfile"],project.name)
             project.save()
@@ -281,6 +282,8 @@ def listCommits(request,filter=None):
     c=None
     server=None
     project=None
+    project = Project.objects.get(name=request.session["deploy_project"])
+    if filter==None: filter=project.default_branch if project.default_branch not in ("",None) else None
     print request.GET.get("refresh","False")
     if request.GET.get("refresh","False")=="True":
         if "commits" in request.session:
@@ -289,7 +292,7 @@ def listCommits(request,filter=None):
             return redirect("./listCommits")
     if filter or not "commits" in request.session:
         server = Server.objects.get(name=request.session["deploy_server"])
-        project = Project.objects.get(name=request.session["deploy_project"])
+
         c = Client("git", server.ip, server.port,key=project.sshKey.key)
         c.Pull(project.repo,project.working_dir,project.sshKey.key)
         res = c.ListCommits(project.working_dir,options={"branch":filter})
