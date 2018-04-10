@@ -30,6 +30,8 @@ class ProjectsForm(forms.ModelForm):
     default_server=forms.ModelChoiceField(queryset=models.Server.objects.all(),empty_label="Select",widget=forms.Select(attrs={"class":"form-control"}),label="Default Server")
     sshKey = forms.ModelChoiceField(queryset=models.SSHKey.objects.all(), empty_label="Select",label="SSH Key",widget=forms.Select(attrs={"class": "form-control"}))
     default_branch = forms.CharField(label='Default Branch', widget=forms.TextInput(attrs={'class': 'form-control', 'size': 30}))
+    deployment_word=forms.CharField(label="Deployement Word",widget=forms.TextInput(attrs={'class': 'form-control', 'size': 30}))
+    token=forms.CharField(label="Token",widget=forms.TextInput(attrs={'class': 'form-control', 'size': 30}))
 
     def __init__(self, *args, **kwargs):
         super(ProjectsForm, self).__init__(*args, **kwargs)
@@ -49,7 +51,8 @@ class ProjectsForm(forms.ModelForm):
         P.update_style=self.cleaned_data["update_style"]
         P.emailUsers=self.cleaned_data["emailUsers"]
         P.default_branch=self.cleaned_data["default_branch"]
-
+        P.deployment_word=self.cleaned_data["deployment_word"]
+        P.token=self.cleaned_data["token"]
         print "Files is ",files
         f=files.get('cfile','')
         if f!="":

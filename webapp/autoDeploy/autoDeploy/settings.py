@@ -40,7 +40,8 @@ INSTALLED_APPS = (
     'autodeploy',
     'django_tables2',
     'django_tables2_reports',
-    'accounts'
+    'accounts',
+    'webHooks',
 )
 
 MIDDLEWARE_CLASSES = (

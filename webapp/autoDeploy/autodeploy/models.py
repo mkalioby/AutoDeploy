@@ -43,6 +43,8 @@ class Project(models.Model):
     emailUsers=models.TextField(default="",blank=True)
     autoDeploy = models.BooleanField(default=False)
     default_branch=models.CharField(max_length=255,null=True)
+    deployment_word=models.CharField(max_length=50,null=True)
+    token=models.CharField(max_length=255,null=True)
     def __unicode__(self):
         return self.name
 
