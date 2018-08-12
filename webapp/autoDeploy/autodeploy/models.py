@@ -1,5 +1,6 @@
 from django.db import models
 from datetime import  datetime
+from django.contrib.auth.models import User
 class SSHKey(models.Model):
     name=models.CharField(max_length=50,primary_key=True)
     key=models.TextField()
@@ -64,3 +65,6 @@ class Plugins(models.Model):
     settings=models.TextField()
 
 
+class User_Project(models.Model):
+    user=models.ForeignKey(User)
+    project=models.ForeignKey(Project)

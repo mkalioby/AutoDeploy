@@ -66,36 +66,54 @@
                         <li>
                             <a href="#"><i class="fa fa-book fa-fw"></i> Projects<span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level collapse">
-                                <li>
-                                    <a href="{{ BASE_URL }}add_project">Add Project</a>
-                                </li>
+                                {% if perms.autodeploy.add_project %}
+                                    <li>
+                                        <a href="{{ BASE_URL }}add_project">Add Project</a>
+                                    </li>
+                                {% endif %}
                                 <li>
                                     <a href="{{ BASE_URL }}">Manage Projects</a>
                                 </li>
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
-                        <li>
-                            <a href="#"> <i class="fa fa-linux fa-fw"></i> Servers <span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level collapse">
-                                <li><a href="{{ BASE_URL }}add_server">Add Server</a> </li>
-                                <li><a href="{{ BASE_URL }}manage_servers">Manage Servers</a> </li>
-                                <li><a href="{{ BASE_URL }}checkServers">Check Servers</a> </li>
-                            </ul>
-                        <li>
-                            <a href="#"> <i class="fa fa-key fa-fw"></i> SSH Keys <span class="fa arrow"></span></a>
-                            <ul class="nav nav-second-level collapse">
-                                <li><a href="{{ BASE_URL }}add_sshkey">Add SSH Key</a> </li>
-                                <li><a href="{{ BASE_URL }}manage_sshkey">Modify SSH Keys</a> </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#"><i class="fa fa-plug">Plugins</i> </a>
-                            <ul class="nav nav-second-level collapse">
-                                <li> <a href="{{ BASE_URL }}installPlugin">Install Plugin</a> </li>
-                                <li><a href="{{ BASE_URL }}managePlugins">Manage Plugins</a> </li>
-                            </ul>
-                        </li>
+                        {% if not perms.autodeploy.add_server and not perms.autodeploy.change_server and not perms.autodeploy.delete_server and not perms.autodeploy.check_server%}
+                        {% else %}
+                            <li>
+                                <a href="#"> <i class="fa fa-linux fa-fw"></i> Servers <span
+                                        class="fa arrow"></span></a>
+                                <ul class="nav nav-second-level collapse">
+                                    {% if perms.autodeploy.add_server %}
+                                        <li><a href="{{ BASE_URL }}add_server">Add Server</a></li>
+                                    {% endif %}
+                                    {% if perms.autodeploy.change_server and perms.autodeploy.delete_server %}
+                                        <li><a href="{{ BASE_URL }}manage_servers">Manage Servers</a></li>
+                                    {% endif %}
+                                    {% if perms.autodeploy.check_server %}
+                                        <li><a href="{{ BASE_URL }}checkServers">Check Servers</a></li>
+                                    {% endif %}
+                                </ul>
+                            </li>
+                        {% endif %}
+                        {% if perms.autodeploy.add_sshkey and perms.autodeploy.change_sshkey and perms.autodeploy.delete_sshkey %}
+
+                            <li>
+                                <a href="#"> <i class="fa fa-key fa-fw"></i> SSH Keys <span class="fa arrow"></span></a>
+                                <ul class="nav nav-second-level collapse">
+                                    <li><a href="{{ BASE_URL }}add_sshkey">Add SSH Key</a></li>
+                                    <li><a href="{{ BASE_URL }}manage_sshkey">Modify SSH Keys</a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
+                        {% if perms.autodeploy.add_plugins and perms.autodeploy.change_plugins and perms.autodeploy.delete_plugins %}
+                            <li>
+                                <a href="#"><i class="fa fa-plug">Plugins</i> </a>
+                                <ul class="nav nav-second-level collapse">
+                                    <li><a href="{{ BASE_URL }}installPlugin">Install Plugin</a></li>
+                                    <li><a href="{{ BASE_URL }}managePlugins">Manage Plugins</a></li>
+                                </ul>
+                            </li>
+                        {% endif %}
                    </ul>
                 </div>
                 <!-- /.sidebar-collapse -->
