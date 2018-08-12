@@ -16,7 +16,11 @@ from django.http import HttpResponseRedirect
 @login_required(redirect_field_name="redirect")
 def projects(request):
     name = "Projects"
-    xlstable = ProjectReport(Project.objects.all())
+    if request.user.is_superuser:
+        xlstable = ProjectReport(Project.objects.all())
+    else:
+        projects = User_Project.objects.filter(user_id=request.user.id).values_list('project',flat=True)
+        xlstable = ProjectReport(Project.objects.filter(name__in=list(projects)))
     table_to_report = RequestConfigReport(request, paginate={"per_page": 15}).configure(xlstable)
     if table_to_report:
         return create_report_http_response(table_to_report, request)
