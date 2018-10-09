@@ -52,13 +52,13 @@ class Deployment_Server(models.Model):
     deployed=models.BooleanField(default=True)
     class Meta:
         get_latest_by="id"
-        plural_name="Deployment_Server"
+        verbose_name_plural="Deployment_Server"
 
 class Plugins(models.Model):
     name=models.CharField(max_length=50)
     settings=models.TextField()
     class Meta:
-        plural_name = "Plugins"
+        verbose_name_plural = "Plugins"
 
 
 class User_Project(models.Model):
@@ -67,4 +67,4 @@ class User_Project(models.Model):
     def __unicode__(self):
         return "%s -- %s"%(self.user.username,self.project_id)
     class Meta:
-        plural_name = "Users_Projects"
+        verbose_name_plural = "Users_Projects"
