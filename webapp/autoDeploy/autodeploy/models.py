@@ -68,3 +68,5 @@ class Plugins(models.Model):
 class User_Project(models.Model):
     user=models.ForeignKey(User)
     project=models.ForeignKey(Project)
+    def __unicode__(self):
+        return "%s -- %s"%(self.user.username,self.project_id)
