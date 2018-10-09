@@ -9,13 +9,6 @@ class SSHKey(models.Model):
         return self.name
 
 
-class working_directory(models.Model):
-    name=models.CharField(max_length=50,primary_key=True)
-    path=models.CharField(max_length=1000)
-
-def __unicode__(self):
-        return self.name
-
 class Server(models.Model):
     name=models.CharField(max_length=50,primary_key=True)
     ip=models.CharField(max_length=50)
@@ -59,10 +52,13 @@ class Deployment_Server(models.Model):
     deployed=models.BooleanField(default=True)
     class Meta:
         get_latest_by="id"
+        plural_name="Deployment_Server"
 
 class Plugins(models.Model):
     name=models.CharField(max_length=50)
     settings=models.TextField()
+    class Meta:
+        plural_name = "Plugins"
 
 
 class User_Project(models.Model):
@@ -70,3 +66,5 @@ class User_Project(models.Model):
     project=models.ForeignKey(Project)
     def __unicode__(self):
         return "%s -- %s"%(self.user.username,self.project_id)
+    class Meta:
+        plural_name = "Users_Projects"
