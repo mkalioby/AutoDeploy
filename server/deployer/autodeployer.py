@@ -31,8 +31,9 @@ def runEvents(config,workdir,event,raiseErrorOnStdErr=True):
             if not slient: print "Running:", cmd
             if "wait" in script.keys():
                 wait=script["wait"]
-            print script.keys()
+
             if "ignore-stderr" in script.keys():
+                print script["ignore-stderr"]
                 if script["ignore-stderr"] in ("yes","True","true","y"):
                     raiseErrorOnStdErr=False
 
