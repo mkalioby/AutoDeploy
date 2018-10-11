@@ -36,7 +36,7 @@ def runEvents(config,workdir,event,raiseErrorOnStdErr=True):
                 print script["ignore-stderr"]
                 if script["ignore-stderr"] in ("yes","True","true","y"):
                     raiseErrorOnStdErr=False
-
+                print  "raiseErr",raiseErrorOnStdErr
             Common.run(cmd,raiseErrorOnStdErr,wait=wait)
 
 def handleFiles(files,workdir):
