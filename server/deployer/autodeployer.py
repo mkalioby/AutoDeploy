@@ -34,7 +34,7 @@ def runEvents(config,workdir,event,raiseErrorOnStdErr=True):
 
             if "ignore-stderr" in script.keys():
                 print script["ignore-stderr"]
-                if script["ignore-stderr"] in ("yes","True","true","y"):
+                if script["ignore-stderr"] in ("yes","True","true","y","True"):
                     raiseErrorOnStdErr=False
                 print  "raiseErr",raiseErrorOnStdErr
             Common.run(cmd,raiseErrorOnStdErr,wait=wait)
