@@ -23,13 +23,13 @@
     {% if ajax %}
         <script type="text/javascript">
         function renderNotification(title,msg) {
-                body = $("<div>").html( msg.text).text();
+                body = $("<div>").html( msg).text();
                 var options = {
                     body: body,
                     //  image: "{{ STATIC_URL }}img/sdl_logo.png",
                     icon: "{{ STATIC_URL }}img/logo.png",
                     badge: "{{ STATIC_URL }}img/logo.png",
-                    timestamp: new Date();
+                    timestamp: new Date(),
                 }
 
                 var n = new Notification(title, options);
@@ -45,9 +45,9 @@
         $.ajax({url:"{{ BASE_URL }}api/{{ function }}","method":"GET","dataType":"{{ dataType }}", success:function(data)
             {
                 {{ function }}(data)
-                {%   if function == "clone" %}
+                {% if function == "clone" %}
                 renderNotification("Cloned Successfully","Clone of {{ project.name  }} done successfully")
-                    {% elif function == "deploy %}
+                    {% elif function == "deploy" %}
                     renderNotification("Deployed Successfully","Deployment of {{ project.name  }} done successfully")
 
                     {% endif %}
