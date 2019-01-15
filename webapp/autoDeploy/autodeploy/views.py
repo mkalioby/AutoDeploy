@@ -122,8 +122,8 @@ def clone(request):
             server = Server.objects.get(name=form.cleaned_data["server"])
             token=csrf(request).get("csrf_token")
             data="{scm: '%s', ip: '%s', port: '%s', project_name: '%s',csrfmiddlewaretoken: '%s' }" % (project.repo_type,server.ip,server.port,project.name,token)
-            return render_to_response("base.html", {"ajax":True, "data": data, "dataType":"html",
-                                                    "title":"Cloning "+ project.name, "function":"clone"}, context_instance=RequestContext(request))
+            return render_to_response("base.html", {"project":project,"ajax":True, "data": data, "dataType":"html",
+                                                    "title":"Cloning "q+ project.name, "function":"clone"}, context_instance=RequestContext(request))
 
 @login_required(redirect_field_name="redirect")
 @csrf_protect
@@ -166,7 +166,7 @@ def listTags(request, server):
     table_to_report = RequestConfig(request, paginate={"per_page": 15}).configure(table)
     if table_to_report:
             return create_report_http_response(table_to_report, request)
-    return render_to_response("deploy2.html", {"count":len(res),"mode":"tags","tags":table}, context_instance=RequestContext(request))
+    return render_to_response("deploy2.html", {"project":project,"count":len(res),"mode":"tags","tags":table}, context_instance=RequestContext(request))
 
 @login_required(redirect_field_name="redirect")
 def deploy3(request):
@@ -179,7 +179,7 @@ def deploy3(request):
 
         project=Project.objects.get(name=request.session["deploy_project"])
         server=Server.objects.get(name=request.session["deploy_server"])
-        return render_to_response("base.html", {"ajax": True,"data":data,"dataType":"html","function":"deploy","title":"Deploying %s on %s"%(project.name,server.name)}, context_instance=RequestContext(request))
+        return render_to_response("base.html", {"project":project,"ajax": True,"data":data,"dataType":"html","function":"deploy","title":"Deploying %s on %s"%(project.name,server.name)}, context_instance=RequestContext(request))
 
 @login_required(redirect_field_name="redirect")
 def edit_ssh_key(request, sshKey):
@@ -317,7 +317,7 @@ def listCommits(request,filter=None):
     table_to_report = RequestConfig(request, paginate={"per_page": 15}).configure(table)
     if table_to_report:
         return create_report_http_response(table_to_report, request)
-    return render_to_response("deploy2.html", {"mode":"commits","commits": table,"branchs":branches,"current_branch":filter}, context_instance=RequestContext(request))
+    return render_to_response("deploy2.html", {"project":project,"mode":"commits","commits": table,"branchs":branches,"current_branch":filter}, context_instance=RequestContext(request))
 
 
 @login_required(redirect_field_name="redirect")
