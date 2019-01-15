@@ -123,7 +123,7 @@ def clone(request):
             token=csrf(request).get("csrf_token")
             data="{scm: '%s', ip: '%s', port: '%s', project_name: '%s',csrfmiddlewaretoken: '%s' }" % (project.repo_type,server.ip,server.port,project.name,token)
             return render_to_response("base.html", {"project":project,"ajax":True, "data": data, "dataType":"html",
-                                                    "title":"Cloning "q+ project.name, "function":"clone"}, context_instance=RequestContext(request))
+                                                    "title":"Cloning "+ project.name, "function":"clone"}, context_instance=RequestContext(request))
 
 @login_required(redirect_field_name="redirect")
 @csrf_protect
