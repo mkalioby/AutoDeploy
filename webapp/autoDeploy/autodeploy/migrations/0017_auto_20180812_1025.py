@@ -8,6 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('autodeploy', '0016_auto_20180807_1651'),
+        ('contenttypes', '0002_remove_content_type_name'),
     ]
 
     operations = [
