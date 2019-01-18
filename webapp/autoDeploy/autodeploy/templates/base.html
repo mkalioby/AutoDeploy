@@ -88,7 +88,16 @@
 
             <ul class="nav navbar-top-links navbar-right">
                     {% if user.is_authenticated %}
-                        <a href="{{ BASE_URL }}accounts/logout" style="margin-right: 25px;position: relative;top: 10px"><span class="fa fa-sign-out" title="Log out"></span></a>
+
+                        <a href='javascript:void(0)' data-toggle="dropdown" id="userDropdown" style="margin-right: 25px;position: relative;top: 10px"><span class="fa fa-2x fa-user" title="User"></span></a>
+                        <ul class="dropdown-menu"  aria-labelledby="userDropdown">
+                        <li><a href="{% url 'mfa_home' %}">Security</a> </li>
+                        {% if request.user.is_staff or  request.user.is_superuser%}
+                            <li><a href="{{ BASE_URL }}admin">Admin Interface</a></li>
+                        {% endif %}
+                        <li role="separator" class="divider"></li>
+                        <li><a href="{{ BASE_URL }}accounts/logout">Log out</a></li>
+                        </ul>
                     {% endif %}
             </ul>
             <!-- /.navbar-top-links -->
