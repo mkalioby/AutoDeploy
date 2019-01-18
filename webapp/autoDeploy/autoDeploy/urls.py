@@ -16,9 +16,12 @@ Including another URLconf
 from django.conf.urls import include, url
 from django.contrib import admin
 import accounts.urls
-
+import mfa
+import mfa.TrustedDevice
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^mfa/', include(mfa.urls)),
+    url(r'devices/add$', mfa.TrustedDevice.add,name="mfa_add_new_trusted_device"),
     url(r'^accounts/', include(accounts.urls)),
     url(r'^$','autodeploy.views.projects'),
     url(r'add_project','autodeploy.views.add_project'),

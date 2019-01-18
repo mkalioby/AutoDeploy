@@ -40,7 +40,8 @@ INSTALLED_APPS = (
     'autodeploy',
     'django_tables2',
     'django_tables2_reports',
-    'accounts'
+    'accounts',
+    'mfa',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -59,7 +60,7 @@ ROOT_URLCONF = 'autoDeploy.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, "templates"),os.path.join(BASE_DIR, "accounts/templates")],
+        'DIRS': [os.path.join(BASE_DIR, "templates")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -74,9 +75,9 @@ TEMPLATES = [
     },
 ]
 
+STATIC_ROOT=BASE_DIR+'/static/'
 WSGI_APPLICATION = 'autoDeploy.wsgi.application'
-STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),
-)
+STATICFILES_DIRS = ('my_static',)
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
@@ -126,3 +127,18 @@ EMAIL_HOST_USER= ''
 EMAIL_HOST_PASSWORD=''
 EMAIL_USE_TLS=True
 EMAIL_FROM="AutoDeploy"
+
+
+MFA_UNALLOWED_METHODS=()   # Methods that shouldn't be allowed for the user
+MFA_LOGIN_CALLBACK="accounts.views.log_user_in"            # A function that should be called by username to login the user in session
+MFA_RECHECK=True           # Allow random rechecking of the user
+MFA_RECHECK_MIN=10         # Minimum interval in seconds
+MFA_RECHECK_MAX=30         # Maximum in seconds
+MFA_QUICKLOGIN=True        # Allow quick login for returning users by provide only their 2FA
+
+TOKEN_ISSUER_NAME="Auto Deploy"      #TOTP Issuer name
+
+U2F_APPID="https://localhost"    #URL For U2F
+FIDO_SERVER_ID=u"localhost"      # Server rp id for FIDO2
+FIDO_SERVER_NAME=u"Autodeploy"
+FIDO_LOGIN_URL=BASE_URL
