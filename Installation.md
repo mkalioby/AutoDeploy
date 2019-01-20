@@ -41,8 +41,8 @@ This document shows how to install autoDeploy on Ubuntu System
 ```
 
 * Configure your database
- * Create empty database in your DBMS.  
- * Edit Settings file in `webapp/autoDeploy/settings.py`.
+* Create empty database in your DBMS.  
+* Edit Settings file in `webapp/autoDeploy/settings.py`.
 
 * Create Database by 
 ```sh

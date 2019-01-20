@@ -7,4 +7,5 @@ def global_settings(request):
     print settings.BASE_URL
     return {
         'BASE_URL': settings.BASE_URL,
+        'TITLE': settings.TITLE
         }
