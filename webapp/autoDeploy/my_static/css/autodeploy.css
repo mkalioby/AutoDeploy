@@ -1,0 +1,55 @@
+.errorlist
+{display: none}
+.alert-danger .errorlist
+{display: block}
+.form-control {
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+  color: #555;
+  display: block;
+  font-size: 14px;
+  height: 34px;
+  line-height: 1.42857;
+  margin: 5px;
+  padding: 6px 12px;
+  transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+  width: 100%;
+}
+input, button, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  margin: 5px;
+}
+.Operations {
+    text-align: center
+}
+
+.table.paleblue > tbody > tr > td > span.true, table.paleblue > tbody > tr > td > span.true
+{
+    background-color: #f0ad4e;
+    border-color: #d6e9c6;
+    color: #ffffff;
+    border-radius: 4px;
+    padding: 10px;
+    text-indent: 0px;
+    overflow: visible;
+    width: auto;
+    height: auto;
+}
+
+.table.paleblue > tbody > tr > td > span.true, table.paleblue > tbody > tr > td > span.false
+{
+   background-color: #5cb85c;
+    border-color: #ffffff;
+    color: #3c763d;
+    border-radius: 4px;
+    padding: 10px;
+    text-indent: 0px;
+    overflow: visible;
+    width: auto;
+    height: auto;
+}
