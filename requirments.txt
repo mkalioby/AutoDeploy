@@ -3,3 +3,4 @@ django
 django-tables2
 django-tables2-reports
 jira
+django-mfa2
