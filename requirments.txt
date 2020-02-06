@@ -1,6 +1,6 @@
 pycrypto
-django
-django-tables2
-django-tables2-reports
+django==1.8
+django-tables2==1.0.4
+django-tables2-reports==0.1.3
 jira
 django-mfa2
