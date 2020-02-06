@@ -20,7 +20,7 @@ import mfa
 import mfa.TrustedDevice
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^mfa/', include(mfa.urls)),
+    url(r'^mfa/', include('mfa.urls')),
     url(r'devices/add$', mfa.TrustedDevice.add,name="mfa_add_new_trusted_device"),
     url(r'^accounts/', include(accounts.urls)),
     url(r'^$','autodeploy.views.projects'),
