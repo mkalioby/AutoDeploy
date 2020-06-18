@@ -6,3 +6,4 @@ django-tables2-reports==0.1.3
 jira
 django-mfa2
 pyyaml
+sqlparse
