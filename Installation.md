@@ -18,11 +18,7 @@ This document shows how to install autoDeploy on Ubuntu System
 
 * Install the Client Library
 ```sh
-# python setup.py install
-```
-* Install pyCrypto and pyYAML
-```sh
-# pip install python-pycrypto pyyaml
+# cd client; python setup.py install
 ```
 
 * Edit Server init script so that it points to installation directory
