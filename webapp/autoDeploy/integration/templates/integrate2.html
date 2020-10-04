@@ -1,0 +1,60 @@
+{% extends "base.html"%}
+{% load render_table from django_tables2 %}
+{% block head %}
+    <script type="text/javascript">
+    function filter_branch()
+    {
+        window.location="{% url 'integrate2'%}?filter="+$("#branchs").val();
+    }
+    </script>
+{% endblock %}
+{% block content %}
+    <br/>
+ <div align="left">
+    <h1>Integrate {{ project.name }}</h1>
+
+         {% if result %}
+            {% if "ERR:" in result %}
+        <div class="alert alert-danger">
+        {% else %}
+            <div class="alert alert-success">
+            {% endif %}
+            {{ result }}</div>
+
+ {% else %}
+
+ {% if mode == "tags" %}
+     <h4>List of Tags <a href="{{ BASE_URL }}listCommits">Show Commits</a>&nbsp;<a href="?refresh=True"><span class="fa fa-refresh" title="Refresh"></span> </a></h4>
+     {% if count > 0 %}
+     {% render_table tags %}
+    {% else %}
+         <div align="center" class="alert alert-info">There is no tags in the repo</div>
+    {% endif %}
+    {% elif mode == "commits" %}
+     <h4>List of Commits <a href={{ BASE_URL }}"integrate2?server={{ server }}">Show Tags</a> <a href="?refresh=True"><span class="fa fa-refresh" title="Refresh"></span> </a></h4>
+     {% if branchs|length > 1 %}
+         <div class="row">
+          <div class="col-md-2" style="position: relative; top:10px;">
+              <label>Filter By Branch:</label>
+          </div>
+         <div class="col-md-4">
+          <select name="branch" id="branchs" class="form-control">
+        {% for branch in branchs %}
+            <option value="{{ branch }}"
+                    {% if  current_branch == branch %} selected {% endif %}
+            >{{ branch }}</option>
+        {% endfor %}
+     </select>
+         </div>
+         <div class="col-md-1" style="position: relative; top:10px;">
+     <a href="javascript:void(0);" onclick="filter_branch()"><span class="glyphicon glyphicon-filter"></span> </a>
+         </div>
+         </div>
+         {% endif %}
+     <div align="center">
+    {% render_table commits %}
+     </div>
+ {% endif %}
+    {% endif %}
+
+{% endblock %}

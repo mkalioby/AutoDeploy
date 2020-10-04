@@ -1,9 +1,5 @@
-from django.shortcuts import render
-
-# Create your views here.
-from django.shortcuts import render, render_to_response,redirect
+from django.shortcuts import render,redirect
 from django.contrib.auth import authenticate, login,logout
-from django.template import RequestContext
 from django.conf import settings
 
 def log_user_in(request,username):
@@ -19,7 +15,7 @@ def log_user_in(request,username):
 
 def check(request):
     if request.method=="POST":
-        print "In Check"
+        print("In Check")
         username = request.POST['username']
         password = request.POST['password']
         user = authenticate(username=username, password=password)
@@ -35,11 +31,11 @@ def check(request):
                 err="This user is NOT activated yet."
         else:
             err="The username or the password is wrong."
-        print "Error:", err
-        return render_to_response("login.html",{"err":err},context_instance=RequestContext(request))
+        print("Error:", err)
+        return render(request,"login.html",{"err":err})
     else:
-        return render_to_response("login.html",context_instance=RequestContext(request))
+        return render(request,"login.html")
 
 def signOut(request):
     logout(request)
-    return render_to_response("logout.html",context_instance=RequestContext(request))
+    return render(request,"logout.html")
