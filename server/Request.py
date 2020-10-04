@@ -1,5 +1,5 @@
 import socket, threading, subprocess, os, base64, xml.dom.minidom
-import config
+from . import config
 
 
 def parseRequest(message):
@@ -37,7 +37,7 @@ def parseCloneJob(message):
         name = option.getAttribute("name")
         optionsDict[name] = option.firstChild.nodeValue
     """
-    print 'Recieved New Job from  ' + owner + '.....'
+    print('Recieved New Job from  ' + owner + '.....')
     params = {"repo":repo, "key": key,"workdir": workdir,"owner": owner,  "requestType": requestType,
               "scm":scm,"options": optionsDict}
     return params
@@ -61,7 +61,7 @@ def parseListTagsJob(message):
         name = option.getAttribute("name")
         optionsDict[name] = option.firstChild.nodeValue
     """
-    print 'Recieved New Job from  ' + owner + '.....'
+    print('Recieved New Job from  ' + owner + '.....')
     params = {"workdir": workdir,"owner": owner,  "requestType": requestType,"key":key,
               "scm":scm,"options": optionsDict}
     return params
@@ -82,7 +82,7 @@ def parseListBranchsJob(message):
         name = option.getAttribute("name")
         optionsDict[name] = option.firstChild.nodeValue
     """
-    print 'Recieved New Job from  ' + owner + '.....'
+    print('Recieved New Job from  ' + owner + '.....')
     params = {"workdir": workdir,"owner": owner,  "requestType": requestType,"scm":scm,"options": optionsDict}
     return params
 
@@ -102,7 +102,7 @@ def parseSwitchTagJob(message):
         name = option.getAttribute("name")
         optionsDict[name] = option.firstChild.nodeValue
     """
-    print 'Recieved New Job from  ' + owner + '.....'
+    print('Recieved New Job from  ' + owner + '.....')
     params = {"workdir": workdir,"owner": owner,  "requestType": requestType,"tag":tag,
               "scm":scm,"options": optionsDict}
     return params
@@ -128,7 +128,7 @@ def parseDeployJob(message):
         name = option.getAttribute("name")
         optionsDict[name] = option.firstChild.nodeValue
     """
-    print 'Recieved New Job from  ' + owner + '.....'
+    print('Recieved New Job from  ' + owner + '.....')
     params = {"workdir": workdir,"owner": owner,  "requestType": requestType,"configFile":configFile,
               "scm":scm,"options": optionsDict}
     return params
@@ -166,7 +166,7 @@ def parseSwitchCommitJob(message):
         name = option.getAttribute("name")
         optionsDict[name] = option.firstChild.nodeValue
     """
-    print 'Recieved New Job from  ' + owner + '.....'
+    print('Recieved New Job from  ' + owner + '.....')
     params = {"workdir": workdir,"owner": owner,  "requestType": requestType,"commit":commit,
               "scm":scm,"options": optionsDict}
     return params
@@ -190,7 +190,7 @@ def parseGetChangeLog(message):
         name = option.getAttribute("name")
         optionsDict[name] = option.firstChild.nodeValue
 
-    print 'Recieved New Job from  ' + owner + '.....'
+    print('Recieved New Job from  ' + owner + '.....')
     params = {"workdir": workdir, "owner": owner, "requestType": requestType,
               "scm": scm, "options": optionsDict}
     return params

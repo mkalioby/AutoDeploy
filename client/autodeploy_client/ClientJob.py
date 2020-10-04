@@ -20,7 +20,7 @@ def createGetBranchs(workdir, scm, owner,options=None):
 
     if options:
         f += '<options>'
-        for option in options.keys():
+        for option in list(options.keys()):
             f += "<option name='%s'>%s</option>" % (option, options[option])
 
         f += "</options>"
@@ -38,7 +38,7 @@ def createCloneMessage(owner, repo, workdir, key, scm, options=None):
     f += '<sshkey>%s</sshkey>'%key
     if options:
         f += '<options>'
-        for option in options.keys():
+        for option in list(options.keys()):
             f += "<option name='%s'>%s</option>" % (option, options[option])
 
         f += "</options>"
@@ -56,7 +56,7 @@ def createPullMessage(owner,workdir,key, scm, options=None):
     f += '<sshkey>%s</sshkey>'%key
     if options:
         f += '<options>'
-        for option in options.keys():
+        for option in list(options.keys()):
             f += "<option name='%s'>%s</option>" % (option, options[option])
 
         f += "</options>"
@@ -71,7 +71,7 @@ def createListTagsMessage(owner, workdir,key, scm, options=None):
 
     if options:
         f += '<options>'
-        for option in options.keys():
+        for option in list(options.keys()):
             f += "<option name='%s'>%s</option>" % (option, options[option])
 
         f += "</options>"
@@ -86,7 +86,7 @@ def createSwitchTagMessage(owner, workdir, scm, tag, options=None):
 
     if options:
         f += '<options>'
-        for option in options.keys():
+        for option in list(options.keys()):
             f += "<option name='%s'>%s</option>" % (option, options[option])
 
         f += "</options>"
@@ -98,13 +98,13 @@ def createDeployMessage(owner, workdir, scm, configFile, options=None):
     f = '<job owner="%s" type="%s" sec="%s" scm="%s">\n'%( owner,"DEPLOY",sec,scm)
     f += '<workdir>%s</workdir>'%workdir
     f += '<configFile>%s</configFile>'%configFile
-    print configFile
+    print(configFile)
     conf=open(str(configFile)).read()
     f += '<file>%s</file>'%(base64.encodestring(conf))
 
     if options:
         f += '<options>'
-        for option in options.keys():
+        for option in list(options.keys()):
             f += "<option name='%s'>%s</option>" % (option, options[option])
 
         f += "</options>"
@@ -119,7 +119,7 @@ def createListCommitsMessage(owner, workdir, key, scm, options=None):
 
     if options:
         f += '<options>'
-        for option in options.keys():
+        for option in list(options.keys()):
             f += "<option name='%s'>%s</option>" % (option, options[option])
 
         f += "</options>"
@@ -135,7 +135,7 @@ def createSwitchCommitMessage(owner, workdir, commit,scm, options=None):
 
     if options:
         f += '<options>'
-        for option in options.keys():
+        for option in list(options.keys()):
             f += "<option name='%s'>%s</option>" % (option, options[option])
 
         f += "</options>"
@@ -143,7 +143,7 @@ def createSwitchCommitMessage(owner, workdir, commit,scm, options=None):
     return f
 
 def creategetCommitsDiffMessage(owner, workdir, commit, scm,options=None):
-    print owner,workdir,commit,scm
+    print(owner,workdir,commit,scm)
     sec=base64.encodestring(importKey().encrypt(owner+str(scm)+"DIFF-COMMIT","")[0])
     #sec=base64.encodestring(importKey().encrypt(owner+scm+"DIFF-COMMIT","")[0])
     f = '<job owner="%s" type="%s" sec="%s" scm="%s">\n'%( owner,"DIFF-COMMIT",sec,scm)
@@ -152,7 +152,7 @@ def creategetCommitsDiffMessage(owner, workdir, commit, scm,options=None):
 
     if options:
         f += '<options>'
-        for option in options.keys():
+        for option in list(options.keys()):
             f += "<option name='%s'>%s</option>" % (option, options[option])
 
         f += "</options>"
@@ -165,7 +165,7 @@ def createGetChangeLog(owner,workdir,scm,options=None):
     f += '<workdir>%s</workdir>' % workdir
     if options:
         f += '<options>'
-        for option in options.keys():
+        for option in list(options.keys()):
             f += "<option name='%s'>%s</option>" % (option, options[option])
 
         f += "</options>"

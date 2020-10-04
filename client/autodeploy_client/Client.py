@@ -1,6 +1,6 @@
-import Config
-import ClientJob as Job
-import Connect
+from . import Config
+from . import ClientJob as Job
+from . import Connect
 import simplejson
 import xml.dom.minidom
 from operator import itemgetter
@@ -105,7 +105,7 @@ class Client:
                 result.append(d)
 
             except:
-                print "Error while parsing line (%s)"%line
+                print("Error while parsing line (%s)"%line)
         #print result
         return result
 

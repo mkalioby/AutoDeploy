@@ -1,8 +1,8 @@
-pycrypto
-django==1.8
-jsonfield==2.0.2
-django-tables2==1.0.4
-django-tables2-reports==0.1.3
+pycryptodome
+django==2.2
+jsonfield
+django-tables2
+django-tables2-reports
 jira
 django-mfa2
 pyyaml
