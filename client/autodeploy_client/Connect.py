@@ -1,5 +1,5 @@
 import socket, base64, time, sys, subprocess
-import Config
+from . import Config
 
 EOM = "\n\n###"
 
@@ -38,11 +38,11 @@ def waitTillAlive(domain, port):
     secondTime = False
     while (1):
             if connect(domain,port):
-                if secondTime: print "Connected To:",domain
+                if secondTime: print("Connected To:",domain)
                 break
             else:
                 time.sleep(5)
                 secondTime = True
-                print "Trying again...."
+                print("Trying again....")
     return True
 

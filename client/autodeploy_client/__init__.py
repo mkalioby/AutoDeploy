@@ -1,3 +1,3 @@
 #! /usr/bin/env python
 
-from Client import *
+from .Client import *
