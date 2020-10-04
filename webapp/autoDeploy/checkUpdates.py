@@ -30,13 +30,13 @@ from autodeploy_client import Client
 pid=getPreviousPID()
 if pid!=0:
     if check_pid(pid):
-        print "Another check is running, exiting...."
+        print("Another check is running, exiting....")
         exit(-13)
 savePID()
 
 for project in Project.objects.all():
     updateRequired=False
-    print "Checking %s on %s"%(project.name,project.default_server.DNS)
+    print("Checking %s on %s"%(project.name,project.default_server.DNS))
     c=Client(str(project.repo_type),project.default_server.ip,project.default_server.port,project.sshKey.key)
     c.Pull(project.repo,project.working_dir,project.sshKey.key)
     if project.update_style=="commit":
@@ -50,11 +50,11 @@ for project in Project.objects.all():
             if project.lastTag != tags[0]["Tag"]:
                 updateRequired=True
         else:
-            print "No Tags Found"
+            print("No Tags Found")
 
     if updateRequired:
         project.newVersion=True
         project.save()
-        print "Update Required"
+        print("Update Required")
     else:
-        print "Already up-to-date."
+        print("Already up-to-date.")
