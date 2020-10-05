@@ -111,6 +111,24 @@ def createDeployMessage(owner, workdir, scm, configFile, options=None):
     f += '</job>'
     return f
 
+def createIntegrateMessage(owner, workdir, scm, configFile, options=None):
+    sec=base64.encodestring(importKey().encrypt(owner+scm+"INTEGRATE","")[0])
+    f = '<job owner="%s" type="%s" sec="%s" scm="%s">\n'%(owner,"INTEGRATE",sec,scm)
+    f += '<workdir>%s</workdir>'%workdir
+    f += '<configFile>%s</configFile>'%configFile
+    print(configFile)
+    conf=open(str(configFile)).read()
+    f += '<file>%s</file>'%(base64.encodestring(conf))
+
+    if options:
+        f += '<options>'
+        for option in list(options.keys()):
+            f += "<option name='%s'>%s</option>" % (option, options[option])
+
+        f += "</options>"
+    f += '</job>'
+    return f
+
 def createListCommitsMessage(owner, workdir, key, scm, options=None):
     sec=base64.encodestring(importKey().encrypt(owner+scm+"LIST-COMMITS","")[0])
     f = '<job  owner="%s" type="%s" sec="%s" scm="%s">\n'%( owner,"LIST-COMMITS",sec,scm)

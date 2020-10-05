@@ -82,6 +82,14 @@ class Client:
         result = self._send(msg)
         return result
 
+    def Integrate(self, workdir, configFile, owner=''):
+        global msg
+        if owner == '':
+            owner = Config.Owner
+        msg = Job.createIntegrateMessage(workdir=workdir, configFile=configFile, scm=self.scm, owner=owner)
+        result = self._send(msg)
+        return result
+
     def CheckUp(self):
         return Connect.connect(self.server, self.port, 5)
 
