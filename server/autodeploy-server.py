@@ -9,6 +9,7 @@ from . import Request
 from . import Common
 from server.scm import Git as git
 from .deployer import autodeployer
+from .integrator import autointegrator
 import  traceback
 import yaml
 JOBS = {}
@@ -172,6 +173,15 @@ def HandleClient(clientsock):
                 try:
                     config=yaml.safe_load(open(job["configFile"]))
                     autodeployer.deploy(config,job["workdir"])
+                    res="Done"
+                except Exception as e:
+                    res="ERR:"+traceback.format_exc()
+            elif req["requestType"]=="INTEGRATE":
+                print(msg)
+                job = Request.parseIntegrateJob(msg)
+                try:
+                    config=yaml.safe_load(open(job["configFile"]))
+                    autointegrator.runTest(config,job["workdir"])
                     res="Done"
                 except Exception as e:
                     res="ERR:"+traceback.format_exc()

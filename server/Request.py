@@ -133,6 +133,25 @@ def parseDeployJob(message):
               "scm":scm,"options": optionsDict}
     return params
 
+def parseIntegrateJob(message):
+    params = {}
+    optionsDict = {}
+    doc = xml.dom.minidom.parseString(message)
+    Job = doc.getElementsByTagName('job')[0]
+    scm=Job.getAttribute("scm")
+    workdir= getValue(Job, 'workdir')
+    configFile=getValue(Job,"configFile")
+    requestType = Job.getAttribute('type')
+    owner = Job.getAttribute('owner')
+    fileBase64=getValue(Job,"file")
+    if not os.path.exists(os.path.dirname(configFile)):
+        os.makedirs(os.path.dirname(configFile))
+    open(configFile,"w").write(base64.decodestring(fileBase64))
+    print('Recieved New Job from  ' + owner + '.....')
+    params = {"workdir": workdir,"owner": owner,  "requestType": requestType,"configFile":configFile,
+              "scm":scm,"options": optionsDict}
+    return params
+
 def parseGetCommitsJob(message):
     optionsDict={}
     doc = xml.dom.minidom.parseString(message)

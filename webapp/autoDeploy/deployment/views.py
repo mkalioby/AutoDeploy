@@ -4,10 +4,7 @@ from .forms import *
 from .tables import *
 from django_tables2.export.export import TableExport
 from django.views.decorators.csrf import csrf_protect
-from django_tables2_reports.config import RequestConfigReport
 from django_tables2.config import RequestConfig
-import sys
-sys.path.append("../../../client")
 from autodeploy_client import Client
 from django.shortcuts import redirect
 from django.template.context_processors import csrf

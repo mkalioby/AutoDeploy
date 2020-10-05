@@ -31,7 +31,7 @@ def cloneCD(request):
     project = CDModels.Project.objects.get(name=request.GET["project_name"])
     c = Client(scm, ip, port, project.sshKey.key)
     res = c.Clone(project.repo, project.working_dir)
-    return HttpResponse(res)\
+    return HttpResponse(res)
 
 @csrf_protect
 def cloneCI(request):
@@ -119,6 +119,86 @@ def deploy(request):
 
                 Common.send(project.emailUsers.replace(",", ";"), "New version of %s deployed" % project.name,
                             "Dear User,<br/> This is an automated notification that a new version of %s has been deployed at: %s.<br>%s" % (
+                            project.name, link, changes_text), fromUser=None, cc="", bcc="", )
+            return HttpResponse(res + ",," + link)
+    else:
+        return HttpResponse(res)
+
+@csrf_protect
+def integrate(request):
+    from webapp.autoDeploy.autoDeploy import Common
+    server = CDModels.Server.objects.get(name=request.session["integrate_server"])
+    project = CIModels.Project.objects.get(name=request.session["integrate_project"])
+    last_Integration = None
+    try:
+        last_Integration = CIModels.Integration_server.objects.filter(server=server, project=project).latest()
+    except:
+        pass
+    D = CIModels.Integration_server()
+    c = Client(str(project.repo_type), server.ip, server.port)
+    D.project = project
+    D.server = server
+    if "tag" in request.GET:
+        res = c.SwitchTag(project.working_dir, request.GET["tag"])
+        D.update_type = "tag"
+        D.update_version = request.GET["tag"]
+        project.lastTag = request.GET["tag"]
+    elif "commit" in request.GET:
+        if request.GET["commit"] != "HEAD":
+            res = c.SwitchCommit(project.working_dir, request.GET["commit"])
+        D.update_type = "commit"
+        D.update_version = request.GET["commit"]
+        project.lastCommit = request.GET["commit"]
+    res = c.Integrate(project.working_dir, project.configFile)
+    if not "ERR:" in res:
+        D.datetime = timezone.now()
+        D.has_new_version = False
+        D.save()
+        project.lastUpdate = timezone.now()
+        project.newVersion = False
+        project.save()
+        print(project.integration_link)
+        if not "http://" in project.integration_link:
+            print("in if")
+            link = "http://" + server.DNS + project.integration_link
+            print(link)
+            if project.emailUsers != "" or project.emailUsers != " " and last_Integration != None:
+                changes = c.getChangeLog(project.working_dir, since=last_Integration.update_version,
+                                         to=request.GET["commit"])
+                changes_text = "<h3>Changes</h3><ul>"
+                found = False
+                for change in changes:
+                    if change.endswith(":"): continue
+                    changes_text += "<li>%s</li>" % change
+                    found = True
+                if found:
+                    changes_text += "</ul>"
+                else:
+                    changes_text = ""
+                Common.send(project.emailUsers.replace(",", ";"), "New version of %s integrated" % project.name,
+                            "Dear User,<br/> This is an automated notification that a new version of %s has been integrated at: %s<br/>%s" % (
+                            project.name, link, changes_text), fromUser=None, cc="", bcc="", )
+
+            return HttpResponse(res + ",," + link)
+        else:
+            print("in else")
+            link = project.integration_link
+            if project.emailUsers != "" or project.emailUsers != " ":
+                changes = c.getChangeLog(project.working_dir, since=last_Integration.update_version,
+                                         to=request.GET["commit"])
+                changes_text = "<h3>Changes</h3><ul>"
+                found = False
+                for change in changes:
+                    if change.endswith(":"): continue
+                    changes_text += "<li>%s</li>" % change
+                    found = True
+                if found:
+                    changes_text += "</ul>"
+                else:
+                    changes_text = ""
+
+                Common.send(project.emailUsers.replace(",", ";"), "New version of %s integrated" % project.name,
+                            "Dear User,<br/> This is an automated notification that a new version of %s has been integrated at: %s.<br>%s" % (
                             project.name, link, changes_text), fromUser=None, cc="", bcc="", )
             return HttpResponse(res + ",," + link)
     else:
