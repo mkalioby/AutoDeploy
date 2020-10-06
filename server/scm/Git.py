@@ -1,5 +1,5 @@
 __author__ = 'mohamed'
-from BaseSCM import BaseSCM
+from .BaseSCM import BaseSCM
 import Common
 
 class GIT(BaseSCM):

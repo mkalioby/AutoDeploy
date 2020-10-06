@@ -1,12 +1,12 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3.7
 
-import ConfigParser
+import configparser
 import os
 
 
 mainPath=os.path.dirname(os.path.abspath( __file__ ))
 
-config = ConfigParser.RawConfigParser()
+config = configparser.RawConfigParser()
 config.read(os.path.join(mainPath , 'Config.cfg'))
 
 publicKey=config.get('Server', 'publicKey')

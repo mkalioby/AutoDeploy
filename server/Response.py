@@ -4,7 +4,9 @@ EOM=Common.EOM
 def sendData(clientsock,message):
 	global EOM
 #	print message+EOM
-	clientsock.send(message+EOM)
+	if type(message) == type('a'):
+		message = message.encode("utf8")
+	clientsock.send(message+EOM.encode("utf8"))
 	
 def sendResult(clientsock):
 	folder='result/'
@@ -17,7 +19,7 @@ def sendResult(clientsock):
 		base64.encode(open(path),open(path+'64','w'))
 		f=open(path+'64','rb')
 		e = f.read()
-		print "'" + e + "'"
+		print("'" + e + "'")
 #		print base64.decodestring(e)
 		clientsock.send(e)		
 		f.close()

@@ -13,42 +13,35 @@ Including another URLconf
     1. Add an import:  from blog import urls as blog_urls
     2. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
-from django.conf.urls import include, url
+from django.urls import path as url,include
 from django.contrib import admin
-import accounts.urls
-import mfa
+from . import views,api
 import mfa.TrustedDevice
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^mfa/', include('mfa.urls')),
-    url(r'devices/add$', mfa.TrustedDevice.add,name="mfa_add_new_trusted_device"),
-    url(r'^accounts/', include(accounts.urls)),
-    url(r'^$','autodeploy.views.projects'),
-    url(r'add_project','autodeploy.views.add_project'),
-    url(r'add_server','autodeploy.views.add_server'),
-    url(r'add_sshkey','autodeploy.views.add_ssh_key'),
-    url(r'manage_sshkey','autodeploy.views.manage_ssh_keys', name='mange_sshkeys'),
-    url(r'edit_sshkey/(\w+)','autodeploy.views.edit_ssh_key'),
-    url(r'delete_sshkey/(\w+)','autodeploy.views.delete_ssh_keys'),
-    url(r'confirm_delete','autodeploy.views.confirm_delete'),
-    url(r'manage_sshkey','autodeploy.views.manage_ssh_keys', name='mange_sshkeys'),
-    url(r'clone/','autodeploy.views.clone'),
-    url(r'getDeploymentHistory/','autodeploy.views.getProjectDepHistory'),
-    url(r'deploy/','autodeploy.views.deploy'),
-    url(r'deploy2/','autodeploy.views.deploy2'),
-    url(r'deploy3/','autodeploy.views.deploy3'),
-    url(r'checkServers/','autodeploy.views.checkServersStatus'),
-    url(r'listCommits/','autodeploy.views.listCommits'),
-    url(r'manage_servers','autodeploy.views.manage_servers', name='mange_sshkeys'),
-    url(r'edit_server/(\w+)','autodeploy.views.edit_server'),
-    url(r'delete_server/(\w+)','autodeploy.views.delete_server'),
-    url(r'edit_server/(\w+)','autodeploy.views.edit_server'),
-    url(r'edit_project/(\w+)','autodeploy.views.edit_project'),
-    url(r'delete_project/(\w+)','autodeploy.views.delete_project'),
+    url(r'admin/', admin.site.urls),
+    url(r'mfa/', include(('mfa.urls'))),
+    url(r'devices/add', mfa.TrustedDevice.add,name="mfa_add_new_trusted_device"),
+    url(r'accounts/', include(('accounts.urls'))),
+    url(r'', views.index, name="index"),
+    url(r'deployment/', include(('deployment.urls'))),
+    url(r'integration/', include(('integration.urls'))),
 
-
-    url(r'api/checkServers','autodeploy.api.checkServers'),
-    url(r'api/clone','autodeploy.api.clone'),
-    url(r'api/deploy','autodeploy.api.deploy'),
+    url(r'add_server', views.add_server,name='add_server'),
+    url(r'add_sshkey', views.add_ssh_key,name='add_sshkey'),
+    url(r'manage_sshkey', views.manage_ssh_keys, name='manage_sshkey'),
+    url(r'edit_sshkey/<slug:sshKey>', views.edit_ssh_key,name='edit_sshkey'),
+    url(r'delete_sshkey/<slug:name>', views.delete_ssh_keys,name='delete_sshkey'),
+    url(r'confirm_delete', views.confirm_delete,name='confirm_delete'),
+    url(r'manage_sshkey', views.manage_ssh_keys, name='manage_sshkey'),
+    url(r'checkServers/', views.checkServersStatus,name='checkServers'),
+    url(r'manage_servers', views.manage_servers, name='manage_servers'),
+    url(r'edit_server/<slug:server>', views.edit_server,name='edit_server'),
+    url(r'delete_server/<slug:name>', views.delete_server,name='delete_server'),
+    url(r'edit_server/<slug:server>', views.edit_server,name='edit_server'),
+    url(r'api/checkServers', api.checkServers, name='api_check_servers'),
+    url(r'api/cloneCD', api.cloneCD, name='api_clone_cd'),
+    url(r'api/cloneCI', api.cloneCI, name='api_clone_ci'),
+    url(r'api/deploy', api.deploy, name='api_deploy'),
+    url(r'api/integrate', api.integrate, name='api_integrate'),
 
 ]

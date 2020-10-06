@@ -1,0 +1,10 @@
+tasks:
+  - location: /opt/git_projects/biobank/tests
+    interpreter: python3.7
+events:
+  beforeRun:
+    - location: /opt/git_projects/biobank/manage.py runserver http://127.0.0.1:8080/
+      interpreter: python3.7
+      wait: False
+  afterRun:
+    - location: "fuser -n tcp -k 8000/tcp"
