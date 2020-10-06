@@ -114,6 +114,9 @@ def HandleClient(clientsock):
                 if job["scm"] == "git":
                     gclient = git.GIT(workdir=job["workdir"])
                     cmd = gclient.get_list_branches()
+                    if b"ERR:" in cmd:
+                        Response.sendData(clientsock, cmd)
+                        return
                     result = []
                     res = Common.run(cmd)
                     if b"ERR:" in res:
