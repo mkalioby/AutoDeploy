@@ -27,9 +27,11 @@ class GIT(BaseSCM):
         return "git clone %s %s"%(self.repo,self.workdir)
     def get_pull_cmd(self):
         x = self.check_dir()
+        print("get_pull_cmd => ",x)
         if x != True:
             return x
-        return "cd %s; git pull"%self.workdir
+        return []
+        # return "cd %s; git pull"%self.workdir
     def get_list_tags_cmd(self):
         x = self.check_dir()
         if x != True:

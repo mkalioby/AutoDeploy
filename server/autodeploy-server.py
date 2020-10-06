@@ -59,7 +59,10 @@ def HandleClient(clientsock):
             chunks.append((buf).decode("utf-8"))
         if (EOM in chunks[-1]):
             msg = "".join(chunks)[:-5]
-            if debug: print(msg)
+            if debug:
+                print(msg)
+                # print("No Action")
+                # return
             if (msg == "TEST: HELLO"):
                 Response.sendData(clientsock,"Hello")
                 clientsock.close()
@@ -114,9 +117,6 @@ def HandleClient(clientsock):
                 if job["scm"] == "git":
                     gclient = git.GIT(workdir=job["workdir"])
                     cmd = gclient.get_list_branches()
-                    if b"ERR:" in cmd:
-                        Response.sendData(clientsock, cmd)
-                        return
                     result = []
                     res = Common.run(cmd)
                     if b"ERR:" in res:
@@ -192,6 +192,9 @@ def HandleClient(clientsock):
                     res="ERR:"+traceback.format_exc()
             if cmd!="":
                 print(cmd)
+                if b"ERR:" in cmd:
+                    Response.sendData(clientsock, cmd)
+                    return
                 res=Common.run(cmd)
 
             Response.sendData(clientsock,res)
