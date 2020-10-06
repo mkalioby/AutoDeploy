@@ -1,5 +1,5 @@
 __author__ = 'mohamed'
-import Client.Client as Client
+from client.autodeploy_client.Client import Client as Client
 def test_clone():
     c=Client("git")
     return c.Clone("git@github.com:mkalioby/CD_Project.git","/tmp/CD_Project/","""-----BEGIN RSA PRIVATE KEY-----
@@ -66,4 +66,4 @@ def testTagsList():
 if __name__=="__main__":
     #print test_clone()
     #print test_pull()
-    print testTagsList()
+    print(testTagsList())

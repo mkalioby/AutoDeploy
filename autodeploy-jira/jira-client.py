@@ -26,4 +26,4 @@ class jiraClient():
 
 if __name__=="__main__":
     c=jiraClient("http://shgp.kfshrc.edu.sa/jira",'mkalioby','wanted85')
-    print c.getProjectKeys()
+    print(c.getProjectKeys())

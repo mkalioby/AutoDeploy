@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3.7
 from Crypto.PublicKey import RSA
 import socket
 import threading
@@ -7,9 +7,10 @@ import config
 import Response
 import Request
 import Common
-import scm.Git as git
+from scm import Git as git
 from deployer import autodeployer
-import  traceback
+from integrator import autointegrator
+import traceback
 import yaml
 JOBS = {}
 EOM = Common.EOM
@@ -21,7 +22,7 @@ def startServer():
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     s.bind(('', port))
     s.listen(5)
-    print "Server started at " + str(port)
+    print("Server started at " + str(port))
     return s
 
 
@@ -34,7 +35,9 @@ def importKey():
 
 def validReq(req):
     key = importKey()
-    decrypted = key.decrypt(base64.decodestring(req["sec"]))
+    x=base64.decodebytes(req["sec"].encode('utf-8'))
+    decrypted = (key.decrypt(x)).decode('utf-8')
+    print(decrypted)
     if (req["Owner"]+req["scm"]+req["requestType"] == decrypted):
         return True
     else:
@@ -44,19 +47,19 @@ def validReq(req):
 def HandleClient(clientsock):
     import config
     name = threading.currentThread().getName()
-    print name, ' Started.............'
+    print(name, ' Started.............')
     global EOM
     chunks = []
     cmd=""
     while 1:
         buf = clientsock.recv(2048)
         if len(buf)<6:
-            chunks[-1]+=buf
+            chunks[-1]+=(buf).decode("utf-8")
         else:
-            chunks.append(str(buf))
+            chunks.append((buf).decode("utf-8"))
         if (EOM in chunks[-1]):
             msg = "".join(chunks)[:-5]
-            if debug: print msg
+            if debug: print(msg)
             if (msg == "TEST: HELLO"):
                 Response.sendData(clientsock,"Hello")
                 clientsock.close()
@@ -64,7 +67,7 @@ def HandleClient(clientsock):
             req = Request.parseRequest(msg)
             if (not validReq(req)):
                 Response.sendData(clientsock, "Invalid Request")
-                print "invalid request"
+                print("invalid request")
                 clientsock.close()
                 return
             if (req["requestType"]=="CLONE"):
@@ -113,10 +116,10 @@ def HandleClient(clientsock):
                     cmd = gclient.get_list_branches()
                     result = []
                     res = Common.run(cmd)
-                    if "ERR:" in res:
+                    if b"ERR:" in res:
                         Response.sendData(clientsock, res)
                     else:
-                        for line in res.split("\n"):
+                        for line in res.split(b"\n"):
                             try:
                                 if line!="":
                                     result.append(line.replace("*","").strip())
@@ -154,8 +157,8 @@ def HandleClient(clientsock):
                     cmd = gclient.get_changelog(since=job["options"]["since"], to=job["options"]["to"])
                     result = []
                     res = Common.run(cmd)
-                    print res
-                    if "ERR:" in res:
+                    print(res)
+                    if b"ERR:" in res:
                         Response.sendData(clientsock, res)
                     else:
                         for line in res.split("\n"):
@@ -164,10 +167,10 @@ def HandleClient(clientsock):
                                     result.append(line.replace("*", "").strip())
                             except:
                                 pass
-                        print result
+                        print(result)
                         Response.sendData(clientsock, "\n".join(result))
             elif req["requestType"]=="DEPLOY":
-                print msg
+                print(msg)
                 job = Request.parseDeployJob(msg)
                 try:
                     config=yaml.safe_load(open(job["configFile"]))
@@ -175,21 +178,30 @@ def HandleClient(clientsock):
                     res="Done"
                 except Exception as e:
                     res="ERR:"+traceback.format_exc()
+            elif req["requestType"]=="INTEGRATE":
+                print(msg)
+                job = Request.parseIntegrateJob(msg)
+                try:
+                    config=yaml.safe_load(open(job["configFile"]))
+                    autointegrator.runTest(config,job["workdir"])
+                    res="Done"
+                except Exception as e:
+                    res="ERR:"+traceback.format_exc()
             if cmd!="":
-                print cmd
+                print(cmd)
                 res=Common.run(cmd)
 
             Response.sendData(clientsock,res)
             if debug:
-                print "Ended,",res
+                print("Ended,",res)
             else:
-                print "Ended"
+                print("Ended")
             clientsock.close()
 
             break
 import os
 if not os.geteuid()==0:
-    print "The user should be a root."
+    print("The user should be a root.")
     exit(-6)
 f=open('/var/run/autodeploy-server', "w")
 f.write(str(os.getpid()))
@@ -201,7 +213,7 @@ i = 0
 while 1:
     clientsock, clientaddr = s.accept()
     i += 1
-    print 'Got connection from ', clientsock.getpeername()
+    print('Got connection from ', clientsock.getpeername())
     t = threading.Thread(target=HandleClient, args=[clientsock], name="Thread #" + str(i))
     t.start()
 

@@ -21,7 +21,7 @@ def run(executer,raiseError=True,id=None,wait=True):
 
         if len(stderr) > 0:
             if raiseError:
-                raise StandardError(stderr[5:])
+                raise Exception(stderr[5:])
             return "ERR:"+stderr
         return stdout
     else:

@@ -1,3 +1,3 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3.7
 
-from Client import *
+from .Client import *
