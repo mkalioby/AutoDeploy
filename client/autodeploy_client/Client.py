@@ -86,7 +86,7 @@ class Client:
         global msg
         if owner == '':
             owner = Config.Owner
-        msg = Job.createIntegrateMessage(workdir=workdir, configFile=configFile, scm=self.scm, owner=owner)
+        msg = Job.createIntegrateMessage(workdir=workdir, configFile=str(configFile), scm=self.scm, owner=owner)
         result = self._send(msg)
         return result
 

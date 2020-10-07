@@ -120,10 +120,9 @@ def createIntegrateMessage(owner, workdir, scm, configFile, options=None):
     sec = sign(owner, scm, "INTEGRATE")
     f = '<job owner="%s" type="%s" sec="%s" scm="%s">\n'%(owner,"INTEGRATE",sec,scm)
     f += '<workdir>%s</workdir>'%workdir
-    f += '<configFile>%s</configFile>'%configFile
-    print(configFile)
-    conf=open(str(configFile)).read()
-    f += '<file>%s</file>'%(base64.encodestring(conf))
+    f += '<configFile>%s</configFile>'%str(configFile)
+    conf=open(configFile).read()
+    f += '<file>%s</file>'%(conf)
 
     if options:
         f += '<options>'

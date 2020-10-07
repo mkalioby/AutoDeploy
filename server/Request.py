@@ -146,7 +146,7 @@ def parseIntegrateJob(message):
     fileBase64=getValue(Job,"file")
     if not os.path.exists(os.path.dirname(configFile)):
         os.makedirs(os.path.dirname(configFile))
-    open(configFile,"w").write(base64.decodestring(fileBase64))
+    open(configFile,"w").write(fileBase64)
     print('Recieved New Job from  ' + owner + '.....')
     params = {"workdir": workdir,"owner": owner,  "requestType": requestType,"configFile":configFile,
               "scm":scm,"options": optionsDict}

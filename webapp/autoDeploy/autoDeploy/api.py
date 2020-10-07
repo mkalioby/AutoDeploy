@@ -2,6 +2,7 @@ __author__ = 'mohamed'
 
 import deployment.models as CDModels
 import integration.models as CIModels
+import Common
 import simplejson
 import sys
 sys.path.append("../../../client")
@@ -46,7 +47,6 @@ def cloneCI(request):
 
 @csrf_protect
 def deploy(request):
-    from webapp.autoDeploy.autoDeploy import Common
     server = CDModels.Server.objects.get(name=request.session["deploy_server"])
     project = CDModels.Project.objects.get(name=request.session["deploy_project"])
     last_Deployment = None
@@ -126,7 +126,6 @@ def deploy(request):
 
 @csrf_protect
 def integrate(request):
-    from webapp.autoDeploy.autoDeploy import Common
     server = CDModels.Server.objects.get(name=request.session["integrate_server"])
     project = CIModels.CIProject.objects.get(name=request.session["integrate_project"])
     last_Integration = None

@@ -158,9 +158,8 @@ def HandleClient(clientsock):
                     gclient = git.GIT(workdir=job["workdir"])
                     cmd = gclient.get_changelog(since=job["options"]["since"], to=job["options"]["to"])
                     result = []
-                    res = Common.run(cmd)
-                    print(res)
-                    if b"ERR:" in res:
+                    res = Common.run(cmd,exitcode=True)
+                    if "ERR:" in res:
                         Response.sendData(clientsock, res)
                     else:
                         for line in res.split("\n"):
