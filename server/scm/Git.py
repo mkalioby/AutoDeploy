@@ -27,11 +27,9 @@ class GIT(BaseSCM):
         return "git clone %s %s"%(self.repo,self.workdir)
     def get_pull_cmd(self):
         x = self.check_dir()
-        print("get_pull_cmd => ",x)
         if x != True:
             return x
-        return []
-        # return "cd %s; git pull"%self.workdir
+        return "cd %s; git pull"%self.workdir
     def get_list_tags_cmd(self):
         x = self.check_dir()
         if x != True:
@@ -50,6 +48,9 @@ class GIT(BaseSCM):
             return x
         return "cd %s; git checkout tags/%s"%(self.workdir,tag)
     def get_history_cmd(self,options={},limit=0):
+        x = self.check_dir()
+        if x != True:
+            return x
         branch=options.get("branch","")
         cmd =  'cd ' + self.workdir +'; git log '
         if limit!=0: cmd+= "-n %s "%limit

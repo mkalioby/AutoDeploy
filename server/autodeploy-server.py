@@ -37,7 +37,6 @@ def validReq(req):
     key = importKey()
     x=base64.decodebytes(req["sec"].encode('utf-8'))
     decrypted = (key.decrypt(x)).decode('utf-8')
-    print(decrypted)
     if (req["Owner"]+req["scm"]+req["requestType"] == decrypted):
         return True
     else:
@@ -191,8 +190,7 @@ def HandleClient(clientsock):
                 except Exception as e:
                     res="ERR:"+traceback.format_exc()
             if cmd!="":
-                print(cmd)
-                if b"ERR:" in cmd:
+                if "ERR:" in str(cmd):
                     Response.sendData(clientsock, cmd)
                     return
                 res=Common.run(cmd)

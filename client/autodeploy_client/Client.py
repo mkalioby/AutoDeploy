@@ -101,6 +101,7 @@ class Client:
         result = []
         #HEAD = True
         for line in res.split("\n"):
+            if "ERR:" in line: return line
             if line=="": continue
             info = line.split(",,")
             try:

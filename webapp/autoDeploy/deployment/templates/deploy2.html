@@ -52,7 +52,11 @@
          </div>
          {% endif %}
      <div align="center">
-    {% render_table commits %}
+         {% if error %}
+             <div class="alert alert-danger">{{ error }}</div>
+         {% else %}
+             {% render_table commits %}
+         {% endif %}
      </div>
  {% endif %}
     {% endif %}

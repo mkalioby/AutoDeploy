@@ -121,9 +121,9 @@ def listTags(request, server):
     res = c.ListTags(project.working_dir)
     print(res)
     table = TagTable(res)
-    table_to_report = RequestConfig(request, paginate={"per_page": 15}).configure(table)
-    if table_to_report:
-        return create_report_http_response(table_to_report, request)
+    # table_to_report = RequestConfig(request, paginate={"per_page": 15}).configure(table)
+    # if table_to_report:
+    #     return create_report_http_response(table_to_report, request)
     return render(request,"deploy2.html", {"project": project, "count": len(res), "mode": "tags", "tags": table})
 
 
@@ -162,8 +162,10 @@ def listCommits(request, filter=None):
     res = None
     branches = []
     c = None
+    error=True
     server = None
     project = None
+    context = {"project": project, "mode": "commits", "server": server}
     project = Project.objects.get(name=request.session["deploy_project"])
     if filter == None: filter = project.default_branch if project.default_branch not in ("", None) else None
     print(request.GET.get("refresh", "False"))
@@ -191,13 +193,18 @@ def listCommits(request, filter=None):
     else:
         branches = request.session["branchs"]
         request.session["branchs"] = branches
-    table = CommitTable(res)
-    table_to_report = RequestConfig(request, paginate={"per_page": 15}).configure(table)
-    if table_to_report:
-        return create_report_http_response(table_to_report, request)
-    return render(request,"deploy2.html",
-                              {"project": project, "mode": "commits", "commits": table, "branchs": branches,
-                               "current_branch": filter})
+    context["branchs"] = branches
+    if not "ERR:" in res:
+        table = CommitTable(res)
+        context["commits"] = table
+    else:
+        context["error"] = res
+    # table_to_report = RequestConfig(request, paginate={"per_page": 15}).configure(table)
+    # if table_to_report:
+    #     return create_report_http_response(table_to_report, request)
+
+    context["current_branch"] = filter
+    return render(request,"deploy2.html",context)
 
 
 @login_required(redirect_field_name="redirect")

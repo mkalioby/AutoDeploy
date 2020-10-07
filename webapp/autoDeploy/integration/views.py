@@ -185,8 +185,10 @@ def listCICommits(request, filter=None):
     res = None
     branches = []
     c = None
+    error=True
     server = None
     project = None
+    context = {"project": project, "mode": "commits", "server": server}
     project = CIProject.objects.get(name=request.session["integrate_project"])
     if filter == None: filter = project.default_branch if project.default_branch not in ("", None) else None
     print(request.GET.get("refresh", "False"))
@@ -213,8 +215,15 @@ def listCICommits(request, filter=None):
     else:
         branches = request.session["branchs"]
         request.session["branchs"] = branches
-    table = CommitTable(res)
+    context["branchs"]=branches
+    if not "ERR:" in res:
+        table = CommitTable(res)
+        context["commits"]=table
+    else:
+        context["error"] =  res
     # table_to_report = RequestConfig(request, paginate={"per_page": 15}).configure(table)
     # if table_to_report:
     #     return create_report_http_response(table_to_report, request)
-    return render(request,"integrate2.html",{"project": project, "mode": "commits","server":server, "commits": table, "branchs": branches,"current_branch": filter})
+
+    context["current_branch"] = filter
+    return render(request,"integrate2.html",context)
