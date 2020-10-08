@@ -14,6 +14,7 @@ from django.shortcuts import redirect,reverse
 from django.template.context_processors import csrf
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
+from autoDeploy import settings
 
 @login_required(redirect_field_name="redirect")
 def ci_projects(request):
@@ -143,7 +144,7 @@ def edit_ci_project(request, project):
     if request.method == "GET":
         project = CIProject.objects.get(name=project)
         form = CIProjectsForm(instance=project)
-        return render(request,"add_ciproject.html", {"form": form, "edit": True})
+        return render(request,"add_ciproject.html", {"form": form, "edit": True,'project':project})
 
 
 def delete_ci_project(request, name):

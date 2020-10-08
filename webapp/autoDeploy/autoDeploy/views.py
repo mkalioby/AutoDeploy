@@ -8,6 +8,7 @@ from deployment.views import projects
 from deployment.models import *
 from integration.models import *
 from django.shortcuts import render
+from django.http import HttpResponse
 
 @login_required(redirect_field_name="redirect")
 def index(request):
@@ -151,3 +152,14 @@ def checkServersStatus(request):
     return render(request,"base.html",
                               {"title": "Servers Health", "function": "checkServers", "dataType": "JSON", "data": "",
                                "ajax": True})
+
+
+@login_required(redirect_field_name="redirect")
+def download_config_file(request):
+    file = request.GET["file"]
+    import mimetypes
+    ctype = mimetypes.guess_type(file)
+    response = HttpResponse(content_type=ctype)
+    response['Content-Disposition'] = 'attachment; filename=%s' % (file.split("/")[-1])
+    response.content = open(file).read()
+    return response

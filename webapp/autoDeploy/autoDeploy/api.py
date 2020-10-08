@@ -2,7 +2,7 @@ __author__ = 'mohamed'
 
 import deployment.models as CDModels
 import integration.models as CIModels
-import Common
+from . import Common
 import simplejson
 import sys
 sys.path.append("../../../client")

@@ -38,6 +38,7 @@ class CIProjectsForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CIProjectsForm, self).__init__(*args, **kwargs)
         instance = getattr(self, 'instance', None)
+        self.fields['cfile'].widget.attrs['class'] = 'file_field'
         if instance and instance.pk:
             self.fields['name'].widget.attrs['readonly'] = True
 

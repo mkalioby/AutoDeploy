@@ -148,7 +148,7 @@ def edit_project(request, project):
     if request.method == "GET":
         project = Project.objects.get(name=project)
         form = ProjectsForm(instance=project)
-        return render(request,"add_project.html", {"form": form, "edit": True})
+        return render(request,"add_project.html", {"form": form, "edit": True,'project':project})
 
 
 def delete_project(request, name):

@@ -1,12 +1,28 @@
 {% extends "base.html" %}
 {% block content %}
+
+    <script type="text/javaScript" xmlns="http://www.w3.org/1999/html">
+        $(document).ready(function () {
+            if ('{{ edit }}' == "True") {
+                $('#id_cfile').removeAttr('required');
+                var dlink = "<a style='display: inline-block;' class='btn btn-primary' href='{% url "download_config_file" %}?file={{ project.configFile.path }}' >Download File</a>";
+                $('.file_field').parent().addClass("flex");
+                $('.file_field').parent().append(dlink);
+
+            }
+        })
+    </script>
     <br/>
     {% if done %}
         <div align="center">
             <div class="alert alert-success" style="width: 250px">Project Saved</div>
         </div>
     {% endif %}
-    <div align="center"><h1>Add Project</h1></div>
+    {% if edit %}
+        <div align="center"><h1>Edit Project</h1></div>
+    {% else %}
+        <div align="center"><h1>Add Project</h1></div>
+    {% endif %}
     {% if error %}
         <div class="alert alert-danger">{{ form.errors }}</div>
     {% endif %}
@@ -24,7 +40,7 @@
             {% else %}
                 <button class="btn btn-primary">Add Project</button>
             {% endif %}
+        </div>
     </form>
-    </div>
 
 {% endblock %}

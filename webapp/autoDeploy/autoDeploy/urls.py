@@ -38,6 +38,7 @@ urlpatterns = [
     url(r'edit_server/<slug:server>', views.edit_server,name='edit_server'),
     url(r'delete_server/<slug:name>', views.delete_server,name='delete_server'),
     url(r'edit_server/<slug:server>', views.edit_server,name='edit_server'),
+    url(r'download_config_file/', views.download_config_file,name='download_config_file'),
     url(r'api/checkServers', api.checkServers, name='api_check_servers'),
     url(r'api/cloneCD', api.cloneCD, name='api_clone_cd'),
     url(r'api/cloneCI', api.cloneCI, name='api_clone_ci'),

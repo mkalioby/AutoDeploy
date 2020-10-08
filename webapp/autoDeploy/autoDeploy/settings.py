@@ -142,7 +142,7 @@ STATIC_ROOT=BASE_DIR+'/static/'
 PROJECTS_DIR='/opt/autodeploy/projects/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = '/media/'
+MEDIA_URL = BASE_URL + 'media/'
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_COOKIE_AGE = 30000  # time in seconds
