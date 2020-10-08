@@ -30,7 +30,9 @@ def run(executer, raiseError=True,exitcode=False, id=None, wait=True):
         return "ERR:" + str(stderr)
     if stdout == "": return "Done"
     if exitcode:
-        return p.returncode
+        if p.returncode not in [0,'0']:
+            return [p.returncode,"ERR:" + str(stderr)]
+        return [p.returncode,stdout]
     return stdout
 
 
@@ -65,15 +67,16 @@ def runEvents(config, workdir, event, raiseErrorOnStdErr=True):
 def handleRuns(tasks, workdir):
     for task in tasks:
         cmd = "%s %s" % (task['interpreter'], task["location"])
+        print("TASK : ",cmd)
         task_reult = run(cmd,exitcode=True)
-        if task_reult not in [0,'0']:
-            print("Task Failed")
-            break
-        else:
-            print("Task Success")
+        print("RESULT : ",task_reult[0])
+        if task_reult[0] not in [0,'0']:
+            return task_reult[1]
+    return "Done"
 
 
 def runTest(config, workdir=".", raiseErrorOnStdErr=True):
+    result = 'Done'
     printNotication("Running Before Run scripts:")
     runEvents(config, workdir, "beforeRun", raiseErrorOnStdErr)
 
@@ -83,13 +86,13 @@ def runTest(config, workdir=".", raiseErrorOnStdErr=True):
         if not slient: print("  No tasks to run ... skipping")
     else:
         if not slient: print("     Running tasks")
-        handleRuns(config['tasks'], workdir)
+        result = handleRuns(config['tasks'], workdir)
         if not slient: print("     Tasks done")
     printNotication("Test Scripts Done.......")
 
     printNotication("Starting After Install Scripts")
     runEvents(config, workdir, "afterRun", raiseErrorOnStdErr)
-    return "Done"
+    return result
 
 
 if __name__ == "__main__":

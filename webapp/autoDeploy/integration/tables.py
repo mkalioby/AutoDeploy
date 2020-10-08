@@ -57,6 +57,6 @@ class TagTable(Table.Table):
 class IntegrationHistory(ExportMixin, tables.Table):
     class Meta:
         model = Integration_server
-        fields = ["datetime", "server", "update_type", "update_version", "has_new_version"]
-        sequence = ["datetime", "server", "update_type", "update_version", "has_new_version"]
+        fields = ["datetime", "server", "update_type", "update_version", "done"]
+        sequence = ["datetime", "server", "update_type", "update_version", "done"]
         attrs = {"class": "table table-striped"}

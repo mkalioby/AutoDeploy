@@ -117,11 +117,11 @@ def HandleClient(clientsock):
                     gclient = git.GIT(workdir=job["workdir"])
                     cmd = gclient.get_list_branches()
                     result = []
-                    res = Common.run(cmd)
-                    if b"ERR:" in res:
+                    res = Common.run(cmd).decode("utf-8")
+                    if "ERR:" in res:
                         Response.sendData(clientsock, res)
                     else:
-                        for line in res.split(b"\n"):
+                        for line in res.split("\n"):
                             try:
                                 if line!="":
                                     result.append(line.replace("*","").strip())
@@ -158,7 +158,7 @@ def HandleClient(clientsock):
                     gclient = git.GIT(workdir=job["workdir"])
                     cmd = gclient.get_changelog(since=job["options"]["since"], to=job["options"]["to"])
                     result = []
-                    res = Common.run(cmd,exitcode=True)
+                    res = Common.run(cmd).decode("utf-8")
                     if "ERR:" in res:
                         Response.sendData(clientsock, res)
                     else:
@@ -184,8 +184,7 @@ def HandleClient(clientsock):
                 job = Request.parseIntegrateJob(msg)
                 try:
                     config=yaml.safe_load(open(job["configFile"]))
-                    autointegrator.runTest(config,job["workdir"])
-                    res="Done"
+                    res = autointegrator.runTest(config,job["workdir"])
                 except Exception as e:
                     res="ERR:"+traceback.format_exc()
             if cmd!="":

@@ -1,8 +1,14 @@
 tasks:
-  - location: /opt/git_projects/biobank/tests
+  - location: /opt/git_projects/biobank/manage.py test --pattern="test_*.py"
     interpreter: python3.7
 events:
   beforeRun:
+    - location: /opt/git_projects/biobank/manage.py migrate
+      interpreter: python3.7
+      wait: False
+    - location: /opt/git_projects/biobank/manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_superuser('Admin', 'admin@example.com', 'bio123')"
+      interpreter: python3.7
+      wait: False
     - location: /opt/git_projects/biobank/manage.py runserver http://127.0.0.1:8080/
       interpreter: python3.7
       wait: False

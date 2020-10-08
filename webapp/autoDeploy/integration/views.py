@@ -169,12 +169,6 @@ def getProjectIntHistory(request):
     for integration in integrations:
         if not details and integration.server.name in servers: continue
         servers.append(integration.server.name)
-        c = Client(integration.project.repo_type, integration.server.ip, integration.server.port)
-        if integration.update_type == "commit":
-            commits = c.getCommitsDiff(integration.project.working_dir, integration.update_version)
-            print(commits)
-            integration.has_new_version = len(commits)
-            print(integration.server, integration.has_new_version)
         res.append(integration)
     table = IntegrationHistory(res)
     RequestConfig(request, paginate={"per_page": 15}).configure(table)
@@ -189,7 +183,6 @@ def listCICommits(request, filter=None):
     error=True
     server = None
     project = None
-    context = {"project": project, "mode": "commits", "server": server}
     project = CIProject.objects.get(name=request.session["integrate_project"])
     if filter == None: filter = project.default_branch if project.default_branch not in ("", None) else None
     print(request.GET.get("refresh", "False"))
@@ -216,6 +209,7 @@ def listCICommits(request, filter=None):
     else:
         branches = request.session["branchs"]
         request.session["branchs"] = branches
+    context = {"project": project, "mode": "commits", "server": server}
     context["branchs"]=branches
     if not "ERR:" in res:
         table = CommitTable(res)

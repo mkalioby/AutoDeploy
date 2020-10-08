@@ -6,6 +6,11 @@ def send(to,subject,body,fromUser=None,cc="",bcc="",):
     From = "%s<%s>" % (fromUser, settings.EMAIL_HOST_USER)
     if fromUser == None:
         From = "%s<%s>" % (settings.EMAIL_FROM, settings.EMAIL_HOST_USER)
+    #     From = "%s <%s>" % (settings.EMAIL_FROM, settings.EMAIL_HOST_USER)
+    # elif "@" in fromUser:
+    #     From = fromUser
+    # else:
+    #     From = "%s <%s>" % (fromUser, settings.EMAIL_HOST_USER)
     if type(to) != type([]):
         to = [to]
     email = EmailMessage(

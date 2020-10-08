@@ -40,7 +40,7 @@ class Integration_server(models.Model):
     has_new_version = models.IntegerField(verbose_name="Updates Behind")
     project = models.ForeignKey(CIProject,on_delete=models.DO_NOTHING)
     server = models.ForeignKey('deployment.Server',on_delete=models.DO_NOTHING)
-    deployed = models.BooleanField(default=True)
+    done = models.BooleanField(default=False)
 
     class Meta:
         get_latest_by = "id"
