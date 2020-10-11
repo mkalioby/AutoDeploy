@@ -26,12 +26,31 @@ class CIProject(models.Model):
     class Meta:
         db_table = 'Integration_Project'
 
+    def status(self):
+        last_ci = Integration_server.objects.filter(update_version=self.lastCommit).order_by('-id')
+        return last_ci[0].status.description if last_ci.exists() else None
+
     def __unicode__(self):
         return self.name
 
     def __str__(self):
         return self.name
 
+
+class CIntegrationStatus(models.Model):
+    code = models.IntegerField(db_column='Code', primary_key=True)
+    description = models.CharField(db_column='Description', max_length=50, blank=True, unique=True)
+
+    def __unicode__(self):
+        return self.description
+
+    def __str__(self):
+        return self.description
+
+    class Meta:
+        app_label = 'integration'
+        db_table = 'C_Integration_Status'
+        ordering = ['code']
 
 class Integration_server(models.Model):
     datetime = models.DateTimeField()
@@ -40,7 +59,7 @@ class Integration_server(models.Model):
     has_new_version = models.IntegerField(verbose_name="Updates Behind")
     project = models.ForeignKey(CIProject,on_delete=models.DO_NOTHING)
     server = models.ForeignKey('deployment.Server',on_delete=models.DO_NOTHING)
-    done = models.BooleanField(default=False)
+    status = models.ForeignKey(CIntegrationStatus,on_delete=models.DO_NOTHING,default=0)
 
     class Meta:
         get_latest_by = "id"

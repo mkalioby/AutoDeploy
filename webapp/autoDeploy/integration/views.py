@@ -13,7 +13,7 @@ from autodeploy_client import Client
 from django.shortcuts import redirect,reverse
 from django.template.context_processors import csrf
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,HttpResponse
 from autoDeploy import settings
 
 @login_required(redirect_field_name="redirect")
@@ -173,6 +173,24 @@ def getProjectIntHistory(request):
     table = IntegrationHistory(res)
     RequestConfig(request, paginate={"per_page": 15}).configure(table)
     return render(request,"modifyci.html", {"table": table, "name": "Integration for %s" % project_name, "text": text})
+
+
+def getHistory(request):
+    commit = request.GET["commit"]
+    integrations = Integration_server.objects.filter(update_version=commit).order_by("-datetime")[:5]
+    html = """<table id="%s" class="table table-striped table-hover table-responsive"><tbody><tr>""" % (commit)
+    for item in integrations:
+        html += """
+        <tr>
+            <td>%s</td>
+            <td>%s</td>
+            <td>%s</td>
+            <td>%s</td>
+            <td><span class="%s-dot" title='%s'></span></td>
+        </tr>
+        """ % (item.datetime, item.server, item.update_type, item.update_version, item.status,item.status)
+    html += ' </tbody></table>'
+    return HttpResponse(html)
 
 @login_required(redirect_field_name="redirect")
 def listCICommits(request, filter=None):
