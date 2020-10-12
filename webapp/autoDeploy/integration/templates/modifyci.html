@@ -8,11 +8,13 @@
                 dataType: "html",
                 data: {"commit": commit},
                 success: function (data) {
-                    if ($("#" + commit).length > 0) {
-                        $("#" + commit).remove()
+                    let myTable = $("#" + commit);
+                    if (myTable.length > 0) {
+                        $('[id]').each(function () {
+                            $('[id="' + commit + '"]').remove();
+                        });
                     }else{
-                        $(elem).parent().addClass("flex");
-                        $(elem).parents("td").append(data);
+                        $(elem).parents("tr").after(data);
                     }
                 }
             })

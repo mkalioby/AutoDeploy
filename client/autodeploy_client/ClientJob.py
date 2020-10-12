@@ -116,9 +116,10 @@ def createDeployMessage(owner, workdir, scm, configFile, options=None):
     f += '</job>'
     return f
 
-def createIntegrateMessage(owner, workdir, scm, configFile, options=None):
+def createIntegrateMessage(jobID,owner, workdir, scm, configFile, options=None):
     sec = sign(owner, scm, "INTEGRATE")
     f = '<job owner="%s" type="%s" sec="%s" scm="%s">\n'%(owner,"INTEGRATE",sec,scm)
+    f += '<jobID>%s</jobID>'%jobID
     f += '<workdir>%s</workdir>'%workdir
     f += '<configFile>%s</configFile>'%str(configFile)
     conf=open(configFile).read()

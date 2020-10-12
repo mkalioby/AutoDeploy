@@ -4,12 +4,31 @@ import sys
 import os
 import yaml
 import subprocess
+import json
 
 
 EOM = "\n\n###"
 debug = False
 slient = False
 
+def update_database(jobID,result):
+    import pymysql
+    db = pymysql.connect("127.0.0.1", "root", "password", "autodeploy")
+    cursor = db.cursor()
+    success = True
+    for k,v in result.items():
+        if v['exit_code'] not in [0, '0']:
+            success = False
+    sql = """UPDATE Integration_Server SET `result` = %s, `status_id` = %s WHERE `id` = '%s';""" % (result, 2 if success else 3, jobID)
+    print("Query => ",sql)
+    try:
+        cursor.execute(sql)
+        db.commit()
+    except Exception as exp:
+        import traceback
+        print(traceback.format_exc())
+        db.rollback()
+    db.close()
 
 def run(executer, raiseError=True,exitcode=False, id=None, wait=True):
     PIPE = subprocess.PIPE
@@ -32,7 +51,7 @@ def run(executer, raiseError=True,exitcode=False, id=None, wait=True):
     if exitcode:
         if p.returncode not in [0,'0']:
             return [p.returncode,"ERR:" + str(stderr)]
-        return [p.returncode,stdout]
+        return [p.returncode,stdout.decode('utf-8')]
     return stdout
 
 
@@ -65,18 +84,16 @@ def runEvents(config, workdir, event, raiseErrorOnStdErr=True):
 
 
 def handleRuns(tasks, workdir):
+    result = {}
     for task in tasks:
         cmd = "%s %s" % (task['interpreter'], task["location"])
         print("TASK : ",cmd)
-        task_reult = run(cmd,exitcode=True)
-        print("RESULT : ",task_reult[0])
-        if task_reult[0] not in [0,'0']:
-            return task_reult[1]
-    return "Done"
+        task_result = run(cmd,exitcode=True)
+        print("RESULT : ",task_result[0])
+        result[cmd] = {"exit_code": task_result[0], "result": task_result[1]}
+    return result
 
-
-def runTest(config, workdir=".", raiseErrorOnStdErr=True):
-    result = 'Done'
+def runTest(config,workdir=".",raiseErrorOnStdErr=True,jobID=None):
     printNotication("Running Before Run scripts:")
     runEvents(config, workdir, "beforeRun", raiseErrorOnStdErr)
 
@@ -87,12 +104,14 @@ def runTest(config, workdir=".", raiseErrorOnStdErr=True):
     else:
         if not slient: print("     Running tasks")
         result = handleRuns(config['tasks'], workdir)
+        if jobID:
+            update_database(jobID,result)
         if not slient: print("     Tasks done")
     printNotication("Test Scripts Done.......")
 
     printNotication("Starting After Install Scripts")
     runEvents(config, workdir, "afterRun", raiseErrorOnStdErr)
-    return result
+    return "Done"
 
 
 if __name__ == "__main__":

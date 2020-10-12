@@ -15,6 +15,8 @@ from django.template.context_processors import csrf
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect,HttpResponse
 from autoDeploy import settings
+import simplejson
+import ast
 
 @login_required(redirect_field_name="redirect")
 def ci_projects(request):
@@ -127,18 +129,15 @@ def listTags(request, server):
 
 @login_required(redirect_field_name="redirect")
 def integrate3(request):
+    from autoDeploy.api import integrate_core
     if request.method == "GET":
-        token = csrf(request).get("csrf_token")
-        if "tag" in request.GET:
-            data = '{tag:"%s",csrfmiddlewaretoken:"%s"}'%(request.GET["tag"],token)
-        elif "commit" in request.GET:
-            data = '{"commit":"%s",csrfmiddlewaretoken:"%s"}'%(request.GET["commit"],token)
-
+        commit = request.GET.get("commit", None)
+        tag = request.GET.get("tag", None)
         project = CIProject.objects.get(name=request.session["integrate_project"])
         server = Server.objects.get(name=request.session["integrate_server"])
-        return render(request,"base.html", {"project":project, "ajax": True, "data": data, "dataType": "html", "function": "integrate",
-                                                "title": "integrateing %s on %s" % (project.name, server.name)})
-
+        integrate_core(server,project,tag,commit)
+        url = reverse('getIntegrationHistory')+"?project="+project.name
+        return HttpResponseRedirect(url)
 
 def edit_ci_project(request, project):
     if request.method == "GET":
@@ -178,18 +177,31 @@ def getProjectIntHistory(request):
 def getHistory(request):
     commit = request.GET["commit"]
     integrations = Integration_server.objects.filter(update_version=commit).order_by("-datetime")[:5]
-    html = """<table id="%s" class="table table-striped table-hover table-responsive"><tbody><tr>""" % (commit)
+    html = """<tr id="%s">
+        <th>Datetime</th>
+        <th>Server</th>
+        <th>Update type</th>
+        <th>Update version</th>
+        <th>Result</th>
+        <th>Status</th>
+    </tr>
+    """%(commit)
     for item in integrations:
+        result = "<ul>"
+        res = simplejson.loads(item.result)
+        for k,v in res.items():
+            result += "<li>" + v['result'] + "</li>"
+        result += "</ul>"
         html += """
-        <tr>
+        <tr id="%s">
+            <td>%s</td>
             <td>%s</td>
             <td>%s</td>
             <td>%s</td>
             <td>%s</td>
             <td><span class="%s-dot" title='%s'></span></td>
         </tr>
-        """ % (item.datetime, item.server, item.update_type, item.update_version, item.status,item.status)
-    html += ' </tbody></table>'
+        """ % (commit,item.datetime.strftime("%Y-%m-%d %H:%M:%S"), item.server, item.update_type, item.update_version,result,item.status,item.status)
     return HttpResponse(html)
 
 @login_required(redirect_field_name="redirect")

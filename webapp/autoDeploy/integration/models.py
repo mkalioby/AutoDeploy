@@ -1,6 +1,7 @@
 from django.db import models
 from datetime import datetime
 from django.contrib.auth.models import User
+from jsonfield import JSONField
 
 
 class CIProject(models.Model):
@@ -60,6 +61,7 @@ class Integration_server(models.Model):
     project = models.ForeignKey(CIProject,on_delete=models.DO_NOTHING)
     server = models.ForeignKey('deployment.Server',on_delete=models.DO_NOTHING)
     status = models.ForeignKey(CIntegrationStatus,on_delete=models.DO_NOTHING,default=0)
+    result = JSONField(db_column="result",default="")
 
     class Meta:
         get_latest_by = "id"

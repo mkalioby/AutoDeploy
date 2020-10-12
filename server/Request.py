@@ -140,6 +140,7 @@ def parseIntegrateJob(message):
     Job = doc.getElementsByTagName('job')[0]
     scm=Job.getAttribute("scm")
     workdir= getValue(Job, 'workdir')
+    jobID=getValue(Job,"jobID")
     configFile=getValue(Job,"configFile")
     requestType = Job.getAttribute('type')
     owner = Job.getAttribute('owner')
@@ -148,7 +149,7 @@ def parseIntegrateJob(message):
         os.makedirs(os.path.dirname(configFile))
     open(configFile,"w").write(fileBase64)
     print('Recieved New Job from  ' + owner + '.....')
-    params = {"workdir": workdir,"owner": owner,  "requestType": requestType,"configFile":configFile,
+    params = {"jobID":jobID,"workdir": workdir,"owner": owner,  "requestType": requestType,"configFile":configFile,
               "scm":scm,"options": optionsDict}
     return params
 

@@ -82,11 +82,11 @@ class Client:
         result = self._send(msg)
         return result
 
-    def Integrate(self, workdir, configFile, owner=''):
+    def Integrate(self,jobID, workdir, configFile, owner=''):
         global msg
         if owner == '':
             owner = Config.Owner
-        msg = Job.createIntegrateMessage(workdir=workdir, configFile=str(configFile), scm=self.scm, owner=owner)
+        msg = Job.createIntegrateMessage(jobID=jobID,workdir=workdir, configFile=str(configFile), scm=self.scm, owner=owner)
         result = self._send(msg)
         return result
 

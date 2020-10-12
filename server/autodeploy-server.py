@@ -91,7 +91,7 @@ def HandleClient(clientsock):
                     gclient.setKey(job["key"])
                     cmd=gclient.get_list_tags_cmd()
                     result=[]
-                    res=Common.run(cmd)
+                    res=Common.run(cmd).decode("utf-8")
                     if "ERR:" in res:
                         Response.sendData(clientsock,res)
                     else:
@@ -184,7 +184,7 @@ def HandleClient(clientsock):
                 job = Request.parseIntegrateJob(msg)
                 try:
                     config=yaml.safe_load(open(job["configFile"]))
-                    res = autointegrator.runTest(config,job["workdir"])
+                    res = autointegrator.runTest(config,job["workdir"],jobID=job['jobID'])
                 except Exception as e:
                     res="ERR:"+traceback.format_exc()
             if cmd!="":

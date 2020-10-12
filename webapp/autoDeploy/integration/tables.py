@@ -38,7 +38,7 @@ class CommitTable(Table.Table):
 
 
 class TagTable(Table.Table):
-    ID = Table.TemplateColumn("<a href='{% url 'integrate' %}?tag={{record.Tag}}'>{{record.Tag}}</a>",verbose_name="Tag")
+    ID = Table.TemplateColumn("<a href='{% url 'integrate3' %}?tag={{record.Tag}}'>{{record.Tag}}</a>",verbose_name="Tag")
     Tagger = Table.Column()
     Date = Table.Column()
     Commit = Table.Column()
