@@ -184,9 +184,9 @@ def HandleClient(clientsock):
                 job = Request.parseIntegrateJob(msg)
                 try:
                     config=yaml.safe_load(open(job["configFile"]))
+                    Response.sendData(clientsock, "Queued")
                     autointegrator.runTest(config,job["workdir"],jobID=job['jobID'])
                     res = "Done"
-                    print("return done from INTEGRATE ======================================================================")
                 except Exception as e:
                     res="ERR:"+traceback.format_exc()
             if cmd!="":

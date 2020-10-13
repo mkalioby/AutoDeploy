@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.RunSQL("""
-            INSERT INTO C_Integration_Status (`Code`,`Description`) VALUES (0,'Pending') ;
+            INSERT INTO C_Integration_Status (`Code`,`Description`) VALUES (0,'Queued') ;
             INSERT INTO C_Integration_Status (`Code`,`Description`) VALUES (1,'Running') ;
             INSERT INTO C_Integration_Status (`Code`,`Description`) VALUES (2,'Success') ;
             INSERT INTO C_Integration_Status (`Code`,`Description`) VALUES (3,'Failed') ;

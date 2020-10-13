@@ -98,28 +98,24 @@ def handleRuns(tasks, workdir):
 
 @contextmanager
 def runTest(config,workdir=".",raiseErrorOnStdErr=True,jobID=None):
-    try:
-        print("return done from runTest ======================================================================")
-        raise
-    finally:
-        printNotication("Running Before Run scripts:")
-        runEvents(config, workdir, "beforeRun", raiseErrorOnStdErr)
+    printNotication("Running Before Run scripts:")
+    runEvents(config, workdir, "beforeRun", raiseErrorOnStdErr)
 
-        printNotication("Starting Test Scripts")
+    printNotication("Starting Test Scripts")
 
-        if not "tasks" in config.keys():
-            if not slient: print("  No tasks to run ... skipping")
-        else:
-            if not slient: print("     Running tasks")
-            output=handleRuns(config['tasks'], workdir)
-            if jobID:
-                result = {"jobID":jobID,"output":output}
-                update_database(result)
-            if not slient: print("     Tasks done")
-        printNotication("Test Scripts Done.......")
+    if not "tasks" in config.keys():
+        if not slient: print("  No tasks to run ... skipping")
+    else:
+        if not slient: print("     Running tasks")
+        output=handleRuns(config['tasks'], workdir)
+        if jobID:
+            result = {"jobID":jobID,"output":output}
+            update_database(result)
+        if not slient: print("     Tasks done")
+    printNotication("Test Scripts Done.......")
 
-        printNotication("Starting After Install Scripts")
-        runEvents(config, workdir, "afterRun", raiseErrorOnStdErr)
+    printNotication("Starting After Install Scripts")
+    runEvents(config, workdir, "afterRun", raiseErrorOnStdErr)
 
 
 if __name__ == "__main__":

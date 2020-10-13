@@ -151,9 +151,11 @@ def integrate_core(server,project,tag=None,commit=None):
         project.lastCommit = commit
     D.datetime = timezone.now()
     D.has_new_version = False
-    D.status_id = 1  # Running
     D.save()
-    c.Integrate(D.pk, project.working_dir, project.configFile)
+    res = c.Integrate(D.pk, project.working_dir, project.configFile)
+    if "Queued" in res:
+        D.status_id = 1  # Running
+        D.save()
 
 def decrypt_result(msg):
     from autodeploy_client.Config import privateKey
