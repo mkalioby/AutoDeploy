@@ -44,5 +44,6 @@ urlpatterns = [
     url(r'api/cloneCI', api.cloneCI, name='api_clone_ci'),
     url(r'api/deploy', api.deploy, name='api_deploy'),
     url(r'api/integrate', api.integrate, name='api_integrate'),
+    url(r'api/ris', api.receive_integrate_result, name='api_ris'),
 
 ]

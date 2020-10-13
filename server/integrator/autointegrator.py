@@ -5,30 +5,33 @@ import os
 import yaml
 import subprocess
 import json
+import config
+import requests
+from jose import jwt
+from contextlib import contextmanager
 
 
 EOM = "\n\n###"
 debug = False
 slient = False
 
-def update_database(jobID,result):
-    import pymysql
-    db = pymysql.connect("127.0.0.1", "root", "password", "autodeploy")
-    cursor = db.cursor()
-    success = True
-    for k,v in result.items():
-        if v['exit_code'] not in [0, '0']:
-            success = False
-    sql = """UPDATE Integration_Server SET `result` = %s, `status_id` = %s WHERE `id` = '%s';""" % (result, 2 if success else 3, jobID)
-    print("Query => ",sql)
+def encrypt_result(msg):
+    file = open(config.publicKey, 'r')
+    st = "".join(file.readlines())
+    return jwt.encode(msg, st, algorithm="RS256")
+
+def update_database(result):
+    client_url = config.client_url + "api/ris"
     try:
-        cursor.execute(sql)
-        db.commit()
+        serverStatus = requests.get(client_url).status_code
+        if serverStatus == 200:
+            encoded_token = encrypt_result(result)
+            r = requests.post(client_url, data=json.dumps(encoded_token))  # TODO : If the client is die what to do ?
+            if not slient: print("Sent : ", True if r.status_code == 200 else False)
     except Exception as exp:
         import traceback
-        print(traceback.format_exc())
-        db.rollback()
-    db.close()
+        if not slient: print("Sent : ", False, " ", exp)
+        if not slient: print(traceback.format_exc())
 
 def run(executer, raiseError=True,exitcode=False, id=None, wait=True):
     PIPE = subprocess.PIPE
@@ -93,25 +96,30 @@ def handleRuns(tasks, workdir):
         result[cmd] = {"exit_code": task_result[0], "result": task_result[1]}
     return result
 
+@contextmanager
 def runTest(config,workdir=".",raiseErrorOnStdErr=True,jobID=None):
-    printNotication("Running Before Run scripts:")
-    runEvents(config, workdir, "beforeRun", raiseErrorOnStdErr)
+    try:
+        print("return done from runTest ======================================================================")
+        raise
+    finally:
+        printNotication("Running Before Run scripts:")
+        runEvents(config, workdir, "beforeRun", raiseErrorOnStdErr)
 
-    printNotication("Starting Test Scripts")
+        printNotication("Starting Test Scripts")
 
-    if not "tasks" in config.keys():
-        if not slient: print("  No tasks to run ... skipping")
-    else:
-        if not slient: print("     Running tasks")
-        result = handleRuns(config['tasks'], workdir)
-        if jobID:
-            update_database(jobID,result)
-        if not slient: print("     Tasks done")
-    printNotication("Test Scripts Done.......")
+        if not "tasks" in config.keys():
+            if not slient: print("  No tasks to run ... skipping")
+        else:
+            if not slient: print("     Running tasks")
+            output=handleRuns(config['tasks'], workdir)
+            if jobID:
+                result = {"jobID":jobID,"output":output}
+                update_database(result)
+            if not slient: print("     Tasks done")
+        printNotication("Test Scripts Done.......")
 
-    printNotication("Starting After Install Scripts")
-    runEvents(config, workdir, "afterRun", raiseErrorOnStdErr)
-    return "Done"
+        printNotication("Starting After Install Scripts")
+        runEvents(config, workdir, "afterRun", raiseErrorOnStdErr)
 
 
 if __name__ == "__main__":

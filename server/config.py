@@ -11,6 +11,7 @@ config.read(os.path.join(mainPath , 'Config.cfg'))
 
 publicKey=config.get('Server', 'publicKey')
 port=config.get('Server', 'port')
+client_url = config.get('Client', 'url')
 try:
     log_limit=config.get('MISC', 'log_limit')
 except:

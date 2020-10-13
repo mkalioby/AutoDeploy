@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3.7
 
 from distutils.core import setup
 
@@ -9,5 +9,5 @@ setup(name='autodeploy_client',
       author_email='mkalioby@mkalioby.com',
       url='https://github.com/mkalioby/autoDeploy',
       packages=['autodeploy_client'],
-      package_data={"autodeploy_client":["my"]}
+      package_data={"autodeploy_client":["my","Config.cfg"]}
      )

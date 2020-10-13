@@ -8,8 +8,9 @@ import sys
 sys.path.append("../../../client")
 from autodeploy_client.Client import Client
 from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.csrf import csrf_protect,csrf_exempt
 from django.utils import timezone
+from jose import jwt
 
 
 def checkServers(request):
@@ -153,3 +154,27 @@ def integrate_core(server,project,tag=None,commit=None):
     D.status_id = 1  # Running
     D.save()
     c.Integrate(D.pk, project.working_dir, project.configFile)
+
+def decrypt_result(msg):
+    from autodeploy_client.Config import privateKey
+    file = open(privateKey, 'r')
+    st = "".join(file.readlines())
+    return jwt.decode(msg, st, "RS256")
+
+@csrf_exempt
+def receive_integrate_result(request):
+    errors = {}
+    if request.method == "GET":
+        print("Hello This is RIS")
+    else:
+        result = decrypt_result(simplejson.loads(request.body))
+        IS = CIModels.Integration_server.objects.get(id=result['jobID'])
+        IS_output = result['output']
+        success = True
+        for k, v in IS_output.items():
+            if v['exit_code'] not in [0, '0']:
+                success = False
+        IS.status_id = 2 if success else 3
+        IS.result = IS_output
+        IS.save()
+    return HttpResponse(simplejson.dumps(errors), content_type="application/json")
