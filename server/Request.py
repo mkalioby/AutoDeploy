@@ -139,6 +139,9 @@ def parseIntegrateJob(message):
     doc = xml.dom.minidom.parseString(message)
     Job = doc.getElementsByTagName('job')[0]
     scm=Job.getAttribute("scm")
+    project_name=Job.getAttribute("project_name")
+    change_type=Job.getAttribute("change_type")
+    change_id=Job.getAttribute("change_id")
     workdir= getValue(Job, 'workdir')
     jobID=getValue(Job,"jobID")
     configFile=getValue(Job,"configFile")
@@ -150,7 +153,7 @@ def parseIntegrateJob(message):
     open(configFile,"w").write(fileBase64)
     print('Recieved New Job from  ' + owner + '.....')
     params = {"jobID":jobID,"workdir": workdir,"owner": owner,  "requestType": requestType,"configFile":configFile,
-              "scm":scm,"options": optionsDict}
+              "scm":scm,"options": optionsDict,"project_name":project_name,"change_type":change_type,"change_id":change_id}
     return params
 
 def parseGetCommitsJob(message):

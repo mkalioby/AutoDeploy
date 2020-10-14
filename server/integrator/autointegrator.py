@@ -96,8 +96,17 @@ def handleRuns(tasks, workdir):
         result[cmd] = {"exit_code": task_result[0], "result": task_result[1]}
     return result
 
+
+def switch_change(workdir, change_type, change_id):
+    if change_type == 'tag':
+        switch_command = "cd %s; git checkout tags/%s" % (workdir, change_id)
+    else:
+        switch_command = "cd % s; git reset - -hard % s" % (workdir, change_id)
+    switch_result = run(switch_command, exitcode=True)
+
 @contextmanager
-def runTest(config,workdir=".",raiseErrorOnStdErr=True,jobID=None):
+def runTest(config,workdir=".",project_name=None,change_type=None,change_id=None,raiseErrorOnStdErr=True,jobID=None):
+    switch_change(workdir,change_type,change_id)
     printNotication("Running Before Run scripts:")
     runEvents(config, workdir, "beforeRun", raiseErrorOnStdErr)
 

@@ -188,8 +188,8 @@ def getHistory(request):
     """%(commit)
     for item in integrations:
         result = "<ul>"
-        res = simplejson.loads(item.result)
-        for k,v in res.items():
+        # res = simplejson.loads(item.result)
+        for k,v in item.result.items():
             result += "<li>" + v['result'] + "</li>"
         result += "</ul>"
         html += """

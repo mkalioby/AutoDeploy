@@ -185,7 +185,7 @@ def HandleClient(clientsock):
                 try:
                     config=yaml.safe_load(open(job["configFile"]))
                     Response.sendData(clientsock, "Queued")
-                    autointegrator.runTest(config,job["workdir"],jobID=job['jobID'])
+                    autointegrator.runTest(config,job["workdir"],job["project_name"],job["change_type"],job["change_id"],jobID=job['jobID'])
                     res = "Done"
                 except Exception as e:
                     res="ERR:"+traceback.format_exc()

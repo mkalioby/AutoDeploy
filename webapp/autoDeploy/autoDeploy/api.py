@@ -138,21 +138,25 @@ def integrate_core(server,project,tag=None,commit=None):
     c = Client(str(project.repo_type), server.ip, server.port)
     D.project = project
     D.server = server
+    change_type = None
+    change_id = None
     if tag:
         res = c.SwitchTag(project.working_dir, tag)
         D.update_type = "tag"
         D.update_version = tag
         project.lastTag = tag
+        change_type = "tag"
+        change_id = tag
     elif commit:
-        if commit != "HEAD":
-            res = c.SwitchCommit(project.working_dir, commit)
         D.update_type = "commit"
         D.update_version = commit
         project.lastCommit = commit
+        change_type = "commit"
+        change_id = commit
     D.datetime = timezone.now()
     D.has_new_version = False
     D.save()
-    res = c.Integrate(D.pk, project.working_dir, project.configFile)
+    res = c.Integrate(D.pk, project.working_dir, project.configFile,project.name,change_type,change_id)
     if "Queued" in res:
         D.status_id = 1  # Running
         D.save()
