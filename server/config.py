@@ -16,3 +16,5 @@ try:
     log_limit=config.get('MISC', 'log_limit')
 except:
     log_limit=100
+
+max_integrators=config.get('INTEGRATORS','max_workers')

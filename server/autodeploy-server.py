@@ -10,11 +10,13 @@ import Common
 from scm import Git as git
 from deployer import autodeployer
 from integrator import autointegrator
+from multiprocessing import Process, Queue
 import traceback
 import yaml
-JOBS = {}
+jobs=Queue(100)
 EOM = Common.EOM
 debug = False
+
 
 def startServer():
     port = int(config.port)
@@ -185,7 +187,9 @@ def HandleClient(clientsock):
                 try:
                     config=yaml.safe_load(open(job["configFile"]))
                     Response.sendData(clientsock, "Queued")
-                    autointegrator.runTest(config,job["workdir"],job["project_name"],job["change_type"],job["change_id"],jobID=job['jobID'])
+                    job["config"]=config
+                    jobs.put(job)
+                    #autointegrator.runTest(job["workdir"],job["project_name"],job["change_type"],job["change_id"],jobID=job['jobID'])
                     res = "Done"
                 except Exception as e:
                     res="ERR:"+traceback.format_exc()
@@ -214,6 +218,9 @@ import  sys
 if "--debug" in sys.argv:  debug=True
 s = startServer()
 i = 0
+from .integration_manager import manage_integrators
+Process(target = manage_integrators, args = jobs)
+
 while 1:
     clientsock, clientaddr = s.accept()
     i += 1
