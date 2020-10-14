@@ -1,4 +1,4 @@
-from . import config
+import config
 import time
 from multiprocessing import Process
 from integrator import autointegrator
