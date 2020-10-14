@@ -19,6 +19,8 @@ class Client:
         self.server = server
         self.port = port
         self.sshkey=key
+        if not self.sshkey.endswith("\n"): self.sshkey+="\n"
+
 
 
     def _send(self, msg):
