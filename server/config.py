@@ -17,4 +17,4 @@ try:
 except:
     log_limit=100
 
-max_integrators=config.get('INTEGRATORS','max_workers')
+max_integrators=int(config.get('INTEGRATORS','max_workers'))

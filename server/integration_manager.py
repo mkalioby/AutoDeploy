@@ -12,6 +12,7 @@ def run_job(job):
                                                            "change_id": job["change_id"]
                                                            })
     p.name = job["project_name"]
+    p.start()
     print("Started",p.name)
     return p
 
@@ -22,6 +23,7 @@ def manage_integrators(jobs):
     if max_jobs == 0:
         print("CI not active on Server...exiting")
         return
+    print ("Integration Manager Started...")
     while True:
         while len(current_jobs) == max_jobs:
             for job in current_jobs:
