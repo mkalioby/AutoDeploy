@@ -2,6 +2,7 @@ import socket, base64, time, sys, subprocess
 import os
 import hashlib
 from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_OAEP
 from Crypto import Random
 
 def importKey():
@@ -9,12 +10,13 @@ def importKey():
         file=open(mainPath + "/my",'r')
         st = "".join(file.readlines())
         key = RSA.importKey(st)
+        encryptor = PKCS1_OAEP.new(key)
         #print "KEY Opened" , key
-        return key
+        return encryptor
 
 def sign(owner,scm,msg):
     b = (owner + scm + msg).encode('utf-8')
-    key = (importKey().encrypt(b, "")[0])
+    key = importKey().encrypt(b)
     return base64.encodebytes(key).decode("utf8")
 
 

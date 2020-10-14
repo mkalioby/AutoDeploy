@@ -1,5 +1,5 @@
 pycryptodome
-django==2.2
+django==2.2.16
 jsonfield
 django-tables2
 django-tables2-reports
@@ -7,3 +7,5 @@ jira
 django-mfa2
 pyyaml
 sqlparse
+tablib
+mysqlclient

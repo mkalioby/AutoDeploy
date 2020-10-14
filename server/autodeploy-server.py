@@ -1,5 +1,6 @@
-#!/usr/bin/python3.7
+#!/usr/bin/env python3.8
 from Crypto.PublicKey import RSA
+from Crypto.Cipher import PKCS1_OAEP
 import socket
 import threading
 import base64
@@ -32,7 +33,8 @@ def importKey():
     file = open(config.publicKey, 'r')
     st = "".join(file.readlines())
     key = RSA.importKey(st)
-    return key
+    decryptor = PKCS1_OAEP.new(key)
+    return decryptor
 
 
 def validReq(req):
