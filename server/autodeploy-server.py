@@ -221,7 +221,8 @@ if "--debug" in sys.argv:  debug=True
 s = startServer()
 i = 0
 from integration_manager import manage_integrators
-Process(target = manage_integrators, args = [jobs])
+p=Process(target = manage_integrators, args = [jobs])
+p.start()
 
 while 1:
     clientsock, clientaddr = s.accept()
