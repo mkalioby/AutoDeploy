@@ -175,34 +175,10 @@ def getProjectIntHistory(request):
 
 
 def getHistory(request):
-    commit = request.GET["commit"]
-    integrations = Integration_server.objects.filter(update_version=commit).order_by("-datetime")[:5]
-    html = """<tr id="%s">
-        <th>Datetime</th>
-        <th>Server</th>
-        <th>Update type</th>
-        <th>Update version</th>
-        <th>Result</th>
-        <th>Status</th>
-    </tr>
-    """%(commit)
-    for item in integrations:
-        result = "<ul>"
-        # res = simplejson.loads(item.result)
-        for k,v in item.result.items():
-            result += "<li>" + v['result'] + "</li>"
-        result += "</ul>"
-        html += """
-        <tr id="%s">
-            <td>%s</td>
-            <td>%s</td>
-            <td>%s</td>
-            <td>%s</td>
-            <td>%s</td>
-            <td><span class="%s-dot" title='%s'></span></td>
-        </tr>
-        """ % (commit,item.datetime.strftime("%Y-%m-%d %H:%M:%S"), item.server, item.update_type, item.update_version,result,item.status,item.status)
-    return HttpResponse(html)
+    context = {}
+    project = request.GET["project"]
+    context['integrations'] = Integration_server.objects.filter(project__name=project).order_by("-datetime")[:5]
+    return render(request,"integration_history.html",context)
 
 @login_required(redirect_field_name="redirect")
 def listCICommits(request, filter=None):

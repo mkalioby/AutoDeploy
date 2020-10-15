@@ -1,56 +1,5 @@
 {% extends "base.html" %}
 {% load render_table from django_tables2 %}
-{% block head %}
-    <script>
-        function getHistory(elem, commit) {
-            $.ajax({
-                "url": "{% url 'getHistory' %}",
-                dataType: "html",
-                data: {"commit": commit},
-                success: function (data) {
-                    let myTable = $("#" + commit);
-                    if (myTable.length > 0) {
-                        $('[id]').each(function () {
-                            $('[id="' + commit + '"]').remove();
-                        });
-                    }else{
-                        $(elem).parents("tr").after(data);
-                    }
-                }
-            })
-        }
-    </script>
-    <style>
-        .Pending-dot {
-            height: 25px;
-            width: 25px;
-            background-color: #2196F3;
-            border-radius: 50%;
-            display: inline-block;
-        }
-        .Running-dot {
-            height: 25px;
-            width: 25px;
-            background-color: #ff9800;
-            border-radius: 50%;
-            display: inline-block;
-        }
-        .Success-dot {
-            height: 25px;
-            width: 25px;
-            background-color: #4CAF50;
-            border-radius: 50%;
-            display: inline-block;
-        }
-        .Failed-dot {
-            height: 25px;
-            width: 25px;
-            background-color: #f44336;
-            border-radius: 50%;
-            display: inline-block;
-        }
-    </style>
-{% endblock %}
 {% block content %}
     <br/>
     <div align="center"><h1>{{ name }}</h1>

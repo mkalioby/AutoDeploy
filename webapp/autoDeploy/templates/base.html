@@ -114,57 +114,14 @@
         <div role="navigation" class="navbar-default sidebar">
             <div class="sidebar-nav navbar-collapse">
                 <ul id="side-menu" class="nav in">
-                    <li>
-                        <a href="#"><i class="fa fa-book fa-fw"></i> Continuous Deployment <span
-                                class="fa arrow"></span></a>
-
-                        <ul class="nav nav-second-level collapse">
-                            <li>
-                                <a href="{% url 'cd_index' %}" class="active"><i class="fa fa-dashboard fa-fw"></i>
-                                    CD Dashboard</a>
-                            </li>
-                            <li>
-                                <a href="#"><i class="fa fa-pencil fa-fw"></i> Projects<span
-                                        class="fa arrow"></span></a>
-                                <ul class="nav nav-second-level collapse">
-                                    {% if perms.autodeploy.add_project %}
-                                        <li>
-                                            <a href="{% url 'cd_add_project' %}">Add Project</a>
-                                        </li>
-                                    {% endif %}
-                                    <li>
-                                        <a href="{% url 'cd_index' %}">Manage Projects</a>
-                                    </li>
-                                </ul>
-                                <!-- /.nav-second-level -->
-                            </li>
-                        </ul>
-                    </li>
+                    {% if "deployment" in INSTALLED_APPS %}
+                        {% include "deployment_Toolbar.html" %}
+                    {% endif %}
+                    {% if "integration" in INSTALLED_APPS %}
+                        {% include "integration_Toolbar.html" %}
+                    {% endif %}
                     <!--CI -->
-                    <li>
-                        <a href="#"><i class="fa fa-refresh fa-fw"></i> Continuous Integration <span
-                                class="fa arrow"></span></a>
 
-                        <ul class="nav nav-second-level collapse">
-                            <li>
-                                <a href="{% url 'ci_index' %}" ><i class="fa fa-dashboard fa-fw"></i>
-                                    CI Dashboard</a>
-                            </li>
-                            <li>
-                                <a href="#"><i class="fa fa-pencil fa-fw"></i> Projects<span
-                                        class="fa arrow"></span></a>
-                                <ul class="nav nav-second-level collapse">
-                                    <li>
-                                        <a href="{% url 'ci_add_project' %}">Add Project</a>
-                                    </li>
-                                    <li>
-                                        <a href="{% url 'ci_index' %}">Manage Projects</a>
-                                    </li>
-                                </ul>
-                                <!-- /.nav-second-level -->
-                            </li>
-                        </ul>
-                    </li>
 
                     {% if not perms.autodeploy.add_server and not perms.autodeploy.change_server and not perms.autodeploy.delete_server and not perms.autodeploy.check_server %}
                     {% else %}

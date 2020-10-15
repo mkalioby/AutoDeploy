@@ -7,7 +7,7 @@ from .models import *
 __author__ = 'mohamed'
 
 class CIProjectReport(ExportMixin, tables.Table):
-    name = Table.TemplateColumn("""<a style='text-decoration: none;color:inherit;' href='javascript:void(0)' onclick='getHistory(this,"{{record.lastCommit}}")' >{{ record.name }} - {{ record.default_branch}}</a>""",
+    name = Table.TemplateColumn("""<a href='{% url "getHistory" %}?project={{record.name}}' >{{ record.name }} - {{ record.default_branch}}</a>""",
         verbose_name="Project Name")
     Operations = Table.TemplateColumn("""
     {% if  perms.CI.clone_project %}<a href="{% url 'cloneci' %}?project={{record.name}}"><span title='Clone' class='fa fa-download'></span></a>&nbsp;&nbsp;{%endif%}

@@ -1,0 +1,26 @@
+<li>
+    <a href="#"><i class="fa fa-book fa-fw"></i> Continuous Deployment <span
+            class="fa arrow"></span></a>
+
+    <ul class="nav nav-second-level collapse">
+        <li>
+            <a href="{% url 'cd_index' %}" class="active"><i class="fa fa-dashboard fa-fw"></i>
+                CD Dashboard</a>
+        </li>
+        <li>
+            <a href="#"><i class="fa fa-pencil fa-fw"></i> Projects<span
+                    class="fa arrow"></span></a>
+            <ul class="nav nav-second-level collapse">
+                {% if perms.autodeploy.add_project %}
+                    <li>
+                        <a href="{% url 'cd_add_project' %}">Add Project</a>
+                    </li>
+                {% endif %}
+                <li>
+                    <a href="{% url 'cd_index' %}">Manage Projects</a>
+                </li>
+            </ul>
+            <!-- /.nav-second-level -->
+        </li>
+    </ul>
+</li>

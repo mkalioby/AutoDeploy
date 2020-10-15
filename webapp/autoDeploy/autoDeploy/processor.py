@@ -8,5 +8,6 @@ def global_settings(request):
     return {
         'STATIC_URL': settings.STATIC_URL,
         'BASE_URL': settings.BASE_URL,
-        'TITLE': settings.TITLE
+        'TITLE': settings.TITLE,
+        'INSTALLED_APPS': settings.INSTALLED_APPS
         }
