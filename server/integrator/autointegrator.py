@@ -92,7 +92,7 @@ def runEvents(config, workdir, event, raiseErrorOnStdErr=True):
 def handleRuns(tasks, workdir):
     result = {}
     for task in tasks:
-        cmd = "%s %s" % (task['interpreter'], task["location"])
+        cmd = "%s %s" % (task.get('interpreter',''), task["location"])
         print("TASK : ",cmd)
         task_result = run(cmd,exitcode=True)
         print("RESULT : ",task_result[0])
