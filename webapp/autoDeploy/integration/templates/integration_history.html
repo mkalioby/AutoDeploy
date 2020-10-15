@@ -105,20 +105,19 @@
     </style>
 {% endblock %}
 {% block content %}
-    <div class="panel panel-new" style="background-color:transparent">
+    <br>
+    <br>
+    <div class="panel panel-info" style="background-color:transparent">
         <div class="panel-heading" style="">
-            <h5 style="font-weight: bold">{{ project_name }}</h5>
+            <h5 style="font-weight: bold">{{ project_name }} History</h5>
         </div>
         <div class="panel-body">
-            <table class="fold-table paleblue">
+            <table class="fold-table">
                 <thead>
                 <tr>
-                    <th>Datetime</th>
-                    <th>Server</th>
-                    <th>Update type</th>
-                    <th>Update version</th>
+                    <th>DateTime</th>
+                    <th>Commit</th>
                     <th>Author Name</th>
-                    <th>Author Email</th>
                     <th>Status</th>
                 </tr>
                 </thead>
@@ -126,11 +125,8 @@
                 {% for item in integrations %}
                     <tr class="view">
                         <td>{{ item.datetime }}</td>
-                        <td>{{ item.server }}</td>
-                        <td>{{ item.update_type }}</td>
                         <td>{{ item.update_version }}</td>
                         <td>{% if item.author_name %}{{ item.author_name }}{% else %}{% endif %}</td>
-                        <td>{% if item.author_email %}{{ item.author_email }}{% else %}{% endif %}</td>
                         <td><span class="{{ item.status }}-dot" title='{{ item.status }}'></span></td>
                     </tr>
                     <tr class="fold">
@@ -138,6 +134,7 @@
                             <div class="fold-content">
                                 {% for k,v in item.result.items %}
                                     <ul>
+                                        <li><strong>Server :</strong> {{ item.server }}</li>
                                         <li>
                                             <strong>Command :</strong>
                                             {{ k }}</li>
