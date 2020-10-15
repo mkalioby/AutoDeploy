@@ -33,9 +33,9 @@ def update_database(result):
         if not slient: print("Sent : ", False, " ", exp)
         if not slient: print(traceback.format_exc())
 
-def run(executer, raiseError=True,exitcode=False, id=None, wait=True):
+def run(executer, raiseError=True,exitcode=False, id=None, wait=True,interpreter="/bin/bash"):
     PIPE = subprocess.PIPE
-    p = subprocess.Popen(executer, stdout=PIPE, stderr=PIPE, shell=True)
+    p = subprocess.Popen(executer, stdout=PIPE, stderr=PIPE, shell=True,executable = interpreter)
     (stdout, stderr) = p.communicate()
     st = stderr
     if id:
@@ -65,6 +65,9 @@ def printNotication(message):
 
 
 def runEvents(config, workdir, event, raiseErrorOnStdErr=True):
+    if not "events" in config:
+        print("Nothing events section")
+        return
     if event in config["events"].keys():
         for script in config["events"][event]:
             wait = True
@@ -89,9 +92,9 @@ def runEvents(config, workdir, event, raiseErrorOnStdErr=True):
 def handleRuns(tasks, workdir):
     result = {}
     for task in tasks:
-        cmd = "%s %s" % (task['interpreter'], task["location"])
+        cmd = "%s" %task["location"]
         print("TASK : ",cmd)
-        task_result = run(cmd,exitcode=True)
+        task_result = run(cmd,exitcode=True,interpreter = task.get('interpreter','/bin/bash'))
         print("RESULT : ",task_result[0])
         result[cmd] = {"exit_code": task_result[0], "result": task_result[1]}
     return result
