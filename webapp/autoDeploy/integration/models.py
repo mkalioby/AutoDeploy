@@ -61,6 +61,8 @@ class Integration_server(models.Model):
     project = models.ForeignKey(CIProject,on_delete=models.DO_NOTHING)
     server = models.ForeignKey('deployment.Server',on_delete=models.DO_NOTHING)
     status = models.ForeignKey(CIntegrationStatus,on_delete=models.DO_NOTHING,default=0)
+    author_name = models.CharField(max_length=255,blank=True)
+    author_email = models.CharField(max_length=255,blank=True)
     result = JSONField(db_column="result",default="")
 
     class Meta:

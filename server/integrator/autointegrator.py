@@ -53,7 +53,7 @@ def run(executer, raiseError=True,exitcode=False, id=None, wait=True,interpreter
     if stdout == "": return "Done"
     if exitcode:
         if p.returncode not in [0,'0']:
-            return [p.returncode,"ERR:" + str(stderr)]
+            return [p.returncode,stderr.decode('utf-8')]
         return [p.returncode,stdout.decode('utf-8')]
     return stdout
 
@@ -106,10 +106,10 @@ def switch_change(workdir, change_type, change_id):
     else:
         switch_command = "cd % s; git reset - -hard % s" % (workdir, change_id)
     switch_result = run(switch_command, exitcode=True)
-
+    return run('git log -n1 --pretty=format:"%H,,%h,,%an,,%ae,,%ar,,%s,,%cd"  | cat -').decode("utf-8").split(",,")[2:4]
 @contextmanager
 def runTest(config,workdir=".",project_name=None,change_type=None,change_id=None,raiseErrorOnStdErr=True,jobID=None):
-    switch_change(workdir,change_type,change_id)
+    author = switch_change(workdir,change_type,change_id)
     printNotication("Running Before Run scripts:")
     runEvents(config, workdir, "beforeRun", raiseErrorOnStdErr)
 
@@ -120,6 +120,8 @@ def runTest(config,workdir=".",project_name=None,change_type=None,change_id=None
     else:
         if not slient: print("     Running tasks")
         output=handleRuns(config['tasks'], workdir)
+        output['author_name'] = author[0]
+        output['author_email'] = author[1]
         if jobID:
             result = {"jobID":jobID,"output":output}
             update_database(result)

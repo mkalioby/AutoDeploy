@@ -88,7 +88,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'autodeploy',
-        'USER': 'autodeploy',
+        'USER': 'root',
         'PASSWORD': 'password',
         'HOST': '127.0.0.1',  # 127.0.0.1
         'port': '3306',

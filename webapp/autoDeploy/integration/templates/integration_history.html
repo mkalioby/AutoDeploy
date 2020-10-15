@@ -65,23 +65,12 @@
         table.fold-table > tbody > tr.fold.open {
             display: table-row;
         }
-
-        .fold-content {
-            padding: 0.5em;
+        ul > li{
+            padding: 4px;
         }
-
-        .fold-content h3 {
-            margin-top: 0;
+        ul > li > .result-div{
+            padding-bottom: 10px;
         }
-
-        .fold-content > table {
-            border: 2px solid #ccc;
-        }
-
-        .fold-content > table > tbody tr:nth-child(even) {
-            background: #eee;
-        }
-
         .Pending-dot {
             height: 25px;
             width: 25px;
@@ -116,54 +105,66 @@
     </style>
 {% endblock %}
 {% block content %}
-    <table class="fold-table">
-        <thead>
-        <tr>
-            <th>Datetime</th>
-            <th>Server</th>
-            <th>Update type</th>
-            <th>Update version</th>
-            <th>Status</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for item in integrations %}
-            <tr class="view">
-                <td>{{ item.datetime }}</td>
-                <td>{{ item.server }}</td>
-                <td>{{ item.update_type }}</td>
-                <td>{{ item.update_version }}</td>
-                <td><span class="{{ item.status }}-dot" title='{{ item.status }}'></span></td>
-            </tr>
-            <tr class="fold">
-                <td colspan="7">
-                    <div class="fold-content">
-                        {% for k,v in item.result.items %}
-                            <ul>
-                                <li>
-                                    <strong>Command :</strong>
-                                    {{ k }}</li>
-                                <li>
-                                    <strong>Exit Code :</strong>
-                                    {{ v.exit_code }}</li>
-                                <li>
-                                    <strong>Result :</strong>
-                                    {% if item.status_id == 2 %}
-                                        <div class='alert alert-success'>{{ v.result|linebreaks }}</div>
-                                    {% elif item.status_id == 3 %}
-                                        <div class='alert alert-alert-danger'>{{ v.result|linebreaks }}</div>
-                                    {% else %}
-                                        {{ v.result|linebreaks }}
-                                    {% endif %}
-                                </li>
-                            </ul>
-                        {% endfor %}
-                    </div>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="panel panel-new" style="background-color:transparent">
+        <div class="panel-heading" style="">
+            <h5 style="font-weight: bold">{{ project_name }}</h5>
+        </div>
+        <div class="panel-body">
+            <table class="fold-table paleblue">
+                <thead>
+                <tr>
+                    <th>Datetime</th>
+                    <th>Server</th>
+                    <th>Update type</th>
+                    <th>Update version</th>
+                    <th>Author Name</th>
+                    <th>Author Email</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for item in integrations %}
+                    <tr class="view">
+                        <td>{{ item.datetime }}</td>
+                        <td>{{ item.server }}</td>
+                        <td>{{ item.update_type }}</td>
+                        <td>{{ item.update_version }}</td>
+                        <td>{% if item.author_name %}{{ item.author_name }}{% else %}{% endif %}</td>
+                        <td>{% if item.author_email %}{{ item.author_email }}{% else %}{% endif %}</td>
+                        <td><span class="{{ item.status }}-dot" title='{{ item.status }}'></span></td>
+                    </tr>
+                    <tr class="fold">
+                        <td colspan="7">
+                            <div class="fold-content">
+                                {% for k,v in item.result.items %}
+                                    <ul>
+                                        <li>
+                                            <strong>Command :</strong>
+                                            {{ k }}</li>
+                                        <li>
+                                            <strong>Exit Code :</strong>
+                                            {{ v.exit_code }}</li>
+                                        <li>
+                                            <strong>Result :</strong>
+                                            <div class="result-div"></div>
+                                            {% if item.status_id == 2 %}
+                                                <div class='alert alert-success'>{{ v.result|linebreaks }}</div>
+                                            {% elif item.status_id == 3 %}
+                                                <div class='alert alert-danger'>{{ v.result|linebreaks }}</div>
+                                            {% else %}
+                                                {{ v.result|linebreaks }}
+                                            {% endif %}
+                                        </li>
+                                    </ul>
+                                {% endfor %}
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
 {% endblock %}
 
 

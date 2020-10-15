@@ -178,6 +178,7 @@ def getHistory(request):
     context = {}
     project = request.GET["project"]
     context['integrations'] = Integration_server.objects.filter(project__name=project).order_by("-datetime")[:5]
+    context['project_name'] = project
     return render(request,"integration_history.html",context)
 
 @login_required(redirect_field_name="redirect")
