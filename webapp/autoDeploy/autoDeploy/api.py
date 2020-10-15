@@ -33,6 +33,7 @@ def cloneCD(request):
     project = CDModels.Project.objects.get(name=request.GET["project_name"])
     c = Client(scm, ip, port, project.sshKey.key)
     res = c.Clone(project.repo, project.working_dir)
+    if res == '': res = 'Done'
     return HttpResponse(res)
 
 @csrf_protect
@@ -43,6 +44,7 @@ def cloneCI(request):
     project = CIModels.CIProject.objects.get(name=request.GET["project_name"])
     c = Client(scm, ip, port, project.sshKey.key)
     res = c.Clone(project.repo, project.working_dir)
+    if res == '': res = 'Done'
     return HttpResponse(res)
 
 

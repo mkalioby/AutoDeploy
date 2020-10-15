@@ -199,7 +199,7 @@ def HandleClient(clientsock):
                 if "ERR:" in str(cmd):
                     Response.sendData(clientsock, cmd)
                     return
-                res=Common.run(cmd)
+                res=Common.run(cmd).decode("utf-8")
 
             Response.sendData(clientsock,res)
             if debug:

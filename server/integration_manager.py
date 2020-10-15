@@ -8,7 +8,7 @@ max_jobs = config.max_integrators
 
 def run_job(job):
     p = Process(target = autointegrator.runTest, kwargs = {"config": job["config"], "workdir": job["workdir"],
-                                                           "jobID": job['jobID'], "type": job["change_type"],
+                                                           "jobID": job['jobID'], "change_type": job["change_type"],
                                                            "change_id": job["change_id"]
                                                            })
     p.name = job["project_name"]
@@ -40,5 +40,12 @@ def manage_integrators(jobs):
                 p = run_job(job)
                 active_projects.append(p.name)
                 current_jobs.append(p)
-        print("Running Jobs:", len(current_jobs), "Waiting Jobs:", len(jobs))
+        if len(current_jobs) < max_jobs:
+            for job in current_jobs:
+                if not job.is_alive():
+                    current_jobs.remove(job)
+                    active_projects.remove(job.name)
+                print(job.name, "Done")
+
+        print("Running Jobs:", len(current_jobs), "Waiting Jobs:", jobs.qsize())
         time.sleep(20)
