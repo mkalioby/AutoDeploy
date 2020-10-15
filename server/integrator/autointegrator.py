@@ -65,6 +65,9 @@ def printNotication(message):
 
 
 def runEvents(config, workdir, event, raiseErrorOnStdErr=True):
+    if not "events" in config:
+        print("Nothing events section")
+        return
     if event in config["events"].keys():
         for script in config["events"][event]:
             wait = True
