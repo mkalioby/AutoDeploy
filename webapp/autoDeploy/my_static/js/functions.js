@@ -34,9 +34,12 @@ function renderResult(data,success) {
     $("#content").html(html)
 }
 
-function clone(data)
-{
-    renderResult(data,"Cloning is successful")
+function cloneCD(data) {
+    renderResult(data, "Cloning is successful")
+}
+
+function cloneCI(data) {
+    renderResult(data, "Cloning is successful")
 }
 function deploy(data)
 {
