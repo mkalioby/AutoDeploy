@@ -176,9 +176,15 @@ def getProjectIntHistory(request):
 
 def getHistory(request):
     context = {}
-    project = request.GET["project"]
-    context['integrations'] = Integration_server.objects.filter(project__name=project).order_by("-datetime")[:5]
-    context['project_name'] = project
+    requested_project = request.GET["project"]
+    project = CIProject.objects.filter(name=requested_project)
+    if project.exists():
+        project = project[0]
+        context['branch'] = project.default_branch
+        context['integrations'] = Integration_server.objects.filter(project__name=project).order_by("-datetime")[:5]
+        context['project_name'] = project
+    else:
+        context['error'] = "Project ( %s ) cannot be found"%(requested_project)
     return render(request,"integration_history.html",context)
 
 @login_required(redirect_field_name="redirect")

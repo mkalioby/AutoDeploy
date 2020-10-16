@@ -1,76 +1,20 @@
 {% extends "base.html" %}
 {% block head %}
-    <script type="text/javascript">
-        $(function () {
-            $(".fold-table tr.view").on("click", function () {
-                $(this).toggleClass("open").next(".fold").toggleClass("open");
-            });
-        });
-
-    </script>
     <style>
         table {
             width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
         }
-
-        table th {
-            text-align: left;
-            border-bottom: 1px solid #ccc;
+        #update_version{
+            width: 30%;
         }
-
-        table th,
-        table td {
-            padding: 0.4em;
-        }
-
-        table.fold-table > tbody > tr.view td,
-        table.fold-table > tbody > tr.view th {
+        table > tbody > tr td,
+        table > tbody > tr th {
             cursor: pointer;
-        }
-
-        table.fold-table > tbody > tr.view td:first-child,
-        table.fold-table > tbody > tr.view th:first-child {
             position: relative;
-            padding-left: 20px;
         }
 
-        table.fold-table > tbody > tr.view td:first-child:before,
-        table.fold-table > tbody > tr.view th:first-child:before {
-            position: absolute;
-            top: 50%;
-            left: 5px;
-            width: 9px;
-            height: 16px;
-            margin-top: -8px;
-            font: 16px fontawesome;
-            color: #999;
-            content: "\f0d7";
-            transition: all 0.3s ease;
-        }
-
-        table.fold-table > tbody > tr.view:nth-child(4n-1) {
-            background: #eee;
-        }
-
-        table.fold-table > tbody > tr.view.open td:first-child:before,
-        table.fold-table > tbody > tr.view.open th:first-child:before {
-            transform: rotate(-180deg);
-            color: #333;
-        }
-
-        table.fold-table > tbody > tr.fold {
-            display: none;
-        }
-
-        table.fold-table > tbody > tr.fold.open {
-            display: table-row;
-        }
-        ul > li{
-            padding: 4px;
-        }
-        ul > li > .result-div{
-            padding-bottom: 10px;
-        }
         .Pending-dot {
             height: 25px;
             width: 25px;
@@ -107,60 +51,86 @@
 {% block content %}
     <br>
     <br>
-    <div class="panel panel-info" style="background-color:transparent">
-        <div class="panel-heading" style="">
-            <h5 style="font-weight: bold">{{ project_name }} History</h5>
+    <div class="panel panel-new" style="background-color:transparent">
+    <div class="panel-heading" style="">
+        <h3 style="font-weight: bold">{{ project_name }}</h3>
+    </div>
+    <div class="panel-body">
+        <div class="panel-group" id="accordion">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h4 class="panel-title">
+                        <table id="table-header">
+                            <tbody>
+                            <th>DateTime</th>
+                            <th>Branch</th>
+                            <th>Update Type</th>
+                            <th id="update_version">Update Version</th>
+                            <th>Author Name</th>
+                            <th>Status</th>
+                            </tbody>
+                        </table>
+                    </h4>
+                </div>
+            </div>
+            <br>
+            {% for item in integrations %}
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a style="text-decoration: none;" class="accordion-toggle" data-toggle="collapse" data-parent="#accordion"
+                               href="#collapse{{ forloop.counter }}"
+                               onclick="accordinToggle('collaps{{ forloop.counter }}')">
+                                <table id="table-body">
+                                    <tbody>
+                                    <td><span class="glyphicon glyphicon-plus"></span> {{ item.datetime|date:'Y-m-d H:i' }}</td>
+                                    <td>{{ item.branch }}</td>
+                                    <td>{{ item.update_type }}</td>
+                                    <td id="update_version">{{ item.update_version }}</td>
+                                    <td>{% if item.author_name %}{{ item.author_name }}{% else %}{% endif %}</td>
+                                    <td><span class="{{ item.status }}-dot" title='{{ item.status }}'></span></td>
+                                    </tbody>
+                                </table>
+                            </a>
+                        </h4>
+                    </div>
+                    <div id="collapse{{ forloop.counter }}" class="panel-collapse collapse">
+                        <div class="panel-body">
+                            {% for k,v in item.result.items %}
+                                <ul>
+                                    <li><strong>Server :</strong> {{ item.server }}</li>
+                                    <li>
+                                        <strong>Command :</strong>
+                                        {{ k }}</li>
+                                    <li>
+                                        <strong>Exit Code :</strong>
+                                        {{ v.exit_code }}</li>
+                                    <li>
+                                        <strong>Result :</strong>
+                                        <div class="result-div"></div>
+                                        {% if item.status_id == 2 %}
+                                            <div class='alert alert-success'>{{ v.result|linebreaks }}</div>
+                                        {% elif item.status_id == 3 %}
+                                            <div class='alert alert-danger'>{{ v.result|linebreaks }}</div>
+                                        {% else %}
+                                            {{ v.result|linebreaks }}
+                                        {% endif %}
+                                    </li>
+                                </ul>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                <br>
+            {% endfor %}
         </div>
-        <div class="panel-body">
-            <table class="fold-table">
-                <thead>
-                <tr>
-                    <th>DateTime</th>
-                    <th>Commit</th>
-                    <th>Author Name</th>
-                    <th>Status</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for item in integrations %}
-                    <tr class="view">
-                        <td>{{ item.datetime }}</td>
-                        <td>{{ item.update_version }}</td>
-                        <td>{% if item.author_name %}{{ item.author_name }}{% else %}{% endif %}</td>
-                        <td><span class="{{ item.status }}-dot" title='{{ item.status }}'></span></td>
-                    </tr>
-                    <tr class="fold">
-                        <td colspan="7">
-                            <div class="fold-content">
-                                {% for k,v in item.result.items %}
-                                    <ul>
-                                        <li><strong>Server :</strong> {{ item.server }}</li>
-                                        <li>
-                                            <strong>Command :</strong>
-                                            {{ k }}</li>
-                                        <li>
-                                            <strong>Exit Code :</strong>
-                                            {{ v.exit_code }}</li>
-                                        <li>
-                                            <strong>Result :</strong>
-                                            <div class="result-div"></div>
-                                            {% if item.status_id == 2 %}
-                                                <div class='alert alert-success'>{{ v.result|linebreaks }}</div>
-                                            {% elif item.status_id == 3 %}
-                                                <div class='alert alert-danger'>{{ v.result|linebreaks }}</div>
-                                            {% else %}
-                                                {{ v.result|linebreaks }}
-                                            {% endif %}
-                                        </li>
-                                    </ul>
-                                {% endfor %}
-                            </div>
-                        </td>
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-        </div>
+        <script type="text/javascript">
+            $('.collapse').on('shown.bs.collapse', function () {
+                $(this).parent().find(".glyphicon-plus").removeClass("glyphicon-plus").addClass("glyphicon-minus");
+            }).on('hidden.bs.collapse', function () {
+                $(this).parent().find(".glyphicon-minus").removeClass("glyphicon-minus").addClass("glyphicon-plus");
+            });
+        </script>
     </div>
 {% endblock %}
 
