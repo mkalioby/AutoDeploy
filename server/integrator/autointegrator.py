@@ -106,11 +106,21 @@ def switch_change(workdir, change_type, change_id):
     else:
         switch_command = "cd % s; git reset - -hard % s" % (workdir, change_id)
     switch_result = run(switch_command, exitcode=True)
-    return run('git log -n1 --pretty=format:"%H,,%h,,%an,,%ae,,%ar,,%s,,%cd" | cat -').decode("utf-8").split(",,")[2:4]
+
+
+def get_author(workdir):
+    author_command = 'cd '+workdir+'; git log -n1 --pretty=format:"%H,,%h,,%an,,%ae,,%ar,,%s,,%cd" | cat -'
+    return run(author_command).decode("utf-8").split(",,")[2:4]
+
+def get_branch(workdir):
+    branch_command = 'cd %s; git rev-parse --abbrev-ref HEAD | cat -'%(workdir)
+    return run(branch_command).decode("utf-8")
+
 @contextmanager
 def runTest(config,workdir=".",project_name=None,change_type=None,change_id=None,raiseErrorOnStdErr=True,jobID=None):
-    author = switch_change(workdir,change_type,change_id)
-    branch = run("git rev-parse --abbrev-ref HEAD | cat -").decode("utf-8")
+    switch_change(workdir,change_type,change_id)
+    author = get_author(workdir)
+    branch = get_branch(workdir)
     printNotication("Running Before Run scripts:")
     runEvents(config, workdir, "beforeRun", raiseErrorOnStdErr)
 
