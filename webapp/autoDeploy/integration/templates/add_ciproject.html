@@ -1,7 +1,6 @@
 {% extends "base.html" %}
-{% block content %}
-
-    <script type="text/javaScript" xmlns="http://www.w3.org/1999/html">
+{% block head %}
+        <script type="text/javaScript" xmlns="http://www.w3.org/1999/html">
         $(document).ready(function () {
             if ('{{ edit }}' == "True") {
                 $('#id_cfile').removeAttr('required');
@@ -12,6 +11,10 @@
             }
         })
     </script>
+{% endblock %}
+{% block content %}
+
+
     <br/>
     {% if done %}
         <div align="center">

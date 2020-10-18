@@ -13,4 +13,5 @@ urlpatterns = [
     re_path('edit_ciproject/(\w+)/', views.edit_ci_project, name="edit_ciproject"),
     re_path('delete_ciproject/(\w+)/', views.delete_ci_project, name="delete_ciproject"),
     url(r'listCommits/',views.listCICommits,name='ci_commits'),
+    re_path(r'status/(\w+)',views.status,name='ci_status'),
 ]

@@ -4,8 +4,7 @@ from .forms import *
 from deployment.models import Server, SSHKey
 from .tables import *
 from django_tables2.export.export import TableExport
-from django.views.decorators.csrf import csrf_protect
-from django_tables2_reports.config import RequestConfigReport
+from django.views.decorators.csrf import csrf_protect,csrf_exempt
 from django_tables2.config import RequestConfig
 import sys
 sys.path.append("../../../client")
@@ -14,9 +13,6 @@ from django.shortcuts import redirect,reverse
 from django.template.context_processors import csrf
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect,HttpResponse
-from autoDeploy import settings
-import simplejson
-import ast
 
 @login_required(redirect_field_name="redirect")
 def ci_projects(request):
@@ -235,3 +231,23 @@ def listCICommits(request, filter=None):
 
     context["current_branch"] = filter
     return render(request,"integrate2.html",context)
+
+@csrf_exempt
+def status(request,project_name):
+    project = CIProject.objects.filter(name=project_name)
+    if project.exists():
+        project = project[0]
+        IS = Integration_server.objects.filter(project__name=project)
+        if IS.exists():
+            IS_status = IS.order_by("-datetime")[0]
+            status = IS_status.status
+            url = 'https://img.shields.io/badge/build-{}-{}'
+            if status.code == 0: url = url.format(status.description,'lightgrey')
+            if status.code == 1: url = url.format(status.description,'orange')
+            if status.code == 2: url = url.format(status.description,'brightgreen')
+            if status.code == 3: url = url.format(status.description,'red')
+            return HttpResponseRedirect(url)
+        else:
+            return HttpResponse("Project has no running tests")
+    else:
+        return HttpResponse("Project does not exist")
