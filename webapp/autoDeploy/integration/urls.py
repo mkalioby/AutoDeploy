@@ -7,6 +7,7 @@ urlpatterns = [
     url(r'cloneci/', views.clone,name='cloneci'),
     url(r'getIntegrationHistory/', views.getProjectIntHistory,name='getIntegrationHistory'),
     url(r'getHistory/', views.getHistory,name='getHistory'),
+    re_path(r'getShow/(\w+)', views.getHistory,name='getShow'),
     url(r'integrate/', views.integrate,name='integrate'),
     url(r'integrate2/', views.integrate2,name='integrate2'),
     url(r'integrate3/', views.integrate3,name='integrate3'),
@@ -14,4 +15,5 @@ urlpatterns = [
     re_path('delete_ciproject/(\w+)/', views.delete_ci_project, name="delete_ciproject"),
     url(r'listCommits/',views.listCICommits,name='ci_commits'),
     re_path(r'status/(\w+)',views.status,name='ci_status'),
+    re_path(r'coverage/(\w+)',views.coverage,name='ci_coverage'),
 ]

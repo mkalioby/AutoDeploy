@@ -12,7 +12,7 @@ from autodeploy_client import Client
 from django.shortcuts import redirect,reverse
 from django.template.context_processors import csrf
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponseRedirect,HttpResponse
+from django.http import HttpResponseRedirect,HttpResponse,Http404
 
 @login_required(redirect_field_name="redirect")
 def ci_projects(request):
@@ -132,7 +132,7 @@ def integrate3(request):
         project = CIProject.objects.get(name=request.session["integrate_project"])
         server = Server.objects.get(name=request.session["integrate_server"])
         integrate_core(server,project,tag,commit)
-        url = reverse('getIntegrationHistory')+"?project="+project.name
+        url = reverse('getShow')+"?project="+project.name
         return HttpResponseRedirect(url)
 
 def edit_ci_project(request, project):
@@ -170,9 +170,9 @@ def getProjectIntHistory(request):
     return render(request,"modifyci.html", {"table": table, "name": "Integration for %s" % project_name, "text": text})
 
 
-def getHistory(request):
+def getHistory(request,project_name=None):
     context = {}
-    requested_project = request.GET["project"]
+    requested_project = project_name if not project_name else request.GET["project"]
     project = CIProject.objects.filter(name=requested_project)
     if project.exists():
         project = project[0]
@@ -248,6 +248,28 @@ def status(request,project_name):
             if status.code == 3: url = url.format(status.description,'red')
             return HttpResponseRedirect(url)
         else:
-            return HttpResponse("Project has no running tests")
+            raise Http404("Project has no running tests")
     else:
-        return HttpResponse("Project does not exist")
+        raise Http404("Project does not exist")
+
+@csrf_exempt
+def coverage(request,project_name):
+    project = CIProject.objects.filter(name=project_name)
+    if project.exists():
+        project = project[0]
+        IS = Integration_server.objects.filter(project__name=project)
+        if IS.exists():
+            coverage = 80 #TODO: bring the coverage from the command line
+            url = 'https://img.shields.io/badge/coverage-{}%25-{}'
+            if 85 < coverage <= 100: url = url.format(coverage, 'brightgreen')
+            elif 70 < coverage <= 85: url = url.format(coverage, 'green')
+            elif 60 < coverage <= 70: url = url.format(coverage, 'yellowgreen')
+            elif 50 < coverage <= 60: url = url.format(coverage, 'yellow')
+            elif 40 < coverage <= 50: url = url.format(coverage, 'orange')
+            elif 25 < coverage <= 40: url = url.format(coverage, 'red')
+            else: url = url.format(coverage, 'lightgrey')
+            return HttpResponseRedirect(url)
+        else:
+            raise Http404("Project has no running tests")
+    else:
+        raise Http404("Project does not exist")
