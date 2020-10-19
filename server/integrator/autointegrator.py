@@ -50,9 +50,18 @@ def run(executer, workdir, id=None, interpreter="/bin/bash"):
         f.write(stdout)
         f.flush()
         f.close()
-
-    return {"exit_code": p.returncode,
-            "result": stdout.decode('utf-8') if p.returncode in [0, '0'] else stderr.decode('utf-8')}
+    exit_code = p.returncode
+    if p.returncode in [0,'0']:
+        if stdout.decode('utf-8') in ['',None,' ']:
+            result = stderr.decode('utf-8')
+        else:
+            result = stdout.decode('utf-8')
+    else:
+        if stderr.decode('utf-8') in ['',None,' ']:
+            result = stdout.decode('utf-8')
+        else:
+            result = stderr.decode('utf-8')
+    return {"exit_code": exit_code,"result": result}
 
 
 def printNotication(message):
@@ -136,14 +145,9 @@ def runTest(config, workdir=".", project_name=None, change_type=None, change_id=
     printNotication("Before Run Scripts:")
     runEvents(config, workdir, result, "beforeRun")
     printNotication("Test Scripts")
-    if not "tasks" in config.keys():
-        if not slient: print("  No tasks to run ... skipping")
-    else:
-        if not slient: print("     Running tasks")
+    if "tasks" in config.keys():
         output = handleRuns(config['tasks'], workdir)
         result["output"].update(output)
-        if not slient: print("     Tasks done")
-    printNotication("Test Scripts Done.......")
 
     printNotication("After Run Scripts:")
     runEvents(config, workdir, result, "afterRun")
