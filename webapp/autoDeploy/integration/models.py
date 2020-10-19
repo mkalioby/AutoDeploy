@@ -64,6 +64,7 @@ class Integration_server(models.Model):
     author_name = models.CharField(max_length=255,blank=True)
     author_email = models.CharField(max_length=255,blank=True)
     branch = models.CharField(max_length=255,blank=True)
+    coverage = models.CharField(max_length=255,blank=True,null=True)
     result = JSONField(db_column="result",default="")
 
     class Meta:

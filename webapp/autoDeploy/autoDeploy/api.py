@@ -182,9 +182,13 @@ def receive_integrate_result(request):
         IS.author_name = IS_output['author_name']
         IS.author_email = IS_output['author_email']
         IS.branch = IS_output['branch']
+        coverage = IS_output.get('Coverage', None)
+        IS.coverage = coverage
         del IS_output['author_name']
         del IS_output['author_email']
         del IS_output['branch']
+        if coverage:
+            del IS_output['Coverage']
         for k, v in IS_output.items():
             if v['exit_code'] not in [0, '0']:
                 success = False

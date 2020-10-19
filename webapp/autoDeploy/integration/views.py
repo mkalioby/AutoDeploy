@@ -132,7 +132,7 @@ def integrate3(request):
         project = CIProject.objects.get(name=request.session["integrate_project"])
         server = Server.objects.get(name=request.session["integrate_server"])
         integrate_core(server,project,tag,commit)
-        url = reverse('getShow')+"?project="+project.name
+        url = reverse('getShow',args=[project.name])
         return HttpResponseRedirect(url)
 
 def edit_ci_project(request, project):
@@ -172,7 +172,7 @@ def getProjectIntHistory(request):
 
 def getHistory(request,project_name=None):
     context = {}
-    requested_project = project_name if not project_name else request.GET["project"]
+    requested_project = project_name if project_name else request.GET["project"]
     project = CIProject.objects.filter(name=requested_project)
     if project.exists():
         project = project[0]
@@ -259,15 +259,19 @@ def coverage(request,project_name):
         project = project[0]
         IS = Integration_server.objects.filter(project__name=project)
         if IS.exists():
-            coverage = 80 #TODO: bring the coverage from the command line
-            url = 'https://img.shields.io/badge/coverage-{}%25-{}'
-            if 85 < coverage <= 100: url = url.format(coverage, 'brightgreen')
-            elif 70 < coverage <= 85: url = url.format(coverage, 'green')
-            elif 60 < coverage <= 70: url = url.format(coverage, 'yellowgreen')
-            elif 50 < coverage <= 60: url = url.format(coverage, 'yellow')
-            elif 40 < coverage <= 50: url = url.format(coverage, 'orange')
-            elif 25 < coverage <= 40: url = url.format(coverage, 'red')
-            else: url = url.format(coverage, 'lightgrey')
+            IS_Coverage = IS.order_by("-datetime")[0].coverage
+            if IS_Coverage:
+                coverage = int(IS_Coverage.replace("%",""))
+                url = 'https://img.shields.io/badge/coverage-{}%25-{}'
+                if 85 < coverage <= 100: url = url.format(coverage, 'brightgreen')
+                elif 70 < coverage <= 85: url = url.format(coverage, 'green')
+                elif 60 < coverage <= 70: url = url.format(coverage, 'yellowgreen')
+                elif 50 < coverage <= 60: url = url.format(coverage, 'yellow')
+                elif 40 < coverage <= 50: url = url.format(coverage, 'orange')
+                elif 25 < coverage <= 40: url = url.format(coverage, 'red')
+                else: url = url.format(coverage, 'lightgrey')
+            else:
+                url = 'https://img.shields.io/badge/coverage-inactive-inactive'
             return HttpResponseRedirect(url)
         else:
             raise Http404("Project has no running tests")

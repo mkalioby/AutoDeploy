@@ -33,9 +33,10 @@ def update_database(result):
         if not slient: print("Sent : ", False, " ", exp)
         if not slient: print(traceback.format_exc())
 
-def run(executer, raiseError=True,exitcode=False, id=None, wait=True,interpreter="/bin/bash"):
+def run(executer,workdir, raiseError=True,exitcode=False, id=None, wait=True,interpreter="/bin/bash"):
     PIPE = subprocess.PIPE
-    p = subprocess.Popen(executer, stdout=PIPE, stderr=PIPE, shell=True,executable = interpreter)
+    newExecuter = "export work_dir='"+workdir+"'; cd $work_dir ;"+executer
+    p = subprocess.Popen(newExecuter, stdout=PIPE, stderr=PIPE, shell=True,executable = interpreter)
     (stdout, stderr) = p.communicate()
     st = stderr
     if id:
@@ -71,22 +72,16 @@ def runEvents(config, workdir, event, raiseErrorOnStdErr=True):
     if event in config["events"].keys():
         for script in config["events"][event]:
             wait = True
-            if not script["location"].startswith("/"):
-                cmd = workdir + script["location"]
-            else:
-                cmd = script["location"]
-            if "interpreter" in script.keys():
-                cmd = "%s %s" % (script["interpreter"], cmd)
-            if "run-as" in script.keys():
-                if not script["run-as"] == "root":
-                    cmd = "su %s -c %s" % (script["run-as"], cmd)
+            if not "location" in script.keys():
+                print("location event not exists")
+                pass
+            cmd = script["location"]
+            if "interpreter" in script.keys(): cmd = "%s %s" % (script["interpreter"], cmd)
+            if "run-as" in script.keys() and not script["run-as"] == "root": cmd = "su %s -c %s" % (script["run-as"], cmd)
             if not slient: print("Running:", cmd)
-            if "wait" in script.keys():
-                wait = script["wait"]
-            if "ignore-stderr" in script.keys():
-                if script["ignore-stderr"] in ("yes", "True", "true", "y", "True", True):
-                    raiseErrorOnStdErr = False
-            run(cmd, raiseErrorOnStdErr, wait=wait)
+            if "wait" in script.keys(): wait = script["wait"]
+            if "ignore-stderr" in script.keys() and script["ignore-stderr"] in ("yes", "True", "true", "y", "True", True):raiseErrorOnStdErr = False
+            return run(cmd,workdir,raiseErrorOnStdErr, wait=wait)
 
 
 def handleRuns(tasks, workdir):
@@ -94,7 +89,7 @@ def handleRuns(tasks, workdir):
     for task in tasks:
         cmd = "%s" %task["location"]
         print("TASK : ",cmd)
-        task_result = run(cmd,exitcode=True,interpreter = task.get('interpreter','/bin/bash'))
+        task_result = run(cmd,workdir,exitcode=True,interpreter = task.get('interpreter','/bin/bash'))
         print("RESULT : ",task_result[0])
         result[cmd] = {"exit_code": task_result[0], "result": task_result[1]}
     return result
@@ -102,19 +97,19 @@ def handleRuns(tasks, workdir):
 
 def switch_change(workdir, change_type, change_id):
     if change_type == 'tag':
-        switch_command = "cd %s; git checkout tags/%s" % (workdir, change_id)
+        switch_command = "git checkout tags/%s" % (change_id)
     else:
-        switch_command = "cd % s; git reset - -hard % s" % (workdir, change_id)
-    switch_result = run(switch_command, exitcode=True)
+        switch_command = "git reset --hard % s" % (change_id)
+    switch_result = run(switch_command,workdir, exitcode=True)
 
 
 def get_author(workdir):
-    author_command = 'cd '+workdir+'; git log -n1 --pretty=format:"%H,,%h,,%an,,%ae,,%ar,,%s,,%cd" | cat -'
-    return run(author_command).decode("utf-8").split(",,")[2:4]
+    author_command = 'git log -n1 --pretty=format:"%H,,%h,,%an,,%ae,,%ar,,%s,,%cd" | cat -'
+    return run(author_command,workdir).decode("utf-8").split(",,")[2:4]
 
 def get_branch(workdir):
-    branch_command = 'cd %s; git rev-parse --abbrev-ref HEAD | cat -'%(workdir)
-    return run(branch_command).decode("utf-8")
+    branch_command = 'git rev-parse --abbrev-ref HEAD | cat -'
+    return run(branch_command,workdir).decode("utf-8")
 
 @contextmanager
 def runTest(config,workdir=".",project_name=None,change_type=None,change_id=None,raiseErrorOnStdErr=True,jobID=None):
@@ -122,10 +117,10 @@ def runTest(config,workdir=".",project_name=None,change_type=None,change_id=None
     author = get_author(workdir)
     branch = get_branch(workdir)
     printNotication("Running Before Run scripts:")
-    runEvents(config, workdir, "beforeRun", raiseErrorOnStdErr)
+    beforeRun = runEvents(config, workdir, "beforeRun", raiseErrorOnStdErr)
 
     printNotication("Starting Test Scripts")
-
+    result = {}
     if not "tasks" in config.keys():
         if not slient: print("  No tasks to run ... skipping")
     else:
@@ -135,14 +130,16 @@ def runTest(config,workdir=".",project_name=None,change_type=None,change_id=None
         output['author_email'] = author[1]
         output['branch'] = branch
         if jobID:
-            result = {"jobID":jobID,"output":output}
-            update_database(result)
+            result["jobID"] = jobID
+            result["output"] = output
         if not slient: print("     Tasks done")
     printNotication("Test Scripts Done.......")
 
     printNotication("Starting After Install Scripts")
-    runEvents(config, workdir, "afterRun", raiseErrorOnStdErr)
-
+    afterRun = runEvents(config, workdir, "afterRun", raiseErrorOnStdErr)
+    Coverage = afterRun.decode("utf-8")
+    result["output"]['Coverage'] = Coverage.split(": ")[1].replace("\n","") if Coverage.find("Coverage: ") not in [-1,'-1'] else None
+    update_database(result)
 
 if __name__ == "__main__":
     config = None
