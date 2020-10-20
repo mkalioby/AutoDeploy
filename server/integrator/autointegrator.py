@@ -135,13 +135,21 @@ def get_branch(workdir, result):
     else:
         result['output'][branch_command] = branch
 
+def get_config(workdir):
+    import yaml
+    import os
+    for file in os.listdir(workdir):
+        if file.endswith(".yaml"):
+            return yaml.safe_load(open(os.path.join(workdir, file)))
 
-def runTest(config, workdir=".", project_name=None, change_type=None, change_id=None, jobID=None):
+
+def runTest(config=None,workdir=".", project_name=None, change_type=None, change_id=None, jobID=None):
     result = {"output": {}, "jobID": jobID}
     switch_change(workdir, change_type, change_id, result)
     get_author(workdir, result)
     get_branch(workdir, result)
-
+    if not config:
+        config = get_config(workdir)
     printNotication("Before Run Scripts:")
     runEvents(config, workdir, result, "beforeRun")
     printNotication("Test Scripts")

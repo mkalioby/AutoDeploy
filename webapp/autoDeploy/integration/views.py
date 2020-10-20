@@ -34,10 +34,12 @@ def ci_projects(request):
 
 
 def add_ci_project(request):
+    context = {}
     if request.method == "GET":
-        return render(request,"add_ciproject.html", {"form": CIProjectsForm()})
+        context['form'] = CIProjectsForm()
     else:
         form = CIProjectsForm(request.POST, request.FILES)
+        context["form"] = form
         if request.POST.get("edit", "False") == "True":
             project = CIProject.objects.get(name=request.POST["name"])
             project.integration_link = request.POST["integration_link"]
@@ -50,15 +52,19 @@ def add_ci_project(request):
             project.update_style = request.POST["update_style"]
             project.emailUsers = request.POST["emailUsers"]
             project.default_branch = request.POST["default_branch"]
-            if request.FILES.get("cfile", "") != "":
-                project.configFile = saveFile(request.FILES["cfile"], project.name)
+            if request.FILES.get("cfile2", "") != "":
+                project.configFile = saveFile(request.FILES["cfile2"], project.name)
+            elif request.POST['cfile'] == 'branch':
+                project.configFile = None
             project.save()
-            return render(request,"add_ciproject.html", {"form": form, "done": True})
-        if form.is_valid():
-            form.save(request.FILES, form.cleaned_data["name"])
-            return render(request,"add_ciproject.html", {"form": form, "done": True})
+            context["done"] = True
         else:
-            return render(request,"add_ciproject.html", {"form": form, "error": True})
+            if form.is_valid():
+                form.save(request.FILES, form.cleaned_data["name"])
+                context["done"] = True
+            else:
+                context['error'] = True
+    return render(request,"add_ciproject.html", context)
 
 
 @csrf_protect
@@ -257,23 +263,32 @@ def coverage(request,project_name):
     project = CIProject.objects.filter(name=project_name)
     if project.exists():
         project = project[0]
-        IS = Integration_server.objects.filter(project__name=project)
-        if IS.exists():
-            IS_Coverage = IS.order_by("-datetime")[0].coverage
-            if IS_Coverage:
-                coverage = int(IS_Coverage.replace("%",""))
-                url = 'https://img.shields.io/badge/coverage-{}%25-{}'
-                if 85 < coverage <= 100: url = url.format(coverage, 'brightgreen')
-                elif 70 < coverage <= 85: url = url.format(coverage, 'green')
-                elif 60 < coverage <= 70: url = url.format(coverage, 'yellowgreen')
-                elif 50 < coverage <= 60: url = url.format(coverage, 'yellow')
-                elif 40 < coverage <= 50: url = url.format(coverage, 'orange')
-                elif 25 < coverage <= 40: url = url.format(coverage, 'red')
-                else: url = url.format(coverage, 'lightgrey')
-            else:
-                url = 'https://img.shields.io/badge/coverage-inactive-inactive'
+        url = coverage_core(project_name=project.name)
+        if url != '':
             return HttpResponseRedirect(url)
         else:
             raise Http404("Project has no running tests")
     else:
         raise Http404("Project does not exist")
+
+def coverage_core(project_name=None,commit=None):
+    url = ""
+    if project_name:
+        IS = Integration_server.objects.filter(project__name=project_name)
+    else:
+        IS = Integration_server.objects.filter(id=commit)
+    if IS.exists():
+        IS_Coverage = IS.order_by("-datetime")[0].coverage
+        if IS_Coverage:
+            coverage = int(IS_Coverage.replace("%",""))
+            url = 'https://img.shields.io/badge/coverage-{}%25-{}'
+            if 85 < coverage <= 100: url = url.format(coverage, 'brightgreen')
+            elif 70 < coverage <= 85: url = url.format(coverage, 'green')
+            elif 60 < coverage <= 70: url = url.format(coverage, 'yellowgreen')
+            elif 50 < coverage <= 60: url = url.format(coverage, 'yellow')
+            elif 40 < coverage <= 50: url = url.format(coverage, 'orange')
+            elif 25 < coverage <= 40: url = url.format(coverage, 'red')
+            else: url = url.format(coverage, 'lightgrey')
+        else:
+            url = 'https://img.shields.io/badge/coverage-inactive-inactive'
+    return url

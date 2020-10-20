@@ -46,6 +46,9 @@
             border-radius: 50%;
             display: inline-block;
         }
+        #coverage{
+            padding: 0 5% 8% 5%;
+        }
     </style>
 {% endblock %}
 {% block content %}
@@ -67,6 +70,7 @@
                             <th>Update Type</th>
                             <th id="update_version">Update Version</th>
                             <th>Author Name</th>
+                            <th>Coverage</th>
                             <th>Status</th>
                             </tbody>
                         </table>
@@ -88,7 +92,8 @@
                                     <td>{{ item.update_type }}</td>
                                     <td id="update_version">{{ item.update_version }}</td>
                                     <td>{% if item.author_name %}{{ item.author_name }}{% else %}{% endif %}</td>
-                                    <td><span class="{{ item.status }}-dot" title='{{ item.status }}'></span></td>
+                                    <td>{% if item.author_name %}{{ item.author_name }}{% else %}{% endif %}</td>
+                                    <td><span class="{{ item.status }}-dot" title='{{ item.status }}'></span><img src="{{ item.get_coverage }}" id="coverage"/></td>
                                     </tbody>
                                 </table>
                             </a>

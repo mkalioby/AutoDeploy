@@ -7,6 +7,7 @@ import autoDeploy.settings as settings
 
 repo_type = [('git', 'git')]
 update_style = [('commit', "commits"), ("tag", "tags")]
+cfile_choices = [('','Select'),('file', "File"), ("branch", "Branch")]
 
 
 def saveFile(file, project_name):
@@ -25,7 +26,7 @@ class CIProjectsForm(forms.ModelForm):
     working_dir = forms.CharField(label="Working Directory", widget=forms.TextInput(attrs={'class': 'form-control', 'size': 30}))
     repo_type = forms.ChoiceField(choices=repo_type, label="Repo Type", widget=forms.Select(attrs={"class": "form-control"}))
     update_style = forms.ChoiceField(choices=update_style,label="Update Style",widget=forms.Select(attrs={"class":"form-control"}))
-    cfile = forms.FileField(label="Config File")
+    cfile = forms.ChoiceField(choices=cfile_choices,label="Config File From",widget=forms.Select(attrs={"class":"form-control","onchange":"cfile_handler(this)"}))
     name = forms.CharField(label='Project Name',widget=forms.TextInput(attrs={'class':'form-control','size':30}))
     repo_link = forms.CharField(label='Repo Link',widget=forms.TextInput(attrs={'class':'form-control','size':30}))
     repo = forms.CharField(label='Repo',widget=forms.TextInput(attrs={'class':'form-control','size':30}))
@@ -38,7 +39,6 @@ class CIProjectsForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(CIProjectsForm, self).__init__(*args, **kwargs)
         instance = getattr(self, 'instance', None)
-        self.fields['cfile'].widget.attrs['class'] = 'file_field'
         if instance and instance.pk:
             self.fields['name'].widget.attrs['readonly'] = True
 
@@ -57,9 +57,9 @@ class CIProjectsForm(forms.ModelForm):
         P.default_branch = self.cleaned_data["default_branch"]
 
         print("Files is ", files)
-        f = files.get('cfile', '')
+        f = files.get('cfile2', '')
         if f != "":
-            P.configFile = saveFile(files.get('cfile', ''), name)
+            P.configFile = saveFile(files.get('cfile2', ''), name)
         P.save()
 
     class Meta:

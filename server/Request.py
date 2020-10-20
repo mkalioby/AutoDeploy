@@ -147,10 +147,11 @@ def parseIntegrateJob(message):
     configFile=getValue(Job,"configFile")
     requestType = Job.getAttribute('type')
     owner = Job.getAttribute('owner')
-    fileBase64=getValue(Job,"file")
-    if not os.path.exists(os.path.dirname(configFile)):
-        os.makedirs(os.path.dirname(configFile))
-    open(configFile,"w").write(fileBase64)
+    if configFile:
+        fileBase64=getValue(Job,"file")
+        if not os.path.exists(os.path.dirname(configFile)):
+            os.makedirs(os.path.dirname(configFile))
+        open(configFile,"w").write(fileBase64)
     print('Recieved New Job from  ' + owner + '.....')
     params = {"jobID":jobID,"workdir": workdir,"owner": owner,  "requestType": requestType,"configFile":configFile,
               "scm":scm,"options": optionsDict,"project_name":project_name,"change_type":change_type,"change_id":change_id}

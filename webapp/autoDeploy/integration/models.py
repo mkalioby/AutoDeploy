@@ -28,9 +28,14 @@ class CIProject(models.Model):
         db_table = 'Integration_Project'
 
     def status(self):
-        last_ci = Integration_server.objects.filter(update_version=self.lastCommit).order_by('-id')
+        last_ci = Integration_server.objects.filter(project__name=self.name).order_by('-id')
         return last_ci[0].status.description if last_ci.exists() else None
 
+    def getConfigFilePath(self):
+        if self.configFile:
+            return self.configFile.path
+        else:
+            return ""
     def __unicode__(self):
         return self.name
 
@@ -66,6 +71,11 @@ class Integration_server(models.Model):
     branch = models.CharField(max_length=255,blank=True)
     coverage = models.CharField(max_length=255,blank=True,null=True)
     result = JSONField(db_column="result",default="")
+
+    def get_coverage(self):
+        from .views import coverage_core
+        url = coverage_core(commit=self.id)
+        return url
 
     class Meta:
         get_latest_by = "id"

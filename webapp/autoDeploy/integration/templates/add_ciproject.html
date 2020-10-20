@@ -1,15 +1,47 @@
 {% extends "base.html" %}
 {% block head %}
-        <script type="text/javaScript" xmlns="http://www.w3.org/1999/html">
+    <script type="text/javaScript" xmlns="http://www.w3.org/1999/html">
         $(document).ready(function () {
-            if ('{{ edit }}' == "True") {
-                $('#id_cfile').removeAttr('required');
-                var dlink = "<a style='display: inline-block;' class='btn btn-primary' href='{% url "download_config_file" %}?file={{ project.configFile.path }}' >Download File</a>";
-                $('.file_field').parent().addClass("flex");
-                $('.file_field').parent().append(dlink);
+            let cfile_choices = ''
+            if ('{{ edit }}' == 'True') {
+                cfile_choices = ('{{ project.getConfigFilePath }}') ? 'file' :'branch';
+            }
+            let elem = $('#id_cfile');
+            elem.val(cfile_choices);
+            if (cfile_choices == 'file') {
+                if ($('.file_field').length == 0) {
+                    $(elem).parent().append('<input type="file" style="width: 50%;display: inline-block" name="cfile2" class="file_field" id="id_cfile2">');
+                    if ("{{ edit }}" == "True" && '{{ project.getConfigFilePath }}' != '') {
+                        $('#id_cfile2').removeAttr('required');
+                        var dlink = "<a id='cfile_file' style='display: inline-block;' class='btn btn-primary' href='{% url "download_config_file" %}?file={{ project.getConfigFilePath }}' >Download File</a>";
+                        $('.file_field').parent().addClass("flex");
+                        $('.file_field').parent().append(dlink);
+                    }
+                }
+            } else {
+                $("#id_cfile2").remove();
+                $("#cfile_file").remove();
 
             }
         })
+
+        function cfile_handler(elem) {
+            if (elem.value == 'file') {
+                if ($('.file_field').length == 0) {
+                    $(elem).parent().append('<input type="file" style="width: 50%;display: inline-block" name="cfile2" class="file_field" id="id_cfile2">');
+                    if ("{{ edit }}" == "True" && '{{ project.getConfigFilePath }}' != '') {
+                        $('#id_cfile2').removeAttr('required');
+                        var dlink = "<a id='cfile_file' style='display: inline-block;' class='btn btn-primary' href='{% url "download_config_file" %}?file={{ project.getConfigFilePath }}' >Download File</a>";
+                        $('.file_field').parent().addClass("flex");
+                        $('.file_field').parent().append(dlink);
+                    }
+                }
+            }else{
+                $("#id_cfile2").remove();
+                $("#cfile_file").remove();
+
+            }
+        }
     </script>
 {% endblock %}
 {% block content %}

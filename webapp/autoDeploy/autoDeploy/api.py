@@ -158,7 +158,7 @@ def integrate_core(server,project,tag=None,commit=None):
     D.datetime = timezone.now()
     D.has_new_version = False
     D.save()
-    res = c.Integrate(D.pk, project.working_dir, project.configFile,project.name,change_type,change_id)
+    res = c.Integrate(D.pk, project.working_dir,project.name,change_type,change_id,configFile=project.configFile if project.configFile else None)
     if "Queued" in res:
         D.status_id = 1  # Running
         D.save()

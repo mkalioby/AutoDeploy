@@ -187,9 +187,10 @@ def HandleClient(clientsock):
                 print(msg)
                 job = Request.parseIntegrateJob(msg)
                 try:
-                    config=yaml.safe_load(open(job["configFile"]))
+                    if job.get("configFile",None):
+                        config=yaml.safe_load(open(job["configFile"]))
+                        job["config"] = config
                     Response.sendData(clientsock, "Queued")
-                    job["config"]=config
                     jobs.put(job)
                     #autointegrator.runTest(job["workdir"],job["project_name"],job["change_type"],job["change_id"],jobID=job['jobID'])
                     res = "Done"

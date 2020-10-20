@@ -1,7 +1,0 @@
-tasks:
-  - location: source env/bin/activate;xvfb-run coverage run manage.py test --pattern="test_*.py"
-events:
-  beforeRun:
-    - location: python3.7 -m virtualenv env; . activate
-  afterRun:
-     - location: ./show-coverage.py
