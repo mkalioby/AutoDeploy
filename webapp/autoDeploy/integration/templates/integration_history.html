@@ -70,7 +70,6 @@
                             <th>Update Type</th>
                             <th id="update_version">Update Version</th>
                             <th>Author Name</th>
-                            <th>Coverage</th>
                             <th>Status</th>
                             </tbody>
                         </table>
@@ -92,8 +91,7 @@
                                     <td>{{ item.update_type }}</td>
                                     <td id="update_version">{{ item.update_version }}</td>
                                     <td>{% if item.author_name %}{{ item.author_name }}{% else %}{% endif %}</td>
-                                    <td>{% if item.author_name %}{{ item.author_name }}{% else %}{% endif %}</td>
-                                    <td><span class="{{ item.status }}-dot" title='{{ item.status }}'></span><img src="{{ item.get_coverage }}" id="coverage"/></td>
+                                    <td><div style="padding-top: 7%"><span class="{{ item.status }}-dot" title='{{ item.status }}'></span><img src="{{ item.get_coverage }}" id="coverage"/></div></td>
                                     </tbody>
                                 </table>
                             </a>
