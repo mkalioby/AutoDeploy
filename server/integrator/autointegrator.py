@@ -138,18 +138,24 @@ def get_branch(workdir, result):
 def get_config(workdir):
     import yaml
     import os
+    yaml_file = None
     for file in os.listdir(workdir):
-        if file.endswith(".yaml"):
-            return yaml.safe_load(open(os.path.join(workdir, file)))
+        if file.endswith("ci.yaml"):
+            yaml_file = yaml.safe_load(open(os.path.join(workdir, file)))
+    return yaml_file
 
 
 def runTest(config=None,workdir=".", project_name=None, change_type=None, change_id=None, jobID=None):
-    result = {"output": {}, "jobID": jobID}
+    result = {"result": {}, "jobID": jobID}
     switch_change(workdir, change_type, change_id, result)
     get_author(workdir, result)
     get_branch(workdir, result)
     if not config:
         config = get_config(workdir)
+        if not config:
+            result['result'] = {"configuration file":{"exit_code": 1,"result": "ci.yaml file cannot be found"}}
+            update_database(result)
+            return
     printNotication("Before Run Scripts:")
     runEvents(config, workdir, result, "beforeRun")
     printNotication("Test Scripts")
