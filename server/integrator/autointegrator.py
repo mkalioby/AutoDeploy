@@ -146,14 +146,14 @@ def get_config(workdir):
 
 
 def runTest(config=None,workdir=".", project_name=None, change_type=None, change_id=None, jobID=None):
-    result = {"result": {}, "jobID": jobID}
+    result = {"output": {}, "jobID": jobID}
     switch_change(workdir, change_type, change_id, result)
     get_author(workdir, result)
     get_branch(workdir, result)
     if not config:
         config = get_config(workdir)
         if not config:
-            result['result'] = {"configuration file":{"exit_code": 1,"result": "ci.yaml file cannot be found"}}
+            result['output']["configuration file"] = {"exit_code": 1,"result": "ci.yaml file cannot be found"}
             update_database(result)
             return
     printNotication("Before Run Scripts:")

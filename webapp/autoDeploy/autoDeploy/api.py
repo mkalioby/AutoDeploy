@@ -155,6 +155,9 @@ def integrate_core(server,project,tag=None,commit=None):
         project.lastCommit = commit
         change_type = "commit"
         change_id = commit
+    project.lastUpdate = timezone.now()
+    project.newVersion = False
+    project.save()
     D.datetime = timezone.now()
     D.has_new_version = False
     D.save()
