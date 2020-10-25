@@ -16,4 +16,5 @@ urlpatterns = [
     url(r'listCommits/',views.listCICommits,name='ci_commits'),
     re_path(r'status/(\w+)',views.status,name='ci_status'),
     re_path(r'coverage/(\w+)',views.coverage,name='ci_coverage'),
+    re_path(r'webhooks/',views.webhooks,name='webhooks'),
 ]

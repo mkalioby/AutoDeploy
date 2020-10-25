@@ -292,3 +292,7 @@ def coverage_core(project_name=None,commit=None):
         else:
             url = 'https://img.shields.io/badge/coverage-inactive-inactive'
     return url
+
+@csrf_exempt
+def webhooks(request):
+    print("This is webhooks function. \n ",request.POST)
