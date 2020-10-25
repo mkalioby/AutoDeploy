@@ -295,4 +295,7 @@ def coverage_core(project_name=None,commit=None):
 
 @csrf_exempt
 def webhooks(request):
-    print("This is webhooks function. \n ",request.POST)
+    import json
+    msg = "This is webhooks function."
+    print(msg," \n ",request.body)
+    return HttpResponse(json.dumps(msg))
