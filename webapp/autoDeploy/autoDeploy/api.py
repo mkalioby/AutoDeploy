@@ -198,9 +198,16 @@ def receive_integrate_result(request):
                 success = False
         IS.status_id = 2 if success else 3
         if not success:
-            slack = Slacker('xoxb-1449004581684-1452765917525-Xr6Af4phXTKyTlATFFgJFXCn')
-            message = "Hello" + IS.author_name + "Your commit test was failed"
-            slack.chat.post_message(IS.author_name, message)
+            slack = Slacker('xoxb-1449004581684-1482854233264-jLUGzlqrs6VL8JKF9e85FARJ')
+            response = slack.users.list()
+            users = response.body['members']
+            project = CIModels.CIProject.objects.get(name=IS.project.name)
+            commit_link = project.repo_link.split("src")[0] + 'commits/' + project.lastCommit
+            for user in users:
+                email = user['profile'].get('email', None)
+                if email == IS.author_email:
+                    message = "Hello <@" + user['id'] + "> , your last '<"+commit_link+"|"+IS.update_type+">' in branch " + IS.branch + " was failed"
+                    slack.chat.post_message(user['id'], message)
         IS.result = IS_output
         IS.save()
     return HttpResponse(simplejson.dumps(errors), content_type="application/json")
