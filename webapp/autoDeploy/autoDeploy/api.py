@@ -190,7 +190,7 @@ def receive_integrate_result(request):
         del IS_output['author_name']
         del IS_output['author_email']
         del IS_output['branch']
-        if coverage:
+        if coverage or "Coverage" in IS_output.keys():
             del IS_output['Coverage']
         for k, v in IS_output.items():
             if v['exit_code'] not in [0, '0']:
