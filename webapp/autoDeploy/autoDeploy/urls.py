@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.urls import path as url,include
 from django.contrib import admin
-from . import views,api
+from . import views, api
 import mfa.TrustedDevice
 urlpatterns = [
     url(r'admin/', admin.site.urls),

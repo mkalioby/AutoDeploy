@@ -9,3 +9,4 @@ pyyaml
 sqlparse
 tablib
 mysqlclient
+slacker

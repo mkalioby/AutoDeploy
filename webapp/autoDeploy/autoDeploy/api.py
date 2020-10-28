@@ -11,6 +11,7 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_protect,csrf_exempt
 from django.utils import timezone
 from jose import jwt
+from slacker import Slacker
 
 
 def checkServers(request):
@@ -196,6 +197,10 @@ def receive_integrate_result(request):
             if v['exit_code'] not in [0, '0']:
                 success = False
         IS.status_id = 2 if success else 3
+        if not success:
+            slack = Slacker('xoxb-1449004581684-1452765917525-Xr6Af4phXTKyTlATFFgJFXCn')
+            message = "Hello" + IS.author_name + "Your commit test was failed"
+            slack.chat.post_message(IS.author_name, message)
         IS.result = IS_output
         IS.save()
     return HttpResponse(simplejson.dumps(errors), content_type="application/json")
