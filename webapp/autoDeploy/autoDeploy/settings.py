@@ -171,3 +171,5 @@ U2F_APPID="https://localhost"    #URL For U2F
 FIDO_SERVER_ID="localhost"      # Server rp id for FIDO2
 FIDO_SERVER_NAME="Autodeploy"
 FIDO_LOGIN_URL=BASE_URL
+
+CI_CHECK_PATH = "/home/mahmood/Work/autodeploy/autodeploy-check"

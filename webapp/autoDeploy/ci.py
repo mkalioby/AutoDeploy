@@ -2,22 +2,23 @@
 __author__ = 'mohamed'
 
 import os, django
+from django.conf import settings
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "autoDeploy.settings")
 django.setup()
 
-autodeploy_check_path = "/home/mahmood/Work/autodeploy/autodeploy-check"
+CI_CHECK_PATH = settings.CI_CHECK_PATH
 
 
 def savePID():
-    f = open(autodeploy_check_path, "w")
+    f = open(CI_CHECK_PATH, "w")
     f.write(str(os.getpid()))
     f.close()
 
 
 def getPreviousPID():
-    if not os.path.exists(autodeploy_check_path): return 0
-    f = open(autodeploy_check_path, "r")
+    if not os.path.exists(CI_CHECK_PATH): return 0
+    f = open(CI_CHECK_PATH, "r")
     return int(f.read().strip())
 
 

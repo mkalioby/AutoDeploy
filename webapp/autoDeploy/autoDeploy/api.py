@@ -210,7 +210,7 @@ def receive_integrate_result(request):
                 if user['profile'].get('email', None) == IS.author_email:
                     user_id = user['id']
             for ch in channels:
-                if project.slackchannel == ch['name']:
+                if project.slackchannel and project.slackchannel == ch['name']:
                     channel_id = ch['id']
             if user_id:
                 message = "Hello <@" + user_id + "> , your last <" + commit_link + "|" + IS.update_type + "> in branch " + IS.branch + " was failed"
