@@ -28,9 +28,10 @@ class CIProjectsForm(forms.ModelForm):
     update_style = forms.ChoiceField(choices=update_style,label="Update Style",widget=forms.Select(attrs={"class":"form-control"}))
     cfile = forms.ChoiceField(choices=cfile_choices,label="Config File From",widget=forms.Select(attrs={"class":"form-control","onchange":"cfile_handler(this)"}))
     name = forms.CharField(label='Project Name',widget=forms.TextInput(attrs={'class':'form-control','size':30}))
+    slackch = forms.CharField(label='Slack Channel', widget=forms.TextInput(attrs={'class': 'form-control', 'size': 30}))
     repo_link = forms.CharField(label='Repo Link',widget=forms.TextInput(attrs={'class':'form-control','size':30}))
     repo = forms.CharField(label='Repo',widget=forms.TextInput(attrs={'class':'form-control','size':30}))
-    integration_link = forms.CharField(label='Integration Link',widget=forms.TextInput(attrs={'class':'form-control','size':30}))
+    # integration_link = forms.CharField(label='Integration Link',widget=forms.TextInput(attrs={'class':'form-control','size':30}))
     emailUsers = forms.CharField(required=False,label='Users emails',help_text="comma seprated list of emails of users to notify when new version integrated",widget=forms.TextInput(attrs={'class':'form-control','size':30}))
     default_server = forms.ModelChoiceField(queryset=Server.objects.all(),empty_label="Select",widget=forms.Select(attrs={"class":"form-control"}),label="Default Server")
     sshKey = forms.ModelChoiceField(queryset=SSHKey.objects.all(), empty_label="Select",label="SSH Key",widget=forms.Select(attrs={"class": "form-control"}))
@@ -45,7 +46,7 @@ class CIProjectsForm(forms.ModelForm):
     def save(self, files, name):
         P = models.CIProject()
         P.name = self.cleaned_data["name"]
-        P.integration_link = self.cleaned_data["integration_link"]
+        # P.integration_link = self.cleaned_data["integration_link"]
         P.repo = self.cleaned_data["repo"]
         P.repo_link = self.cleaned_data["repo_link"]
         P.repo_type = self.cleaned_data["repo_type"]
@@ -55,6 +56,7 @@ class CIProjectsForm(forms.ModelForm):
         P.update_style = self.cleaned_data["update_style"]
         P.emailUsers = self.cleaned_data["emailUsers"]
         P.default_branch = self.cleaned_data["default_branch"]
+        P.slackchannel = self.cleaned_data["slackch"]
 
         print("Files is ", files)
         f = files.get('cfile2', '')
@@ -64,7 +66,7 @@ class CIProjectsForm(forms.ModelForm):
 
     class Meta:
         model = models.CIProject
-        fields = ("name", "repo", "repo_link", "working_dir", "update_style", "default_branch", "default_server", "repo_type", "sshKey", "integration_link", "cfile", "emailUsers")
+        fields = ("name", "repo", "repo_link", "working_dir", "update_style", "default_branch", "default_server", "repo_type", "sshKey", "cfile", "slackch", "emailUsers")
 
 
 class CloneForm(forms.Form):

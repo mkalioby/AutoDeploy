@@ -42,7 +42,7 @@ def add_ci_project(request):
         context["form"] = form
         if request.POST.get("edit", "False") == "True":
             project = CIProject.objects.get(name=request.POST["name"])
-            project.integration_link = request.POST["integration_link"]
+            # project.integration_link = request.POST["integration_link"]
             project.repo = request.POST["repo"]
             project.repo_type = request.POST["repo_type"]
             project.repo_link = request.POST["repo_link"]

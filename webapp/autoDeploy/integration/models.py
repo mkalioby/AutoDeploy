@@ -23,6 +23,7 @@ class CIProject(models.Model):
     emailUsers = models.TextField(default="", blank=True)
     autoDeploy = models.BooleanField(default=False)
     default_branch = models.CharField(max_length=255, null=True)
+    slackchannel = models.CharField(max_length=255, null=True)
 
     class Meta:
         db_table = 'Integration_Project'
