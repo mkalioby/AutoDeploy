@@ -126,7 +126,7 @@
                                             {% elif item.status_id == 3 %}
                                                 <div class='alert alert-danger'><pre>{{ v.result }}</pre></div>
                                             {% else %}
-                                                {{ v.result|linebreaks }}
+                                                <pre>{{ v.result }}</pre>
                                             {% endif %}
                                         </li>
                                     </ul>
