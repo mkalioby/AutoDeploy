@@ -88,11 +88,8 @@ def runEvents(config, workdir, result, event):
             if not slient: print("Done")
             if run_res['exit_code'] not in [0, '0']:
                 result['output'][cmd] = run_res
-            else:
-                Coverage = None
-                if event == 'afterRun' and run_res['result'].find("Coverage: ") not in [-1, '-1']:
-                    Coverage = run_res['result'].split(": ")[1].replace("\n", "")
-                result["output"]['Coverage'] = Coverage
+            if event == 'afterRun' and run_res['result'].find("Coverage: ") not in [-1, '-1']:
+                result["output"]['Coverage'] = run_res['result'].split(": ")[1].replace("\n", "")
 
 
 def handleRuns(tasks, workdir):

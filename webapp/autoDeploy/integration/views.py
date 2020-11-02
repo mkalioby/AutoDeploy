@@ -52,6 +52,7 @@ def add_ci_project(request):
             project.update_style = request.POST["update_style"]
             project.emailUsers = request.POST["emailUsers"]
             project.default_branch = request.POST["default_branch"]
+            project.slackchannel = request.POST["slackchannel"]
             if request.FILES.get("cfile2", "") != "":
                 project.configFile = saveFile(request.FILES["cfile2"], project.name)
             elif request.POST['cfile'] == 'branch':
