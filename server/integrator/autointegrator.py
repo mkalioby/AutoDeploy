@@ -156,9 +156,22 @@ def runTest(config=None,workdir=".", project_name=None, change_type=None, change
     printNotication("Before Run Scripts:")
     runEvents(config, workdir, result, "beforeRun")
     printNotication("Test Scripts")
+    output = None
     if "tasks" in config.keys():
         output = handleRuns(config['tasks'], workdir)
         result["output"].update(output)
+
+    success = True
+    for item in output.values():
+        if item['exit_code'] not in [0,'0']:
+            success = False
+            break
+    if success:
+        printNotication("After Success Scripts:")
+        runEvents(config, workdir, result, "afterSuccess")
+    else:
+        printNotication("After Fail Scripts:")
+        runEvents(config, workdir, result, "afterFail")
 
     printNotication("After Run Scripts:")
     runEvents(config, workdir, result, "afterRun")
