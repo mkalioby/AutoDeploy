@@ -122,9 +122,9 @@
                                             <strong>Result :</strong>
                                             <div class="result-div"></div>
                                             {% if item.status_id == 2 %}
-                                                <div class='alert alert-success'>{{ v.result|linebreaks }}</div>
+                                                <div class='alert alert-success'><pre>{{ v.result }}</pre></div>
                                             {% elif item.status_id == 3 %}
-                                                <div class='alert alert-danger'>{{ v.result|linebreaks }}</div>
+                                                <div class='alert alert-danger'><pre>{{ v.result }}</pre></div>
                                             {% else %}
                                                 {{ v.result|linebreaks }}
                                             {% endif %}
