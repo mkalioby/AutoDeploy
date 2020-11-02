@@ -197,26 +197,26 @@ def receive_integrate_result(request):
             if v['exit_code'] not in [0, '0']:
                 success = False
         IS.status_id = 2 if success else 3
-        if not success:
-            slack = Slacker('xoxb-1449004581684-1482854233264-jLUGzlqrs6VL8JKF9e85FARJ')
-            response = slack.users.list()
-            channels = slack.conversations.list().body['channels']
-            users = response.body['members']
-            project = CIModels.CIProject.objects.get(name=IS.project.name)
-            commit_link = project.repo_link.split("src")[0] + 'commits/' + project.lastCommit
-            user_id = None
-            channel_id = None
-            for user in users:
-                if user['profile'].get('email', None) == IS.author_email:
-                    user_id = user['id']
-            for ch in channels:
-                if project.slackchannel and project.slackchannel == ch['name']:
-                    channel_id = ch['id']
-            if user_id:
-                message = "Hello <@" + user_id + "> , your last <" + commit_link + "|" + IS.update_type + "> in branch " + IS.branch + " was failed"
-                slack.chat.post_message(user_id, message)
-                if channel_id:
-                    slack.chat.post_message(channel_id, message)
+
+        slack = Slacker('xoxb-1449004581684-1482854233264-jLUGzlqrs6VL8JKF9e85FARJ')
+        response = slack.users.list()
+        channels = slack.conversations.list().body['channels']
+        users = response.body['members']
+        project = CIModels.CIProject.objects.get(name=IS.project.name)
+        commit_link = project.repo_link.split("src")[0] + 'commits/' + project.lastCommit
+        user_id = None
+        channel_id = None
+        for user in users:
+            if user['profile'].get('email', None) == IS.author_email:
+                user_id = user['id']
+        for ch in channels:
+            if project.slackchannel and project.slackchannel == ch['name']:
+                channel_id = ch['id']
+        if user_id:
+            message = "Hello <@" + user_id + "> , your last <" + commit_link + "|" + IS.update_type + "> in branch " + IS.branch + " was failed" if not success else " was success"
+            slack.chat.post_message(user_id, message)
+            if channel_id:
+                slack.chat.post_message(channel_id, message)
         IS.result = IS_output
         IS.save()
     return HttpResponse(simplejson.dumps(errors), content_type="application/json")
