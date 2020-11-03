@@ -84,13 +84,13 @@ class Client:
         result = self._send(msg)
         return result
 
-    def Integrate(self,jobID, workdir, project_name,change_type,change_id,configFile=None,owner=''):
+    def Integrate(self,jobID, workdir, art_dir, project_name,change_type,change_id,configFile=None,owner=''):
         global msg
         if owner == '':
             owner = Config.Owner
-        msg = Job.createIntegrateMessage(jobID=jobID,workdir=workdir, configFile=str(configFile) if configFile else None,
-                                         project_name=project_name,change_type=change_type,change_id=change_id,
-                                         scm=self.scm, owner=owner)
+        msg = Job.createIntegrateMessage(jobID=jobID, workdir=workdir, configFile=str(configFile) if configFile else None,
+                                         project_name=project_name, change_type=change_type, change_id=change_id,
+                                         scm=self.scm, owner=owner, art_dir=art_dir)
         result = self._send(msg)
         return result
 
@@ -129,7 +129,7 @@ class Client:
         res = self._send(msg)
         result=[]
         for item in res.split("\n"):
-            if item=="" or item=="Done" : continue
+            if item == "" or item == "Done": continue
             result.append(item)
         return result
 

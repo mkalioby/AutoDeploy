@@ -3,6 +3,7 @@ __author__ = 'mohamed'
 import deployment.models as CDModels
 import integration.models as CIModels
 from . import Common
+from . import settings
 import simplejson
 import sys
 sys.path.append("../../../client")
@@ -162,7 +163,7 @@ def integrate_core(server,project,tag=None,commit=None):
     D.datetime = timezone.now()
     D.has_new_version = False
     D.save()
-    res = c.Integrate(D.pk, project.working_dir,project.name,change_type,change_id,configFile=project.configFile if project.configFile else None)
+    res = c.Integrate(D.pk, project.working_dir, settings.ARTIFACTOR_DIR, project.name,change_type,change_id,configFile=project.configFile if project.configFile else None)
     if "Queued" in res:
         D.status_id = 1  # Running
         D.save()

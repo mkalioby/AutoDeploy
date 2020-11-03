@@ -186,6 +186,7 @@ def HandleClient(clientsock):
             elif req["requestType"]=="INTEGRATE":
                 print(msg)
                 job = Request.parseIntegrateJob(msg)
+                print("Job => ",job)
                 try:
                     if job.get("configFile",None):
                         config=yaml.safe_load(open(job["configFile"]))

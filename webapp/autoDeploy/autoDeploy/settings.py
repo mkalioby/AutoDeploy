@@ -173,3 +173,4 @@ FIDO_SERVER_NAME="Autodeploy"
 FIDO_LOGIN_URL=BASE_URL
 
 CI_CHECK_PATH = "/home/mahmood/Work/autodeploy/autodeploy-check"
+ARTIFACTOR_DIR = os.path.join(BASE_DIR, 'artifactor_dir')

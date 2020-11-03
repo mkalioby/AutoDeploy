@@ -9,7 +9,8 @@ max_jobs = config.max_integrators
 def run_job(job):
     p = Process(target = autointegrator.runTest, kwargs = {"config": job.get("config",None), "workdir": job["workdir"],
                                                            "jobID": job['jobID'], "change_type": job["change_type"],
-                                                           "change_id": job["change_id"]
+                                                           "change_id": job["change_id"],
+                                                           "art_dir": job["art_dir"]
                                                            })
     p.name = job["project_name"]
     p.start()

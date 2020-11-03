@@ -118,7 +118,7 @@ def createDeployMessage(owner, workdir, scm, configFile, options=None):
     f += '</job>'
     return f
 
-def createIntegrateMessage(jobID,owner, workdir, scm,project_name,change_type,change_id, configFile=None, options=None):
+def createIntegrateMessage(jobID,owner, workdir, art_dir, scm,project_name,change_type,change_id, configFile=None, options=None):
     sec = sign(owner, scm, "INTEGRATE")
     f = '<job owner="%s" type="%s" sec="%s" scm="%s">\n'%(owner,"INTEGRATE",sec,scm)
     f += '<jobID>%s</jobID>'%jobID
@@ -132,6 +132,7 @@ def createIntegrateMessage(jobID,owner, workdir, scm,project_name,change_type,ch
     f += '<project_name>%s</project_name>'%str(project_name)
     f += '<change_type>%s</change_type>'%str(change_type)
     f += '<change_id>%s</change_id>'%str(change_id)
+    f += '<art_dir>%s</art_dir>' % str(art_dir)
 
     if options:
         f += '<options>'

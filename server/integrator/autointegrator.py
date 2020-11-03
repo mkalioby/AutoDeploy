@@ -4,6 +4,7 @@ import subprocess
 import json
 import config
 import requests
+import os
 from jose import jwt
 
 EOM = "\n\n###"
@@ -142,9 +143,10 @@ def get_config(workdir):
     return yaml_file
 
 
-def runTest(config=None,workdir=".", project_name=None, change_type=None, change_id=None, jobID=None):
+def runTest(config=None,workdir=".",art_dir=None,project_name=None, change_type=None, change_id=None, jobID=None):
     result = {"output": {}, "jobID": jobID}
     switch_change(workdir, change_type, change_id, result)
+    artifactor_dir(jobID,art_dir, workdir)
     get_author(workdir, result)
     get_branch(workdir, result)
     if not config:
@@ -176,3 +178,11 @@ def runTest(config=None,workdir=".", project_name=None, change_type=None, change
     printNotication("After Run Scripts:")
     runEvents(config, workdir, result, "afterRun")
     update_database(result)
+
+
+def artifactor_dir(jobID,art_dir, workdir):
+    dir = art_dir + '/' + jobID
+    if not os.path.exists(dir):
+        os.makedirs(os.path.join(dir))
+    cmd = "export artifactor_dir='" + dir + "'"
+    return run(cmd, workdir)
