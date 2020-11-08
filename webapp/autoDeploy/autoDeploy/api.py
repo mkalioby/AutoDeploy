@@ -213,12 +213,16 @@ def receive_integrate_result(request):
         for ch in channels:
             if project.slackchannel and project.slackchannel == ch['name']:
                 channel_id = ch['id']
+        status = ' was success' if success else ' was fail'
+        MSG = "last commit <" + commit_link + "|" + IS.update_version[:7] + "> in project *"+project.name+"* in branch " + IS.branch + status
         if user_id:
-            status = ' was success' if success else ' was fail'
-            message = "Hello <@" + user_id + "> , your last commit <" + commit_link + "|" + IS.update_version[:6] + "> in project *"+project.name+"* in branch " + IS.branch + status
+            message = "Hello <@" + user_id + "> , your " + MSG
             slack.chat.post_message(user_id, message)
             if channel_id:
                 slack.chat.post_message(channel_id, message)
+        elif channel_id:
+            slack.chat.post_message(channel_id, MSG)
+
         IS.result = IS_output
         IS.save()
     return HttpResponse(simplejson.dumps(errors), content_type="application/json")
