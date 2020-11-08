@@ -215,7 +215,7 @@ def receive_integrate_result(request):
                 channel_id = ch['id']
         if user_id:
             status = ' was success' if success else ' was fail'
-            message = "Hello <@" + user_id + "> , your last <" + commit_link + "|" + IS.update_type + "> in branch " + IS.branch + status
+            message = "Hello <@" + user_id + "> , your last commit <" + commit_link + "|" + IS.update_version[:6] + "> in project *"+project.name+"* in branch " + IS.branch + status
             slack.chat.post_message(user_id, message)
             if channel_id:
                 slack.chat.post_message(channel_id, message)
