@@ -139,7 +139,7 @@ def parseIntegrateJob(message):
     doc = xml.dom.minidom.parseString(message)
     Job = doc.getElementsByTagName('job')[0]
     scm=Job.getAttribute("scm")
-    project_name=Job.getAttribute("project_name")
+    project_name = doc.getElementsByTagName('project_name')[0].childNodes[0].nodeValue
     change_type=Job.getAttribute("change_type")
     change_id=Job.getAttribute("change_id")
     workdir= getValue(Job, 'workdir')
