@@ -13,5 +13,6 @@ config.read(os.path.join(mainPath , 'Config.cfg'))
 #ServerPort=int(config.get('Server','ServerPort'))
 #Owner=config.get('Client','ID')
 privateKey = config.get('Client','privateKey')
-
+failure_try = config.get('Client','failure_try')
+sleep_time = config.get('Client','sleep_time')
 Owner='autodeploy'

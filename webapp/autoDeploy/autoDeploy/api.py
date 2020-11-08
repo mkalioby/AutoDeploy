@@ -167,6 +167,10 @@ def integrate_core(server,project,tag=None,commit=None):
     if "Queued" in res:
         D.status_id = 1  # Running
         D.save()
+    elif "ERR" in res:
+        D.status_id = 3
+        D.result = {"ERR": {"exit_code": 1, "result": "Cannot connect to server"}}
+        D.save()
 
 def decrypt_result(msg):
     from autodeploy_client.Config import privateKey

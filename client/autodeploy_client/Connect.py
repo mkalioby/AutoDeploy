@@ -1,4 +1,5 @@
 import socket, time
+from . import Config
 EOM = "\n\n###"
 
 
@@ -22,6 +23,8 @@ def Send(message,server,port):
                 res = "".join(chunks)[:-5]
                 break
         return res
+    else:
+        return "ERR: Cannot connect to server"
 
 
 def connect(domain,port,timeout=10):
@@ -38,13 +41,12 @@ def connect(domain,port,timeout=10):
 
 
 def waitTillAlive(domain, port):
-    secondTime = False
-    while (1):
-            if connect(domain,port):
-                if secondTime: print("Connected To:",domain)
-                break
-            else:
-                time.sleep(5)
-                secondTime = True
-                print("Trying again....")
-    return True
+    for i in range(0,int(Config.failure_try)):
+        if connect(domain, port):
+            print("Connected To:", domain)
+            return True
+        else:
+            time.sleep(int(Config.sleep_time))
+            print("Trying again....")
+    else:
+        return False
