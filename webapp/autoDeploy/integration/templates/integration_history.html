@@ -6,13 +6,20 @@
             border-collapse: collapse;
             table-layout: fixed;
         }
-        #update_version{
+
+        #update_version {
             width: 30%;
         }
+
         table > tbody > tr td,
         table > tbody > tr th {
             cursor: pointer;
             position: relative;
+        }
+
+        ul {
+            list-style: square;
+            font
         }
 
         .Pending-dot {
@@ -46,9 +53,11 @@
             border-radius: 50%;
             display: inline-block;
         }
-        #coverage{
+
+        #coverage {
             padding: 0 5% 8% 5%;
         }
+
     </style>
     <script type="text/javascript">
         $('.collapse').on('shown.bs.collapse', function () {
@@ -56,6 +65,7 @@
         }).on('hidden.bs.collapse', function () {
             $(this).parent().find(".glyphicon-minus").removeClass("glyphicon-minus").addClass("glyphicon-plus");
         });
+
     </script>
 {% endblock %}
 {% block content %}
@@ -94,14 +104,18 @@
                                     <table id="table-body">
                                         <tbody>
                                         <td><span class="glyphicon glyphicon-plus"></span>
-                                            {{ item.datetime|date:'Y-m-d H:i' }}</td>
+                                            {{ item.datetime|date:'Y-m-d H:i' }}
+                                        </td>
                                         <td>{{ item.branch }}</td>
                                         <td>{{ item.update_type }}</td>
                                         <td id="update_version">{{ item.update_version }}</td>
                                         <td>{% if item.author_name %}{{ item.author_name }}{% else %}{% endif %}</td>
-                                        <td><div style="padding-top: 7%"><span class="{{ item.status }}-dot" title='{{ item.status }}'></span><img
-                                                src="{{ item.get_coverage }}" id="coverage"/>
-                                        </div></td>
+                                        <td>
+                                            <div style="padding-top: 7%"><span class="{{ item.status }}-dot"
+                                                                               title='{{ item.status }}'></span><img
+                                                    src="{{ item.get_coverage }}" id="coverage"/>
+                                            </div>
+                                        </td>
                                         </tbody>
                                     </table>
                                 </a>
@@ -109,28 +123,60 @@
                         </div>
                         <div id="collapse{{ forloop.counter }}" class="panel-collapse collapse">
                             <div class="panel-body">
-                                {% for k,v in item.result.items %}
-                                    <ul>
-                                        <li><strong>Server :</strong> {{ item.server }}</li>
-                                        <li>
-                                            <strong>Command :</strong>
-                                            {{ k }}</li>
-                                        <li>
-                                            <strong>Exit Code :</strong>
-                                            {{ v.exit_code }}</li>
-                                        <li>
-                                            <strong>Result :</strong>
-                                            <div class="result-div"></div>
-                                            {% if item.status_id == 2 %}
-                                                <div class='alert alert-success'><pre>{{ v.result }}</pre></div>
-                                            {% elif item.status_id == 3 %}
-                                                <div class='alert alert-danger'><pre>{{ v.result }}</pre></div>
-                                            {% else %}
-                                                <pre>{{ v.result }}</pre>
+
+                                <ul style="font-size: 17px; background-color: #f5f5f5 "
+                                    class="nav nav-tabs nav-justified">
+                                    <li class="active"><a data-toggle="pill" href="#result{{ item.id }}">Result</a></li>
+                                    <li><a data-toggle="pill" href="#files{{ item.id }}">Files</a></li>
+                                </ul>
+                                <br>
+
+                                <div class="tab-content">
+                                    <div id="result{{ item.id }}" class="tab-pane fade in active">
+                                        {% for k,v in item.result.items %}
+                                            <ul>
+                                                <li><strong>Server :</strong> {{ item.server }}</li>
+                                                <li>
+                                                    <strong>Command :</strong>
+                                                    {{ k }}
+                                                </li>
+                                                <li>
+                                                    <strong>Exit Code :</strong>
+                                                    {{ v.exit_code }}
+                                                </li>
+                                                <li>
+                                                    <strong>Result :</strong>
+                                                    <div class="result-div"></div>
+                                                    {% if item.status_id == 2 %}
+                                                        <div class='alert alert-success'>
+                                                            <pre>{{ v.result }}</pre>
+                                                        </div>
+                                                    {% elif item.status_id == 3 %}
+                                                        <div class='alert alert-danger'>
+                                                            <pre>{{ v.result }}</pre>
+                                                        </div>
+                                                    {% else %}
+                                                        <pre>{{ v.result }}</pre>
+                                                    {% endif %}
+                                                </li>
+                                            </ul>
+                                        {% endfor %}
+                                    </div>
+                                    <div id="files{{ item.id }}" class="tab-pane fade">
+                                        {% for dir in dir_list %}
+                                            {% if item.id == dir.processId %}
+                                                {% for d in dir.processDir %}
+                                                    <ul id="filesmenu" style="font-size: 16px">
+                                                        <li>
+                                                            <a style="" id="fileindire" href='{% url "download_config_file" %}?file={{dir.folders}}/{{d}}' download>{{ d }}</a>
+                                                        </li>
+                                                    </ul>
+                                                {% endfor %}
                                             {% endif %}
-                                        </li>
-                                    </ul>
-                                {% endfor %}
+                                        {% endfor %}
+                                    </div>
+                                </div>
+
                             </div>
                         </div>
                     </div>
@@ -141,15 +187,3 @@
         </div>
     </div>
 {% endblock %}
-
-
-
-
-
-
-
-
-
-
-
-

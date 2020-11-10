@@ -60,3 +60,4 @@ target/
 **/*.cfg
 
 media/
+artifactor_dir/

@@ -13,6 +13,7 @@ from django.shortcuts import redirect,reverse
 from django.template.context_processors import csrf
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect,HttpResponse,Http404
+from autoDeploy import settings
 
 @login_required(redirect_field_name="redirect")
 def ci_projects(request):
@@ -186,6 +187,13 @@ def getHistory(request,project_name=None):
         context['branch'] = project.default_branch
         context['integrations'] = Integration_server.objects.filter(project__name=project).order_by("-datetime")[:5]
         context['project_name'] = project
+        dir_list = []
+        for item in context['integrations']:
+            folderDir = settings.ARTIFACTOR_DIR + '/' + str(project) + '/' + str(item.id)
+            if os.path.isdir(folderDir):
+                dir_list.append({'processDir':  os.listdir(folderDir), 'processId': item.id, 'folders': folderDir})
+        context['dir_list'] = dir_list
+
     else:
         context['error'] = "Project ( %s ) cannot be found"%(requested_project)
     return render(request,"integration_history.html",context)
