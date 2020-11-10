@@ -181,7 +181,7 @@ def runTest(config=None,workdir=".",art_dir=None,project_name=None, change_type=
 
 
 def artifactor_dir(jobID,project_name,art_dir, workdir):
-    dir = art_dir + '/' + project_name + '/' + jobID
+    dir = art_dir + '/' + project_name + '/' + jobID + '/'
     if not os.path.exists(dir):
         os.makedirs(os.path.join(dir))
     cmd = "export artifact_dir='" + dir + "'"
