@@ -13,7 +13,9 @@
                     $(elem).parent().append('<input type="file" style="width: 50%;display: inline-block" name="cfile2" class="file_field" id="id_cfile2">');
                     if ("{{ edit }}" == "True" && '{{ project.getConfigFilePath }}' != '') {
                         $('#id_cfile2').removeAttr('required');
-                        var dlink = "<a id='cfile_file' style='display: inline-block;' class='btn btn-primary' href='{% url "download_config_file" %}?file={{ project.getConfigFilePath }}' >Download File</a>";
+                        if('{{ config_file }}' != 'None'){
+                            var dlink = "<a id='cfile_file' style='display: inline-block;' class='btn btn-primary' href='{% url "download_file" %}?file={{ config_file }}' download='{{ file_name }}'>Download File</a>";
+                        }
                         $('.file_field').parent().addClass("flex");
                         $('.file_field').parent().append(dlink);
                     }
@@ -31,7 +33,9 @@
                     $(elem).parent().append('<input type="file" style="width: 50%;display: inline-block" name="cfile2" class="file_field" id="id_cfile2">');
                     if ("{{ edit }}" == "True" && '{{ project.getConfigFilePath }}' != '') {
                         $('#id_cfile2').removeAttr('required');
-                        var dlink = "<a id='cfile_file' style='display: inline-block;' class='btn btn-primary' href='{% url "download_config_file" %}?file={{ project.getConfigFilePath }}' >Download File</a>";
+                        if('{{ config_file }}' != 'None'){
+                            var dlink = "<a id='cfile_file' style='display: inline-block;' class='btn btn-primary' href='{% url "download_file" %}?file={{ config_file }}' download='{{ file_name }}' >Download File</a>";
+                        }
                         $('.file_field').parent().addClass("flex");
                         $('.file_field').parent().append(dlink);
                     }

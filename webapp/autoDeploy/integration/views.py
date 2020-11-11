@@ -14,6 +14,7 @@ from django.template.context_processors import csrf
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect,HttpResponse,Http404
 from autoDeploy import settings
+import os.path
 
 @login_required(redirect_field_name="redirect")
 def ci_projects(request):
@@ -146,8 +147,10 @@ def integrate3(request):
 def edit_ci_project(request, project):
     if request.method == "GET":
         project = CIProject.objects.get(name=project)
+        file_name = project.configFile.name.split('/')[-1]
+        config_file = project.name+'/'+ file_name if project.configFile not in ['',None] and os.path.exists(project.configFile.path) else None
         form = CIProjectsForm(instance=project)
-        return render(request,"add_ciproject.html", {"form": form, "edit": True,'project':project})
+        return render(request,"add_ciproject.html", {"form": form, "edit": True,'project':project,"config_file":config_file,"file_name":file_name})
 
 
 def delete_ci_project(request, name):
@@ -189,9 +192,10 @@ def getHistory(request,project_name=None):
         context['project_name'] = project
         dir_list = []
         for item in context['integrations']:
-            folderDir = settings.ARTIFACTOR_DIR + '/' + str(project) + '/' + str(item.id)
+            dir_name = str(project) + '/' + str(item.id)
+            folderDir = settings.ARTIFACTOR_DIR + '/' + dir_name
             if os.path.isdir(folderDir):
-                dir_list.append({'processDir':  os.listdir(folderDir), 'processId': item.id, 'folders': folderDir})
+                dir_list.append({'processDir':  os.listdir(folderDir), 'processId': item.id, 'folders': dir_name})
         context['dir_list'] = dir_list
 
     else:

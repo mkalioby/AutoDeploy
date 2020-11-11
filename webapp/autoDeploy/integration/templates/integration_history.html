@@ -168,7 +168,7 @@
                                                 {% for d in dir.processDir %}
                                                     <ul id="filesmenu" style="font-size: 16px">
                                                         <li>
-                                                            <a style="" id="fileindire" href='{% url "download_config_file" %}?file={{dir.folders}}/{{d}}' download>{{ d }}</a>
+                                                            <a style="" id="fileindire" href='{% url "download_file" %}?type=artifact&file={{dir.folders}}/{{d}}' download="{{ d }}">{{ d }}</a>
                                                         </li>
                                                     </ul>
                                                 {% endfor %}

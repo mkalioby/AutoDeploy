@@ -10,6 +10,7 @@ from django.shortcuts import redirect,reverse
 from django.template.context_processors import csrf
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
+import os.path
 
 
 
@@ -147,8 +148,10 @@ def deploy3(request):
 def edit_project(request, project):
     if request.method == "GET":
         project = Project.objects.get(name=project)
+        file_name = project.configFile.name.split('/')[-1]
+        config_file = project.name + '/' + file_name if project.configFile not in ['', None] and os.path.exists(project.configFile.path) else None
         form = ProjectsForm(instance=project)
-        return render(request,"add_project.html", {"form": form, "edit": True,'project':project})
+        return render(request,"add_project.html", {"form": form, "edit": True,'project':project,'config_file':config_file,'file_name':file_name})
 
 
 def delete_project(request, name):

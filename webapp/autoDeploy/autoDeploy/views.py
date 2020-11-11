@@ -9,6 +9,8 @@ from deployment.models import *
 from integration.models import *
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.http import FileResponse
+from . import settings
 
 @login_required(redirect_field_name="redirect")
 def index(request):
@@ -155,11 +157,12 @@ def checkServersStatus(request):
 
 
 @login_required(redirect_field_name="redirect")
-def download_config_file(request):
-    file = request.GET["file"]
-    import mimetypes
-    ctype = mimetypes.guess_type(file)
-    response = HttpResponse(content_type=ctype)
-    response['Content-Disposition'] = 'attachment; filename=%s' % (file.split("/")[-1])
-    response.content = open(file).read()
-    return response
+def download_file(request):
+    file_path = request.GET["file"]
+    type = request.GET.get("type","config")
+    file = None
+    if type == 'config':
+        file = settings.MEDIA_ROOT + "/" + file_path
+    else:
+        file = settings.ARTIFACTOR_DIR + "/" + file_path
+    return FileResponse(open(file, 'rb'))

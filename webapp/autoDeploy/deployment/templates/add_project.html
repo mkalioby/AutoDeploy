@@ -4,7 +4,9 @@
         $(document).ready(function () {
             if ('{{ edit }}' == "True") {
                 $('#id_cfile').removeAttr('required');
-                var dlink = "<a style='display: inline-block;' class='btn btn-primary' href='{% url "download_config_file" %}?file={{ project.configFile.path }}' >Download File</a>";
+                if('{{ config_file }}' != 'None'){
+                    var dlink = "<a style='display: inline-block;' class='btn btn-primary' href='{% url "download_file" %}?file={{ config_file }}' download='{{ file_name }}' >Download File</a>";
+                }
                 $('.file_field').parent().addClass("flex");
                 $('.file_field').parent().append(dlink);
 
