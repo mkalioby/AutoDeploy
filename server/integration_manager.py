@@ -1,18 +1,20 @@
 import config
 import time
 from multiprocessing import Process
-from integrator import autointegrator
+from integrator.autointegrator import autointegrator
 
 max_jobs = config.max_integrators
 
 
 def run_job(job):
-    p = Process(target = autointegrator.runTest, kwargs = {"config": job.get("config",None), "workdir": job["workdir"],
-                                                           "jobID": job['jobID'], "change_type": job["change_type"],
-                                                           "change_id": job["change_id"],
-                                                           "art_dir": job["art_dir"],
-                                                           "project_name": job["project_name"]
-                                                           })
+    kwargs = {"config": job.get("config", None), "workdir": job["workdir"],
+              "jobID": job['jobID'], "change_type": job["change_type"],
+              "change_id": job["change_id"],
+              "art_dir": job["art_dir"],
+              "project_name": job["project_name"]
+              }
+    ai = autointegrator(**kwargs)
+    p = Process(target=ai.runTest)
     p.name = job["project_name"]
     p.start()
     print("Started",p.name)
