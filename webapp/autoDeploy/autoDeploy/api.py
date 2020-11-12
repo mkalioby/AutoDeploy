@@ -188,21 +188,21 @@ def receive_integrate_result(request):
         IS = CIModels.Integration_server.objects.get(id=result['jobID'])
         IS_output = result['output']
         success = True
-        IS.author_name = IS_output['author_name']
-        IS.author_email = IS_output['author_email']
-        IS.branch = IS_output['branch']
+        IS.author_name = IS_output.get('author_name',None)
+        IS.author_email = IS_output.get('author_email',None)
+        IS.branch = IS_output.get('branch',None)
         coverage = IS_output.get('Coverage', None)
         IS.coverage = coverage
-        del IS_output['author_name']
-        del IS_output['author_email']
-        del IS_output['branch']
-        if coverage or "Coverage" in IS_output.keys():
-            del IS_output['Coverage']
-        for k, v in IS_output.items():
-            if v['exit_code'] not in [0, '0']:
-                success = False
-        IS.status_id = 2 if success else 3
-
+        if IS_output.get('author_name', None): del IS_output['author_name']
+        if IS_output.get('author_email', None): del IS_output['author_email']
+        if IS_output.get('branch', None): del IS_output['branch']
+        if coverage or "Coverage" in IS_output.keys(): del IS_output['Coverage']
+        if not result['isRunning']:
+            for k, v in IS_output.items():
+                if v['exit_code'] not in [0, '0']:
+                    success = False
+            IS.status_id = 2 if success else 3
+        del result['isRunning']
         slack = Slacker('xoxb-1449004581684-1482854233264-jLUGzlqrs6VL8JKF9e85FARJ')
         response = slack.users.list()
         channels = slack.conversations.list().body['channels']

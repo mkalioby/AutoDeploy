@@ -6,7 +6,6 @@ import config as configFile
 import requests
 import os
 from jose import jwt
-
 EOM = "\n\n###"
 debug = False
 slient = False
@@ -28,7 +27,8 @@ class autointegrator():
         st = "".join(file.readlines())
         return jwt.encode(self.result, st, algorithm="RS256")
 
-    def update_database(self):
+    def update_database(self, isRunning):
+        self.result['isRunning'] = isRunning
         client_url = configFile.client_url + "api/ris"
         try:
             serverStatus = requests.get(client_url).status_code
@@ -106,6 +106,7 @@ class autointegrator():
                     self.result['output'][cmd] = run_res
                 if event == 'afterRun' and run_res['result'].find("Coverage: ") not in [-1, '-1']:
                     self.result["output"]['Coverage'] = run_res['result'].split(": ")[1].replace("\n", "")
+        self.update_database(True)
 
     def handleRuns(self, tasks):
         result = {}
@@ -115,6 +116,8 @@ class autointegrator():
             task_result = self.run(cmd, interpreter=task.get('interpreter', '/bin/bash'))
             print("RESULT : ", task_result['exit_code'])
             result[cmd] = task_result
+            self.result["output"].update({cmd:task_result})
+            self.update_database(True)
         return result
 
     def switch_change(self):
@@ -125,6 +128,7 @@ class autointegrator():
         run_res = self.run(switch_command)
         if run_res['exit_code'] not in [0, '0']:
             self.result['output'][switch_command] = run_res
+        self.update_database(True)
 
     def get_author(self):
         author_command = 'git log -n1 --pretty=format:"%H,,%h,,%an,,%ae,,%ar,,%s,,%cd" | cat -'
@@ -135,6 +139,7 @@ class autointegrator():
             self.result['output']['author_email'] = author_info[1]
         else:
             self.result['output'][author_command] = author
+        self.update_database(True)
 
     def get_branch(self):
         branch_command = 'git rev-parse --abbrev-ref HEAD | cat -'
@@ -143,6 +148,7 @@ class autointegrator():
             self.result['output']['branch'] = branch['result'].replace("\n", "")
         else:
             self.result['output'][branch_command] = branch
+        self.update_database(True)
 
     def get_config(self):
         import yaml
@@ -161,7 +167,7 @@ class autointegrator():
             self.config = self.get_config()
             if not self.config:
                 self.result['output']["configuration file"] = {"exit_code": 1, "result": "ci.yaml file cannot be found"}
-                self.update_database()
+                self.update_database(False)
                 return
         self.printNotication("Before Run Scripts:")
         self.runEvents("beforeRun")
@@ -169,7 +175,6 @@ class autointegrator():
         output = None
         if "tasks" in self.config.keys():
             output = self.handleRuns(self.config['tasks'])
-            self.result["output"].update(output)
 
         success = True
         for item in output.values():
@@ -185,4 +190,4 @@ class autointegrator():
 
         self.printNotication("After Run Scripts:")
         self.runEvents("afterRun")
-        self.update_database()
+        self.update_database(False)
