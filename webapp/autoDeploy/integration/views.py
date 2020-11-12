@@ -292,7 +292,7 @@ def coverage_core(project_name=None,commit=None):
         IS = Integration_server.objects.filter(id=commit)
     if IS.exists():
         IS_Coverage = IS.order_by("-datetime")[0].coverage
-        if IS_Coverage:
+        if IS_Coverage and IS_Coverage != '-i.':
             coverage = int(IS_Coverage.replace("%",""))
             url = 'https://img.shields.io/badge/coverage-{}%25-{}'
             if 85 < coverage <= 100: url = url.format(coverage, 'brightgreen')
