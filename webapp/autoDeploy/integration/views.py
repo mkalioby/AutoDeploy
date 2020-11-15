@@ -337,7 +337,7 @@ def getProcessResults(request, process_id):
         html2 += "<td><span class='glyphicon glyphicon-plus'></span> " + process.datetime.strftime("%Y-%m-%d %H:%I") + "</td>"
         html2 += "<td>" + str(process.branch) + "</td>"
         html2 += "<td>" + str(process.update_type) + "</td>"
-        html2 += "<td id='update_version'>" + str(process.update_version) + "</td>"
+        html2 += "<td>" + str(process.update_version)[:7] + "</td>"
         if process.author_name:
             html2 += "<td>" + str(process.author_name) + "</td>"
         html2 += "<td><div style='padding-top: 7%'><span class= '" + str(process.status) + "-dot 'title='" + str(process.status) + "'></span><img src='" + str(process.get_coverage()) + "' id='coverage'/></div></td>"

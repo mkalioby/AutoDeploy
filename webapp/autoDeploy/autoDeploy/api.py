@@ -203,9 +203,9 @@ def receive_integrate_result(request):
                 if v['exit_code'] not in [0, '0']:
                     success = False
             IS.status_id = 2 if success else 3
-            plugin = Plugins.objects.filter(name__in=["slack","Slack"])
-            if plugin.exists() and plugin.settings.get("oauth",None):
-                access_token = plugin.settings["oauth"]['access_token']
+            plugins = Plugins.objects.filter(name__in=["slack","Slack"])
+            if plugins.exists() and plugins[0].settings.get("oauth",None):
+                access_token = plugins[0].settings["oauth"]['access_token']
                 slack = Slacker(access_token)
                 response = slack.users.list()
                 channels = slack.conversations.list().body['channels']
