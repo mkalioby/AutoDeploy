@@ -13,6 +13,7 @@ from django.views.decorators.csrf import csrf_protect,csrf_exempt
 from django.utils import timezone
 from jose import jwt
 from slacker import Slacker
+from plugins.models import Plugins
 
 
 def checkServers(request):
@@ -202,31 +203,33 @@ def receive_integrate_result(request):
                 if v['exit_code'] not in [0, '0']:
                     success = False
             IS.status_id = 2 if success else 3
-
-            slack = Slacker('xoxb-1449004581684-1482854233264-jLUGzlqrs6VL8JKF9e85FARJ')
-            response = slack.users.list()
-            channels = slack.conversations.list().body['channels']
-            users = response.body['members']
-            project = CIModels.CIProject.objects.get(name=IS.project.name)
-            commit_link = project.repo_link.split("src")[0] + 'commits/' + project.lastCommit
-            user_id = None
-            channel_id = None
-            for user in users:
-                if user['profile'].get('email', None) == IS.author_email:
-                    user_id = user['id']
-            for ch in channels:
-                if project.slackchannel and project.slackchannel == ch['name']:
-                    channel_id = ch['id']
-            status = ' was success' if success else ' was fail'
-            MSG = "last commit <" + commit_link + "|" + IS.update_version[
-                                                        :7] + "> in project *" + project.name + "* in branch " + IS.branch + status
-            if user_id:
-                message = "Hello <@" + user_id + "> , your " + MSG
-                slack.chat.post_message(user_id, message)
-                if channel_id:
-                    slack.chat.post_message(channel_id, message)
-            elif channel_id:
-                slack.chat.post_message(channel_id, MSG)
+            plugin = Plugins.objects.filter(name__in=["slack","Slack"])
+            if plugin.exists() and plugin.settings.get("oauth",None):
+                access_token = plugin.settings["oauth"]['access_token']
+                slack = Slacker(access_token)
+                response = slack.users.list()
+                channels = slack.conversations.list().body['channels']
+                users = response.body['members']
+                project = CIModels.CIProject.objects.get(name=IS.project.name)
+                commit_link = project.repo_link.split("src")[0] + 'commits/' + project.lastCommit
+                user_id = None
+                channel_id = None
+                for user in users:
+                    if user['profile'].get('email', None) == IS.author_email:
+                        user_id = user['id']
+                for ch in channels:
+                    if project.slackchannel and project.slackchannel == ch['name']:
+                        channel_id = ch['id']
+                status = ' was success' if success else ' was fail'
+                MSG = "last commit <" + commit_link + "|" + IS.update_version[
+                                                            :7] + "> in project *" + project.name + "* in branch " + IS.branch + status
+                if user_id:
+                    message = "Hello <@" + user_id + "> , your " + MSG
+                    slack.chat.post_message(user_id, message)
+                    if channel_id:
+                        slack.chat.post_message(channel_id, message)
+                elif channel_id:
+                    slack.chat.post_message(channel_id, MSG)
 
         del result['isRunning']
         IS.result = IS_output

@@ -74,7 +74,7 @@ def slack_oauth(request):
 
     code = request.GET["code"]
     plugin = models.Plugins.objects.get(name="slack")
-    url = "https://slack.com/api/oauth.access"
+    url = "https://slack.com/api/oauth.v2.access"
     data = {
         "client_id": plugin.settings.get("client_id", None),
         "client_secret": plugin.settings.get("client_secret", None),
@@ -87,7 +87,7 @@ def slack_oauth(request):
         plugin.settings['oauth'] = query_result
         plugin.save()
     else:
-        status = "Oauth authentication failed."
+        status = "Oauth authentication failed. " + str(query_result['error'])
         return HttpResponse(status)
 
     status = "Oauth authentication successful!"
