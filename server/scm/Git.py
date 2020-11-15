@@ -29,7 +29,10 @@ class GIT(BaseSCM):
         x = self.check_dir()
         if x != True:
             return x
-        return "cd %s; git pull"%self.workdir
+        cmd="cd %s; git pull;"%self.workdir
+        if os.path.exists(self.workdir+"/.gitmodules"):
+            cmd += "git submodule sync; git submodule update;"
+        return cmd
     def get_list_tags_cmd(self):
         x = self.check_dir()
         if x != True:
