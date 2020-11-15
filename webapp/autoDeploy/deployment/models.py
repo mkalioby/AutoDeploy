@@ -74,15 +74,6 @@ class Deployment_Server(models.Model):
         db_table = 'Deployment_Server'
 
 
-class Plugins(models.Model):
-    name = models.CharField(max_length=50)
-    settings = models.TextField()
-
-    class Meta:
-        verbose_name_plural = "Plugins"
-        db_table = 'Plugins'
-
-
 class User_Project(models.Model):
     user = models.ForeignKey(User,on_delete=models.DO_NOTHING)
     project = models.ForeignKey(Project,on_delete=models.DO_NOTHING)

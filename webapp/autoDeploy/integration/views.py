@@ -15,6 +15,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect,HttpResponse,Http404
 from autoDeploy import settings
 import os.path
+import json
 
 @login_required(redirect_field_name="redirect")
 def ci_projects(request):
@@ -312,3 +313,34 @@ def webhooks(request):
     msg = "This is webhooks function."
     print(msg," \n ",request.body)
     return HttpResponse(json.dumps(msg))
+
+
+def getProcessResults(request, process_id):
+    process = Integration_server.objects.get(id=process_id)
+    html = "<ul>"
+    html2 = "<table id='table-body'><tbody>"
+    if process.result:
+        for k,v in process.result.items():
+            html += "<li><strong>Server :</strong> " + str(process.server) + "</li>"
+            html += """
+                <li><strong>Command :</strong> %s </li>
+                <li><strong>Exit Code :</strong> %s </li>
+                <li><strong>Result :</strong> <div class="result-div"></div>
+                """ % (k, v['exit_code'])
+            if process.status_id == 2:
+                html += "<div class='alert alert-success'><pre>%s</pre></div>" % (v['result'])
+            elif process.status_id == 3:
+                html += "<div class='alert alert-danger'><pre>%s</pre></div>" % (v['result'])
+            else:
+                html += "<pre>%s</pre>" %(v['result'])
+            html += "</li>"
+        html2 += "<td><span class='glyphicon glyphicon-plus'></span> " + process.datetime.strftime("%Y-%m-%d %H:%I") + "</td>"
+        html2 += "<td>" + str(process.branch) + "</td>"
+        html2 += "<td>" + str(process.update_type) + "</td>"
+        html2 += "<td id='update_version'>" + str(process.update_version) + "</td>"
+        if process.author_name:
+            html2 += "<td>" + str(process.author_name) + "</td>"
+        html2 += "<td><div style='padding-top: 7%'><span class= '" + str(process.status) + "-dot 'title='" + str(process.status) + "'></span><img src='" + str(process.get_coverage()) + "' id='coverage'/></div></td>"
+    html2 += "<tbody></table>"
+    html += "</ul>"
+    return HttpResponse(json.dumps({'html1':html,"html2":html2}), content_type="application/json")

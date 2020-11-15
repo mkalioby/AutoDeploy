@@ -14,8 +14,21 @@ from . import settings
 
 @login_required(redirect_field_name="redirect")
 def index(request):
+    from integration.tables import CIProjectReport
+    from deployment.tables import ProjectReport
+    ci_objects = CIProject.objects.all()
+    ci = None
+    if ci_objects.exists():
+        ci = CIProjectReport(ci_objects)
+        ci_config = RequestConfig(request, paginate={"per_page": 15}).configure(ci)
+
+    cd_objects = Project.objects.all()
+    cd = None
+    if cd_objects.exists():
+        cd = ProjectReport(cd_objects)
+        cd_config = RequestConfig(request, paginate={"per_page": 15}).configure(cd)
     if request.method == "GET":
-        return render(request, 'index.html')
+        return render(request,'index.html',{'ci_table':ci,"cd_table":cd})
 
 
 @csrf_protect

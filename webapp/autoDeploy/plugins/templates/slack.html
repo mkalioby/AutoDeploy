@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block head %}
+
+    <script type="text/javaScript" xmlns="http://www.w3.org/1999/html">
+        $(document).ready(function () {
+
+        })
+        function add_slack(){
+            href = 'https://slack.com/oauth/v2/authorize?scope=chat:write&client_id=' + $('#client_id').val()
+            $("#slack_link").attr("href", href)
+        }
+    </script>
+{% endblock %}
+{% block content %}
+    <br/>
+    <br/>
+    <br/>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h1 class="panel-title">Add to Slack</h1>
+        </div>
+        <div class="panel-body" align="center" id="panel-body">
+            <div class="row">
+                <div class="col-md-6 form-inline"><label>Client ID </label>&nbsp;&nbsp;&nbsp;&nbsp;<input class="form-control" style="width: 70% !important;" type="text" name="client_id" id="client_id"></div>
+                <div class="col-md-6"><button type="submit">Add To Slack</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

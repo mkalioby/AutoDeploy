@@ -1,0 +1,28 @@
+{% block head %}
+    <script>
+        function checkSlack() {
+            $.ajax({
+                url: "{% url 'checkSlack' %}",
+                "method": "GET",
+                "dataType": 'json',
+                success: function (data) {
+                    if (data['client_id']) {
+                        var slack_link = '<a id="slack_link" href="https://slack.com/oauth/v2/authorize?scope=bot,users:read,channels:read,chat:write,chat:write.public,groups:read,usergroups:read,team:read,incoming-webhook&user_scope=users:read,users.profile:read,team:read,identify,groups:read,channels:read,channels:write,chat:write,groups:write&client_id='+ data['client_id'] +'"><img alt="Add to Slack" height="40" width="139" src="https://platform.slack-edge.com/img/add_to_slack.png" srcset="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" /></a>'
+                        $("#plugins_list").append('<li>' + slack_link + '</li>');
+                    }
+                },
+            })
+        }
+    </script>
+{% endblock %}
+<li>
+    <a href="#"><i class="fa fa-plug fa-fw"></i> Plugins <span class="fa arrow"></span></a>
+    <ul class="nav nav-second-level collapse" id="plugins_list">
+        <li>
+            <a href="{% url 'manage_plugin' %}">Manage</a>
+        </li>
+        <li>
+            <a href="{% url 'add_plugin' %}">Install</a>
+        </li>
+    </ul>
+</li>

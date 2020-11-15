@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'mfa',
     'deployment',
     'integration',
+    'plugins'
 ]
 
 MIDDLEWARE = [
@@ -65,6 +66,7 @@ TEMPLATES = [
             os.path.join(BASE_DIR, "accounts/templates"),
             os.path.join(BASE_DIR, "deployment/templates"),
             os.path.join(BASE_DIR, "integration/templates"),
+            os.path.join(BASE_DIR, "plugins/templates"),
         ],
         'APP_DIRS': True,
         'OPTIONS': {

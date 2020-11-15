@@ -17,4 +17,5 @@ urlpatterns = [
     re_path(r'status/(\w+)',views.status,name='ci_status'),
     re_path(r'coverage/(\w+)',views.coverage,name='ci_coverage'),
     re_path(r'webhooks/',views.webhooks,name='webhooks'),
+    re_path(r'getProcessResults/(\w+)/',views.getProcessResults,name='getProcessResults'),
 ]

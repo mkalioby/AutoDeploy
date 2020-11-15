@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block head %}
+    <script>
+        $(document).ready(function () {
+            $("#id_settings").attr({
+                "rows": "4",
+                "cols": "15"
+            });
+        });
+    </script>
+{% endblock %}
+{% block content %}
+    <br>
+    {% if done %}
+        <div align="center">
+            <div class="alert alert-success" style="width: 250px">Plugin Saved</div>
+        </div>
+    {% endif %}
+    {% if error %}
+        <div class="alert alert-danger">{{ form.errors }}</div>
+    {% endif %}
+
+    {% if plugin_id %}
+        <div align="center"><h1>Edit Plugin</h1></div>
+        <form action="{% url 'edit_plugin' plugin_id %}" method="post">
+        <input type="hidden" value="{{ plugin_id }}" name="plugin_id"/>
+    {% else %}
+        <div align="center"><h1>Install Plugin</h1></div>
+        <form action="{% url 'add_plugin' %}" method="post">
+    {% endif %}
+        {% csrf_token %}
+        <div align="center">
+            <table>
+                {{ form.as_table }}
+            </table>
+            {% if plugin_id %}
+                <button class="btn btn-primary">Edit Plugin</button>
+            {% else %}
+                <button class="btn btn-primary">Add Plugin</button>
+            {% endif %}
+        </div>
+        </form>
+{% endblock %}
