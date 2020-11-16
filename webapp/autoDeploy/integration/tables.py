@@ -22,7 +22,7 @@ class CIProjectReport(ExportMixin, tables.Table):
         model = CIProject
         fields = ('name', 'repo_link', 'lastUpdate')
         sequence = ('name', 'repo_link', 'lastUpdate','status', 'Operations')
-        attrs = {"class": "table table-striped"}
+        attrs = {"class": "table table-striped table-hover"}
 
 
 class CommitTable(Table.Table):

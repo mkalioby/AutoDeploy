@@ -1,18 +1,44 @@
 {% extends "base.html" %}
 {% load render_table from django_tables2 %}
+{% block head %}
+    <style>
+    div.table-container{
+        display: inline; !important;
+    }
+    </style>
+{% endblock %}
 {% block content %}
     <br/>
     <div align="center">
         <h3>Welcome to AutoDeploy</h3>
     </div>
-    {% if ci_table %}
-        <div align="center">
-            {% render_table ci_table %}
+    <br>
+    {% if cd_table and "deployment" in INSTALLED_APPS %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default" style="background-color:transparent">
+                    <div class="panel-heading" style="">
+                        <h3 style="font-weight: bold">Continuous Deployment</h3>
+                    </div>
+                    <div class="panel-body">
+                        {% render_table cd_table %}
+                    </div>
+                </div>
+            </div>
         </div>
     {% endif %}
-    {% if cd_table %}
-        <div align="center">
-            {% render_table cd_table %}
+    {% if ci_table and "integration" in INSTALLED_APPS %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default" style="background-color:transparent">
+                    <div class="panel-heading" style="">
+                        <h3 style="font-weight: bold">Continuous Integration</h3>
+                    </div>
+                    <div class="panel-body">
+                        {% render_table ci_table %}
+                    </div>
+                </div>
+            </div>
         </div>
     {% endif %}
 {% endblock %}
