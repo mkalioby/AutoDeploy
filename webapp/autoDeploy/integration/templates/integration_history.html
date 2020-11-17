@@ -198,7 +198,9 @@
                     <li><p><strong>Branch : </strong>{{ branch }}</p></li>
                     <li><p><strong>Current Status : </strong>{{ current_status }}</p></li>
                     <li><p><strong>Last successful build : </strong><a href="javascript:void(0)"
-                                                                       onclick="last_success();">{{ last_success_commit_date|timesince:lastCommitDate }}
+                                                                       onclick="last_success();">
+                        {% if last_success_commit_date != None or last_success_commit_date != 'None' or last_success_commit_date != '' %}
+                            {{ last_success_commit_date|timesince:lastCommitDate }}{% else %} {% endif %}
                         ago</a></p></li>
                     <li><p><strong>Last build : </strong>{{ lastCommitDate|timesince }}</p></li>
                 </ul>
