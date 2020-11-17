@@ -4,7 +4,7 @@
         .switch {
             position: relative;
             display: inline-block;
-            width: 60px;
+            width: 120px;
             height: 34px;
         }
 
@@ -60,7 +60,10 @@
         .slider.round:before {
             border-radius: 50%;
         }
-
+        .slider #slider_label{
+            padding-right: 5%;
+            padding-top: 5% ;
+        }
         table {
             width: 100%;
             border-collapse: collapse;
@@ -111,10 +114,12 @@
         }
 
         #coverage {
-            padding: 0 5% 8% 5%;
+            padding: 4% 5% 8% 5%;
         }
 
-
+        ul > li > p {
+            font-size: medium;
+        }
     </style>
     <script type="text/javascript">
         $("#switch-id").change(function () {
@@ -130,7 +135,6 @@
                         "method": "GET",
                         "dataType" : 'json',
                         success: function (data) {
-                            console.log(data)
                             $("#"+result_div).html(data.html1)
                             if(data.html2 != "<table id='table-body'><tbody><tbody></table>") {
                                 $("#" + table_div).html(data.html2)
@@ -146,58 +150,98 @@
         }).on('hidden.bs.collapse', function () {
             $(this).parent().find(".glyphicon-minus").removeClass("glyphicon-minus").addClass("glyphicon-plus");
         });
+
+        function last_success() {
+            $("#modal-title").html("Last Successful Build");
+            $("#modal").modal();
+            let commit_id = {% if last_success_commit == None or last_success_commit == 'None' or last_success_commit == ''%}0{% else %}{{ last_success_commit }}{% endif %}
+            $.ajax({
+                url: '{% url "get_process" %}?id='+commit_id,
+                "method": "GET",
+                "dataType": 'html',
+                success: function (data) {
+                    $("#modal-body").append(data);
+                    $("#popUpModal").modal();
+                },
+            })
+        }
     </script>
 {% endblock %}
 {% block content %}
     <br>
     <br>
-    <div class="panel panel-new" style="background-color:transparent">
-        <div class="panel-heading" style="">
-            <h3 style="font-weight: bold">{{ project_name }}</h3>
-        </div>
-        <div style="text-align: right">
-            <label style="font-size: 20px; margin-right: 15px; font-weight: bold;">Auto Refresh</label>
-            <label class="switch">
-                <input type="checkbox" class="switch" id="switch-id">
-                <span class="slider round"></span>
-            </label>
-        </div>
-        <div class="panel-body">
-            <div class="panel-group" id="accordion">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <table id="table-header">
-                                <tbody>
-                                <th>DateTime</th>
-                                <th>Branch</th>
-                                <th>Update Type</th>
-                                <th id="update_version">Update Version</th>
-                                <th>Author Name</th>
-                                <th>Status</th>
-                                </tbody>
-                            </table>
-                        </h4>
+    <div class="row">
+        <div class="panel panel-new" style="background-color:transparent">
+            <div class="panel-heading" style="">
+                <div class="row">
+                    <div class="col-md-3"><h3 style="font-weight: bold">{{ project_name }}</h3></div>
+                    <div class="col-md-3 col-md-offset-6">
+                        <div class="dropdown" align="right" style="display: inline">
+                            <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Run
+                                <span class="caret"></span></button>
+                            <ul class="dropdown-menu" align="right">
+                                <li><a href="{% url 'run_integrate' %}?project_name={{ project_name }}">Last Commit</a>
+                                </li>
+                                <li><a href="{% url 'get_commits_in_server' %}?project_name={{ project_name }}">Default
+                                    Server</a></li>
+                                <li><a href="{% url 'integrate' %}?project={{ project_name }}">Choose Server</a></li>
+                            </ul>
+                        </div>
+                        <div align="right" style="display: inline">
+                            <label class="switch">
+                                <input type="checkbox" class="switch" id="switch-id">
+                                <span class="slider round"><div id="slider_label">Refresh</div></span>
+                            </label>
+                        </div>
                     </div>
                 </div>
-                <br>
-                {% for item in integrations %}
+                <ul>
+                    <li><p><strong>Repo Link : </strong><a href="{{ repo_link }}">{{ repo_link }}</a></p></li>
+                    <li><p><strong>Branch : </strong>{{ branch }}</p></li>
+                    <li><p><strong>Current Status : </strong>{{ current_status }}</p></li>
+                    <li><p><strong>Last successful build : </strong><a href="javascript:void(0)"
+                                                                       onclick="last_success();">{{ last_success_commit_date }}
+                        ago</a></p></li>
+                </ul>
+            </div>
+            <div class="panel-body">
+                <div class="panel-group" id="accordion">
                     <div class="panel panel-default">
-                        <div class="panel-heading" id="heading{{ forloop.counter }}">
+                        <div class="panel-heading">
                             <h4 class="panel-title">
-                                <a style="text-decoration: none;" class="accordion-toggle" data-toggle="collapse"
-                                   data-parent="#accordion"
-                                   href="#collapse{{ forloop.counter }}">
+                                <table id="table-header">
+                                    <tbody>
+                                    <th>DateTime</th>
+                                    <th id="update_version">Update Version</th>
+                                    <th>Author Name</th>
+                                    <th>Status</th>
+                                    </tbody>
+                                </table>
+                            </h4>
+                        </div>
+                    </div>
+                    <br>
+                    {% for item in integrations %}
+                        <div class="panel panel-default">
+                            <div class="panel-heading" id="heading{{ forloop.counter }}">
+                                <h4 class="panel-title">
                                     <input type="hidden" value="{{ item.id }}" id="table{{ forloop.counter }}">
                                     <div id="table{{ item.id }}">
                                         <table id="table-body">
                                             <tbody>
-                                            <td><span class="glyphicon glyphicon-plus"></span>
-                                                {{ item.datetime|date:'Y-m-d H:i' }}
+                                            <td>
+                                                <a style="text-decoration: none;color: inherit;"
+                                                   class="accordion-toggle"
+                                                   data-toggle="collapse"
+                                                   data-parent="#accordion"
+                                                   href="#collapse{{ forloop.counter }}">
+                                                    <span class="glyphicon glyphicon-plus"></span>
+                                                    {{ item.datetime|date:'Y-m-d H:i' }}
+                                                </a>
                                             </td>
-                                            <td>{{ item.branch }}</td>
-                                            <td>{{ item.update_type }}</td>
-                                            <td id="update_version">{{ item.update_version|slice:"0:6" }}</td>
+                                            <td id="update_version"><a
+                                                    href="{{ commits_link }}{{ item.update_version }}">
+                                                {{ item.update_version|slice:"0:6" }}</a></td>
                                             <td>{% if item.author_name %}
                                                 {{ item.author_name }}{% else %}{% endif %}</td>
                                             <td>
@@ -209,71 +253,75 @@
                                             </tbody>
                                         </table>
                                     </div>
-                                </a>
-                            </h4>
-                        </div>
-                        <div id="collapse{{ forloop.counter }}" class="panel-collapse collapse">
-                            <div class="panel-body">
-                                <ul style="font-size: 17px; background-color: #f5f5f5 "
-                                    class="nav nav-tabs nav-justified">
-                                    <li class="active"><a data-toggle="pill" href="#result{{ item.id }}">Result</a></li>
-                                    <li><a data-toggle="pill" href="#files{{ item.id }}">Files</a></li>
-                                </ul>
-                                <br>
-                                <div class="tab-content">
-                                    <input type="hidden" value="{{ item.id }}" id="input{{ forloop.counter }}">
-                                    <div id="result{{ item.id }}" class="tab-pane fade in active">
-                                        {% for k,v in item.result.items %}
-                                            <ul>
-                                                <li><strong>Server :</strong> {{ item.server }}</li>
-                                                <li>
-                                                    <strong>Command :</strong>
-                                                    {{ k }}
-                                                </li>
-                                                <li>
-                                                    <strong>Exit Code :</strong>
-                                                    {{ v.exit_code }}
-                                                </li>
-                                                <li>
-                                                    <strong>Result :</strong>
-                                                    <div class="result-div"></div>
-                                                    {% if item.status_id == 2 %}
-                                                        <div class='alert alert-success'>
+                                </h4>
+                            </div>
+                            <div id="collapse{{ forloop.counter }}" class="panel-collapse collapse" style="overflow: hidden">
+                                <div class="panel-body">
+                                    <ul style="font-size: 17px; background-color: #f5f5f5 "
+                                        class="nav nav-tabs nav-justified">
+                                        <li class="active"><a data-toggle="pill" href="#result{{ item.id }}">Result</a>
+                                        </li>
+                                        <li><a data-toggle="pill" href="#files{{ item.id }}">Files</a></li>
+                                    </ul>
+                                    <br>
+                                    <div class="tab-content">
+                                        <input type="hidden" value="{{ item.id }}" id="input{{ forloop.counter }}">
+                                        <div id="result{{ item.id }}" class="tab-pane fade in active">
+                                            {% for k,v in item.result.items %}
+                                                <ul>
+                                                    <li><strong>Server :</strong> {{ item.server }}</li>
+                                                    <li>
+                                                        <strong>Command :</strong>
+                                                        {{ k }}
+                                                    </li>
+                                                    <li>
+                                                        <strong>Exit Code :</strong>
+                                                        {{ v.exit_code }}
+                                                    </li>
+                                                    <li>
+                                                        <strong>Result :</strong>
+                                                        <div class="result-div"></div>
+                                                        {% if item.status_id == 2 %}
+                                                            <div class='alert alert-success'>
+                                                                <pre>{{ v.result }}</pre>
+                                                            </div>
+                                                        {% elif item.status_id == 3 %}
+                                                            <div class='alert alert-danger'>
+                                                                <pre>{{ v.result }}</pre>
+                                                            </div>
+                                                        {% else %}
                                                             <pre>{{ v.result }}</pre>
-                                                        </div>
-                                                    {% elif item.status_id == 3 %}
-                                                        <div class='alert alert-danger'>
-                                                            <pre>{{ v.result }}</pre>
-                                                        </div>
-                                                    {% else %}
-                                                        <pre>{{ v.result }}</pre>
-                                                    {% endif %}
-                                                </li>
-                                            </ul>
-                                        {% endfor %}
+                                                        {% endif %}
+                                                    </li>
+                                                </ul>
+                                            {% endfor %}
+                                        </div>
+                                        <div id="files{{ item.id }}" class="tab-pane fade">
+                                            {% for dir in dir_list %}
+                                                {% if item.id == dir.processId %}
+                                                    {% for d in dir.processDir %}
+                                                        <ul id="filesmenu" style="font-size: 16px">
+                                                            <li>
+                                                                <a style="" id="fileindire"
+                                                                   href='{% url "download_file" %}?type=artifact&file={{ dir.folders }}/{{ d }}'
+                                                                   download="{{ d }}">{{ d }}</a>
+                                                            </li>
+                                                        </ul>
+                                                    {% endfor %}
+                                                {% endif %}
+                                            {% endfor %}
+                                        </div>
                                     </div>
-                                    <div id="files{{ item.id }}" class="tab-pane fade">
-                                        {% for dir in dir_list %}
-                                            {% if item.id == dir.processId %}
-                                                {% for d in dir.processDir %}
-                                                    <ul id="filesmenu" style="font-size: 16px">
-                                                        <li>
-                                                            <a style="" id="fileindire" href='{% url "download_file" %}?type=artifact&file={{dir.folders}}/{{d}}' download="{{ d }}">{{ d }}</a>
-                                                        </li>
-                                                    </ul>
-                                                {% endfor %}
-                                            {% endif %}
-                                        {% endfor %}
-                                    </div>
-                                </div>
 
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <br>
-                {% endfor %}
-            </div>
+                        <br>
+                    {% endfor %}
+                </div>
 
+            </div>
         </div>
     </div>
+{% include "modal.html" %}
 {% endblock %}

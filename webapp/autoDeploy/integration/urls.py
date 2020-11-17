@@ -16,6 +16,9 @@ urlpatterns = [
     url(r'listCommits/',views.listCICommits,name='ci_commits'),
     re_path(r'status/(\w+)',views.status,name='ci_status'),
     re_path(r'coverage/(\w+)',views.coverage,name='ci_coverage'),
-    re_path(r'webhooks/',views.webhooks,name='webhooks'),
+    url(r'webhooks/',views.webhooks,name='webhooks'),
     re_path(r'getProcessResults/(\w+)/',views.getProcessResults,name='getProcessResults'),
+    url(r'get_process/',views.get_process,name='get_process'),
+    url(r'run_integrate/',views.run_integrate,name='run_integrate'),
+    url(r'get_commits_in_server/',views.get_commits_in_server,name='get_commits_in_server'),
 ]

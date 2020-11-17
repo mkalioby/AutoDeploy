@@ -1,26 +1,16 @@
-<li>
-    <a href="#"><i class="fa fa-book fa-fw"></i> Continuous Deployment <span
-            class="fa arrow"></span></a>
-
-    <ul class="nav nav-second-level collapse">
-        <li>
-            <a href="{% url 'cd_index' %}" class="active"><i class="fa fa-dashboard fa-fw"></i>
-                CD Dashboard</a>
-        </li>
-        <li>
-            <a href="#"><i class="fa fa-pencil fa-fw"></i> Projects<span
-                    class="fa arrow"></span></a>
-            <ul class="nav nav-second-level collapse">
-                {% if perms.autodeploy.add_project %}
-                    <li>
-                        <a href="{% url 'cd_add_project' %}">Add Project</a>
-                    </li>
-                {% endif %}
+<li><a href="javascript:void(0)" onclick="$('#cd_list').toggle();">Continuous Deployment <span
+        class="caret"></span></a>
+    <ul id="cd_list" style="display: none">
+        <li><a href="{% url 'cd_index' %}"><i class="fa fa-dashboard fa-fw"></i>CD Dashboard</a></li>
+        <li><a href="javascript:void(0)" onclick="$('#cd_projects_list').toggle();">Projects<span class="caret"></span></a>
+            <ul id="cd_projects_list" style="display: none">
+                <li>
+                    <a href="{% url 'cd_add_project' %}">Add Project</a>
+                </li>
                 <li>
                     <a href="{% url 'cd_index' %}">Manage Projects</a>
                 </li>
             </ul>
-            <!-- /.nav-second-level -->
         </li>
     </ul>
 </li>

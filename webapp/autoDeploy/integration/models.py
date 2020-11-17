@@ -32,6 +32,10 @@ class CIProject(models.Model):
         last_ci = Integration_server.objects.filter(project__name=self.name).order_by('-id')
         return last_ci[0].status.description if last_ci.exists() else None
 
+    def last_success_commit(self):
+        last_ci = Integration_server.objects.filter(project__name=self.name,status_id=2).order_by('-id')
+        return last_ci[0] if last_ci.exists() else None
+
     def getConfigFilePath(self):
         if self.configFile:
             return self.configFile.path

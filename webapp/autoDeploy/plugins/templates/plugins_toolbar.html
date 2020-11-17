@@ -15,9 +15,9 @@
         }
     </script>
 {% endblock %}
-<li>
-    <a href="#"><i class="fa fa-plug fa-fw"></i> Plugins <span class="fa arrow"></span></a>
-    <ul class="nav nav-second-level collapse" id="plugins_list">
+<li><a href="javascript:void(0)" onclick="$('#plugins_list').toggle();">Plugins <span
+        class="caret"></span></a>
+    <ul id="plugins_list" style="display: none">
         <li>
             <a href="{% url 'manage_plugin' %}">Manage</a>
         </li>

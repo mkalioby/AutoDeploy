@@ -188,11 +188,19 @@ def getHistory(request,project_name=None):
     project = CIProject.objects.filter(name=requested_project)
     if project.exists():
         project = project[0]
+        context['repo_link'] = project.repo_link
         context['branch'] = project.default_branch
-        context['integrations'] = Integration_server.objects.filter(project__name=project).order_by("-datetime")[:5]
+        context['current_status'] = project.status()
+        integrations = Integration_server.objects.filter(project__name=project).order_by("-datetime")[:5]
+        context['integrations'] = integrations
         context['project_name'] = project
+        context['commits_link'] = project.repo_link.split("src")[0] + 'commits/'
+        last_success_commit = project.last_success_commit()
+        context['last_success_commit'] = last_success_commit.id
+        lastCommitDate = integrations[0].datetime.date()
+        context['last_success_commit_date'] = str(lastCommitDate - last_success_commit.datetime.date()).split(",")[0]
         dir_list = []
-        for item in context['integrations']:
+        for item in integrations:
             dir_name = str(project) + '/' + str(item.id)
             folderDir = settings.ARTIFACTOR_DIR + '/' + dir_name
             if os.path.isdir(folderDir):
@@ -334,13 +342,61 @@ def getProcessResults(request, process_id):
             else:
                 html += "<pre>%s</pre>" %(v['result'])
             html += "</li>"
-        html2 += "<td><span class='glyphicon glyphicon-plus'></span> " + process.datetime.strftime("%Y-%m-%d %H:%I") + "</td>"
-        html2 += "<td>" + str(process.branch) + "</td>"
-        html2 += "<td>" + str(process.update_type) + "</td>"
-        html2 += "<td>" + str(process.update_version)[:7] + "</td>"
+        html2 += "<td><a style='text-decoration: none;color: inherit;' class='accordion-toggle'  data-toggle='collapse' data-parent='#accordion' href='#collapse1'><span class='glyphicon glyphicon-plus'></span> " + process.datetime.strftime("%Y-%m-%d %H:%I") + "</a></td>"
+        repo_link = process.project.repo_link.split("src")[0] + 'commits/' + process.update_version
+        html2 += "<td style='padding-right: 30px; word-break: break-all;'><a href='" + repo_link + "'>" + str(process.update_version)[:7] + "</a></td>"
         if process.author_name:
             html2 += "<td>" + str(process.author_name) + "</td>"
         html2 += "<td><div style='padding-top: 7%'><span class= '" + str(process.status) + "-dot 'title='" + str(process.status) + "'></span><img src='" + str(process.get_coverage()) + "' id='coverage'/></div></td>"
     html2 += "<tbody></table>"
     html += "</ul>"
     return HttpResponse(json.dumps({'html1':html,"html2":html2}), content_type="application/json")
+
+def get_process(request):
+    process_id = request.GET.get("id",None)
+    if process_id not in ['None',None,'','0',0]:
+        process = Integration_server.objects.get(id=process_id)
+        html = "<ul>"
+        html += "<li><strong>Datetime :</strong> " + process.datetime.strftime("%Y-%m-%d %H:%I") + "</li>"
+        html += "<li><strong>Server :</strong> " + str(process.server) + "</li>"
+        html += "<li><strong>Branch :</strong> " + str(process.branch) + "</li>"
+        repo_link = process.project.repo_link.split("src")[0] + 'commits/' + process.update_version
+        html += "<li><strong>Update Version :</strong> <a href='" + repo_link + "'>" + str(process.update_version)[:7] + "</a></li>"
+        html += "<li><strong>Author Name :</strong> " + str(process.author_name) + "</li>"
+        html += "<li><strong>Author Email :</strong> " + str(process.author_email) + "</li>"
+        html += "<li><strong>Coverage :</strong> " + str(process.coverage) + "</li>"
+        html += "</ul>"
+        return HttpResponse(html, content_type="application/html")
+    else:
+        html = """
+        <div class="alert alert-danger" role="alert">
+          Last success commit cannot be found
+        </div>
+        """
+        return HttpResponse(html, content_type="application/html")
+
+def run_integrate(request):
+    from autoDeploy.api import integrate_core
+    project_name = request.GET.get("project_name",None)
+    project = CIProject.objects.get(name=project_name)
+    server = project.default_server
+    c = Client("git", server.ip, server.port, key=project.sshKey.key)
+    c.Pull(project.repo, project.working_dir, project.sshKey.key)
+    res = c.ListCommits(project.working_dir, options={"branch": project.default_branch})
+    if not "ERR:" in res:
+        commit = res[0]['Hash']
+        integrate_core(server,project,None,commit)
+        url = reverse('getShow', args=[project.name])
+        return HttpResponseRedirect(url)
+    return HttpResponse("Integration cannot be done")
+
+
+def get_commits_in_server(request):
+    project_name = request.GET.get("project_name", None)
+    project = CIProject.objects.get(name=project_name)
+    server = project.default_server
+    request.session["integrate_project"] = project_name
+    request.session["integrate_server"] = server.name
+    c = Client(str(project.repo_type), server.ip, server.port, project.sshKey.key)
+    c.Pull(project.repo, project.working_dir, project.sshKey.key)
+    return listCICommits(request)

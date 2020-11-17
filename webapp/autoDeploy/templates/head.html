@@ -1,0 +1,96 @@
+{% load staticfiles %}
+<script type="text/javascript">
+    function openNav() {
+        document.getElementById("myNavbar").style.width = "350px";
+    }
+
+    function closeNav() {
+        document.getElementById("myNavbar").style.width = "0";
+    }
+</script>
+
+
+<nav class="navbar navbar-default">
+    <div class="container-fluid"
+         style="padding-top: 0px;position: relative;z-index: 5000;">
+        <div class="navbar-header">
+            <div class="row">
+                <div class="col-md-2 col-lg-1 col-sm-3 col-xs-1">
+                    <span class="fa fa-bars fa-2x" onclick="openNav()" style="margin-top: 10px"></span>
+                </div>
+                <div class="col-md-9 col-sm-7 col-lg-10 col-xs-7" style="display: inherit">
+                    <a href="{% url 'index' %}" class="hidden-lg hidden-md"
+                       style="font-size: 12px;font-weight: bold;">Autodeploy</a>
+                </div>
+            </div>
+        </div>
+        <div class="nav navbar-nav navbar-right">
+            {% if user.is_authenticated %}
+                <a href='javascript:void(0)' data-toggle="dropdown" id="userDropdown" aria-haspopup="true"
+                   aria-expanded="false">
+                    <span class="fa fa-2x fa-user" title="User"></span>
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="userDropdown">
+                    <li><a href="{% url 'mfa_home' %}">Security</a></li>
+                    {% if request.user.is_staff or  request.user.is_superuser %}
+                        <li><a href="{{ BASE_URL }}admin">Admin Interface</a></li>
+                    {% endif %}
+                    <li role="separator" class="divider"></li>
+                    <li><a href="{{ BASE_URL }}accounts/logout">Log out</a></li>
+                </ul>
+            {% endif %}
+        </div>
+
+    </div>
+</nav>
+
+<div class="sidenav" id="myNavbar">
+    <span class="fa fa-2x fa-angle-left back-btn" title="Back" onclick="history.back()" style="display: none;cursor: pointer"></span>&nbsp;&nbsp;&nbsp;
+    <button class="close" title='Close' onclick="closeNav()" style="display: inline">x&nbsp;&nbsp;</button>
+    <ul style="list-style: none">
+        <li><a href="{% url 'index' %}">Dashboard</a></li>
+        {% if "deployment" in INSTALLED_APPS %}
+            {% include "deployment_Toolbar.html" %}
+        {% endif %}
+        {% if "integration" in INSTALLED_APPS %}
+            {% include "integration_Toolbar.html" %}
+        {% endif %}
+        <!--CI -->
+        {% if not perms.autodeploy.add_server and not perms.autodeploy.change_server and not perms.autodeploy.delete_server and not perms.autodeploy.check_server %}
+        {% else %}
+            <li><a href="javascript:void(0)" onclick="$('#server_list').toggle();">Servers<span
+                    class="caret"></span></a>
+                <ul id="server_list" style="display: none">
+                    {% if perms.autodeploy.add_server %}
+                        <li><a href="{% url 'add_server' %}">Add Server</a></li>
+                    {% endif %}
+                    {% if perms.autodeploy.change_server and perms.autodeploy.delete_server %}
+                        <li><a href="{% url 'manage_servers' %}">Manage Servers</a></li>
+                    {% endif %}
+                    {% if perms.autodeploy.check_server %}
+                        <li><a href="{% url 'checkServers' %}">Check Servers</a></li>
+                    {% endif %}
+                </ul>
+            </li>
+        {% endif %}
+        {% if perms.autodeploy.add_sshkey and perms.autodeploy.change_sshkey and perms.autodeploy.delete_sshkey %}
+            <li><a href="javascript:void(0)" onclick="$('#ssh_list').toggle();">SSH Keys<span
+                    class="caret"></span></a>
+                <ul id="ssh_list" style="display: none">
+                    <li><a href="{% url 'add_sshkey' %}">Add SSH Key</a></li>
+                    <li><a href="{% url 'manage_sshkey' %}">Modify SSH Keys</a></li>
+                </ul>
+            </li>
+        {% endif %}
+        {% if "plugins" in INSTALLED_APPS %}
+            {% include "plugins_toolbar.html" %}
+        {% endif %}
+
+    </ul>
+
+    <style>
+        .col-md-4 {
+            top: 0px;
+        }
+    </style>
+</div>
