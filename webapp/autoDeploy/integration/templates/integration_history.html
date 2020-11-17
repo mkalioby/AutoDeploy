@@ -174,8 +174,8 @@
         <div class="panel panel-new" style="background-color:transparent">
             <div class="panel-heading" style="">
                 <div class="row">
-                    <div class="col-md-3"><h3 style="font-weight: bold">{{ project_name }}</h3></div>
-                    <div class="col-md-3 col-md-offset-6">
+                    <div class="col-sm-3"><h3 style="font-weight: bold">{{ project_name }}</h3></div>
+                    <div class="col-sm-3 col-sm-offset-9">
                         <div class="dropdown" align="right" style="display: inline">
                             <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Run
                                 <span class="caret"></span></button>
@@ -187,8 +187,8 @@
                                 <li><a href="{% url 'integrate' %}?project={{ project_name }}">Choose Server</a></li>
                             </ul>
                         </div>
-                        <div align="right" style="display: inline">
-                            <label class="switch">
+                        <div align="right" style="display: inline" title="Auto Refresh">
+                            <label class="switch" >
                                 <input type="checkbox" class="switch" id="switch-id">
                                 <span class="slider round"><div id="slider_label">Refresh</div></span>
                             </label>
@@ -202,6 +202,7 @@
                     <li><p><strong>Last successful build : </strong><a href="javascript:void(0)"
                                                                        onclick="last_success();">{{ last_success_commit_date }}
                         ago</a></p></li>
+                    <li><p><strong>Last build : </strong>{% if last_commit != '0:00:00' %}{{ last_commit }} ago{% else %}Today{% endif %}</p></li>
                 </ul>
             </div>
             <div class="panel-body">

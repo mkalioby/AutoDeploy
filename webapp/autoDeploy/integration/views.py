@@ -197,6 +197,7 @@ def getHistory(request,project_name=None):
         context['commits_link'] = project.repo_link.split("src")[0] + 'commits/'
         last_success_commit = project.last_success_commit()
         context['last_success_commit'] = last_success_commit.id
+        context['last_commit'] = str(datetime.now().date() - integrations[0].datetime.date()).split(",")[0]
         lastCommitDate = integrations[0].datetime.date()
         context['last_success_commit_date'] = str(lastCommitDate - last_success_commit.datetime.date()).split(",")[0]
         dir_list = []

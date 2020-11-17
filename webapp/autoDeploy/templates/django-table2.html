@@ -2,7 +2,7 @@
 {% load django_tables2 %}
 {% load i18n %}
 {% if table.page %}
-<div class="table-container">
+<div class="table-container" style="overflow-x:auto;">
 {% endif %}
     {% with table.page.paginator.count as total %}
 {% with table.page.object_list|length as count %}

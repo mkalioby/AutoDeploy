@@ -15,14 +15,14 @@
         }
     </script>
 {% endblock %}
-<li><a href="javascript:void(0)" onclick="$('#plugins_list').toggle();">Plugins <span
+<li><a href="javascript:void(0)" onclick="$('#plugins_list').toggle();"><i class="fa fa-plug fa-fw"></i>Plugins <span
         class="caret"></span></a>
     <ul id="plugins_list" style="display: none">
         <li>
-            <a href="{% url 'manage_plugin' %}">Manage</a>
+            <a href="{% url 'manage_plugin' %}"><i class="fa fa-cog"></i> Manage</a>
         </li>
         <li>
-            <a href="{% url 'add_plugin' %}">Install</a>
+            <a href="{% url 'add_plugin' %}"><i class="fa fa-plus"></i> Install</a>
         </li>
     </ul>
 </li>

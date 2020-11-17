@@ -10,25 +10,24 @@
 </script>
 
 
-<nav class="navbar navbar-default">
+<nav class="navbar navbar-default" style="width: 100%;">
     <div class="container-fluid"
          style="padding-top: 0px;position: relative;z-index: 5000;">
         <div class="navbar-header">
             <div class="row">
-                <div class="col-md-2 col-lg-1 col-sm-3 col-xs-1">
-                    <span class="fa fa-bars fa-2x" onclick="openNav()" style="margin-top: 10px"></span>
+                <div class="col-sm-3 col-xs-1">
+                    <span class="fa fa-bars fa-2x" onclick="openNav()" style="margin: 10px"></span>
                 </div>
-                <div class="col-md-9 col-sm-7 col-lg-10 col-xs-7" style="display: inherit">
-                    <a href="{% url 'index' %}" class="hidden-lg hidden-md"
-                       style="font-size: 12px;font-weight: bold;">Autodeploy</a>
+                <div class="col-sm-9 col-xs-7">
+                    <a href="{% url 'index' %}" style="display: block; margin-top: 13px;margin-left: 10px;font-size: 17px;font-weight: bold;">Autodeploy</a>
                 </div>
             </div>
         </div>
-        <div class="nav navbar-nav navbar-right">
+        <div class="nav navbar-nav navbar-right" style="position: absolute; top: -10px; right: 5px;">
             {% if user.is_authenticated %}
                 <a href='javascript:void(0)' data-toggle="dropdown" id="userDropdown" aria-haspopup="true"
                    aria-expanded="false">
-                    <span class="fa fa-2x fa-user" title="User"></span>
+                    <span style="margin: 20px; " class="fa fa-2x fa-user" title="User"></span>
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="userDropdown">
                     <li><a href="{% url 'mfa_home' %}">Security</a></li>
@@ -48,7 +47,7 @@
     <span class="fa fa-2x fa-angle-left back-btn" title="Back" onclick="history.back()" style="display: none;cursor: pointer"></span>&nbsp;&nbsp;&nbsp;
     <button class="close" title='Close' onclick="closeNav()" style="display: inline">x&nbsp;&nbsp;</button>
     <ul style="list-style: none">
-        <li><a href="{% url 'index' %}">Dashboard</a></li>
+        <li><a href="{% url 'index' %}"><i class="fa fa-tachometer"></i> Dashboard</a></li>
         {% if "deployment" in INSTALLED_APPS %}
             {% include "deployment_Toolbar.html" %}
         {% endif %}
@@ -58,27 +57,27 @@
         <!--CI -->
         {% if not perms.autodeploy.add_server and not perms.autodeploy.change_server and not perms.autodeploy.delete_server and not perms.autodeploy.check_server %}
         {% else %}
-            <li><a href="javascript:void(0)" onclick="$('#server_list').toggle();">Servers<span
+            <li><a href="javascript:void(0)" onclick="$('#server_list').toggle();"><i class="fa fa-linux fa-fw"></i> Servers<span
                     class="caret"></span></a>
                 <ul id="server_list" style="display: none">
                     {% if perms.autodeploy.add_server %}
-                        <li><a href="{% url 'add_server' %}">Add Server</a></li>
+                        <li><a href="{% url 'add_server' %}"><i class="fa fa-plus"></i> Add Server</a></li>
                     {% endif %}
                     {% if perms.autodeploy.change_server and perms.autodeploy.delete_server %}
-                        <li><a href="{% url 'manage_servers' %}">Manage Servers</a></li>
+                        <li><a href="{% url 'manage_servers' %}"><i class="fa fa-cog"></i> Manage Servers</a></li>
                     {% endif %}
                     {% if perms.autodeploy.check_server %}
-                        <li><a href="{% url 'checkServers' %}">Check Servers</a></li>
+                        <li><a href="{% url 'checkServers' %}"><i class="fa fa-medkit"></i> Check Servers</a></li>
                     {% endif %}
                 </ul>
             </li>
         {% endif %}
         {% if perms.autodeploy.add_sshkey and perms.autodeploy.change_sshkey and perms.autodeploy.delete_sshkey %}
-            <li><a href="javascript:void(0)" onclick="$('#ssh_list').toggle();">SSH Keys<span
+            <li><a href="javascript:void(0)" onclick="$('#ssh_list').toggle();"><i class="fa fa-key fa-fw"></i>SSH Keys<span
                     class="caret"></span></a>
                 <ul id="ssh_list" style="display: none">
-                    <li><a href="{% url 'add_sshkey' %}">Add SSH Key</a></li>
-                    <li><a href="{% url 'manage_sshkey' %}">Modify SSH Keys</a></li>
+                    <li><a href="{% url 'add_sshkey' %}"><i class="fa fa-plus"></i> Add SSH Key</a></li>
+                    <li><a href="{% url 'manage_sshkey' %}"><i class="fa fa-pencil-square-o"></i> Modify SSH Keys</a></li>
                 </ul>
             </li>
         {% endif %}

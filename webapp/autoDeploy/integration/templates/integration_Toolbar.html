@@ -1,14 +1,14 @@
-<li><a href="javascript:void(0)" onclick="$('#ci_list').toggle();">Continuous Integration <span
+<li><a href="javascript:void(0)" onclick="$('#ci_list').toggle();"><i class="fa fa-refresh fa-fw"></i>Continuous Integration <span
         class="caret"></span></a>
     <ul id="ci_list" style="display: none">
         <li><a href="{% url 'ci_index' %}"><i class="fa fa-dashboard fa-fw"></i>CI Dashboard</a></li>
-        <li><a href="javascript:void(0)" onclick="$('#ci_projects_list').toggle();">Projects<span class="caret"></span></a>
+        <li><a href="javascript:void(0)" onclick="$('#ci_projects_list').toggle();"><i class="fa fa-tasks"></i> Projects<span class="caret"></span></a>
             <ul id="ci_projects_list" style="display: none">
                 <li>
-                    <a href="{% url 'ci_add_project' %}">Add Project</a>
+                    <a href="{% url 'ci_add_project' %}"><i class="fa fa-plus"></i> Add Project</a>
                 </li>
                 <li>
-                    <a href="{% url 'ci_index' %}">Manage Projects</a>
+                    <a href="{% url 'ci_index' %}"><i class="fa fa-cog"></i> Manage Projects</a>
                 </li>
             </ul>
         </li>

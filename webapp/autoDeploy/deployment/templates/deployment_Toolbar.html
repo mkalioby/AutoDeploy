@@ -1,14 +1,14 @@
-<li><a href="javascript:void(0)" onclick="$('#cd_list').toggle();">Continuous Deployment <span
+<li><a href="javascript:void(0)" onclick="$('#cd_list').toggle();"><i class="fa fa-book fa-fw"></i>Continuous Deployment <span
         class="caret"></span></a>
     <ul id="cd_list" style="display: none">
         <li><a href="{% url 'cd_index' %}"><i class="fa fa-dashboard fa-fw"></i>CD Dashboard</a></li>
-        <li><a href="javascript:void(0)" onclick="$('#cd_projects_list').toggle();">Projects<span class="caret"></span></a>
+        <li><a href="javascript:void(0)" onclick="$('#cd_projects_list').toggle();"><i class="fa fa-tasks"></i> Projects<span class="caret"></span></a>
             <ul id="cd_projects_list" style="display: none">
                 <li>
-                    <a href="{% url 'cd_add_project' %}">Add Project</a>
+                    <a href="{% url 'cd_add_project' %}"><i class="fa fa-plus"></i> Add Project</a>
                 </li>
                 <li>
-                    <a href="{% url 'cd_index' %}">Manage Projects</a>
+                    <a href="{% url 'cd_index' %}"><i class="fa fa-cog"></i> Manage Projects</a>
                 </li>
             </ul>
         </li>
