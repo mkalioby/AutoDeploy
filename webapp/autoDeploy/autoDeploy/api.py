@@ -220,9 +220,10 @@ def receive_integrate_result(request):
                 for ch in channels:
                     if project.slackchannel and project.slackchannel == ch['name']:
                         channel_id = ch['id']
-                status = " was a *success*" if success else " was a `fail`"
-                MSG = "last commit ~<" + commit_link + "|" + IS.update_version[
-                                                            :7] + ">~ in project *" + project.name + "* in branch " + IS.branch + status
+                if not success:
+                    MSG = "last commit ~<" + commit_link + "|" + IS.update_version[:7] + ">~ in project *" + project.name + "* in branch " + IS.branch + " was a `fail`"
+                else:
+                    MSG = "last commit <" + commit_link + "|" + IS.update_version[:7] + "> in project *" + project.name + "* in branch " + IS.branch + " was a *success*"
                 if user_id:
                     message = "Hello <@" + user_id + "> , your " + MSG
                     slack.chat.post_message(user_id, message)
