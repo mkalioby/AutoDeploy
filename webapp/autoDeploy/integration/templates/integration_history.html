@@ -199,10 +199,10 @@
                     <li><p><strong>Current Status : </strong>{{ current_status }}</p></li>
                     <li><p><strong>Last successful build : </strong><a href="javascript:void(0)"
                                                                        onclick="last_success();">
-                        {% if last_success_commit_date != None or last_success_commit_date != 'None' or last_success_commit_date != '' %}
-                            {{ last_success_commit_date|timesince }}{% else %}NA{% endif %}
-                        ago</a></p></li>
-                    <li><p><strong>Last build : </strong>{{ lastCommitDate|timesince }}</p></li>
+                        {% if last_success_commit_date %}{{ last_success_commit_date|timesince }} ago{% else %}
+                            NA{% endif %}
+                    </a></p></li>
+                    <li><p><strong>Last build : </strong>{{ lastCommitDate|timesince }} ago</p></li>
                 </ul>
             </div>
             <div class="panel-body">
